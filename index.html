@@ -22,7 +22,7 @@
             margin: 0; 
             padding: 0; 
             overflow: hidden; 
-            touch-action: none;
+            /* Removed global touch-action: none to allow scrolling */
         }
 
         body {
@@ -62,7 +62,7 @@
         .dartboard-segment:hover, .dartboard-segment.hover-highlight { 
             opacity: 1; 
             stroke: #fff; 
-            stroke-width: 3px; /* Thicker for visibility */
+            stroke-width: 3px; 
             filter: brightness(1.5) drop-shadow(0 0 4px rgba(255,255,255,0.5)); 
             z-index: 100;
         }
@@ -157,27 +157,29 @@
 
     <main id="main-container" class="flex-grow relative overflow-hidden flex flex-col h-full lg:p-6 lg:gap-6">
         
-        <!-- DASHBOARD -->
-        <div id="view-dashboard" class="absolute inset-0 z-50 flex flex-col items-center justify-center p-6 bg-[#020617] lg:bg-transparent">
-            <div class="glass-panel p-8 rounded-3xl w-full max-w-4xl flex flex-col items-center border-slate-700/50">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-tight text-center">Select Game</h1>
-                <p class="text-slate-400 mb-10 text-center">Touch & Voice Scoring</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                    <button onclick="App.startGame('x01')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                        <div class="text-5xl group-hover:scale-110 transition">🎯</div>
-                        <h3 class="text-xl font-bold text-white">X01</h3>
-                        <p class="text-slate-400 text-xs">501, 301, Double Out</p>
-                    </button>
-                    <button onclick="App.startGame('cricket')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                        <div class="text-5xl group-hover:scale-110 transition">🏏</div>
-                        <h3 class="text-xl font-bold text-white">Cricket</h3>
-                        <p class="text-slate-400 text-xs">Tactical Territory</p>
-                    </button>
-                    <button onclick="App.startGame('atc')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                        <div class="text-5xl group-hover:scale-110 transition">🕰️</div>
-                        <h3 class="text-xl font-bold text-white">Clock</h3>
-                        <p class="text-slate-400 text-xs">Around the World</p>
-                    </button>
+        <!-- DASHBOARD - Fixed Scrolling -->
+        <div id="view-dashboard" class="absolute inset-0 z-50 overflow-y-auto bg-[#020617] lg:bg-transparent">
+            <div class="min-h-full flex flex-col items-center justify-center p-6">
+                <div class="glass-panel p-8 rounded-3xl w-full max-w-4xl flex flex-col items-center border-slate-700/50">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-tight text-center">Select Game</h1>
+                    <p class="text-slate-400 mb-10 text-center">Touch & Voice Scoring</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                        <button onclick="App.startGame('x01')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
+                            <div class="text-5xl group-hover:scale-110 transition">🎯</div>
+                            <h3 class="text-xl font-bold text-white">X01</h3>
+                            <p class="text-slate-400 text-xs">501, 301, Double Out</p>
+                        </button>
+                        <button onclick="App.startGame('cricket')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
+                            <div class="text-5xl group-hover:scale-110 transition">🏏</div>
+                            <h3 class="text-xl font-bold text-white">Cricket</h3>
+                            <p class="text-slate-400 text-xs">Tactical Territory</p>
+                        </button>
+                        <button onclick="App.startGame('atc')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
+                            <div class="text-5xl group-hover:scale-110 transition">🕰️</div>
+                            <h3 class="text-xl font-bold text-white">Clock</h3>
+                            <p class="text-slate-400 text-xs">Around the World</p>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,13 +248,14 @@
                     <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20" id="mob-darts-strip">
                         <div class="text-slate-500 text-xs italic">Touch & Hold to Zoom</div>
                     </div>
-                    <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container"></div>
+                    <!-- Added style="touch-action: none" to enable drag without scrolling -->
+                    <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container" style="touch-action: none;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- DESKTOP GAME LAYOUT -->
-        <div id="view-game-desktop" class="hidden lg:flex w-full h-full flex-row gap-6 relative pb-2">
+        <!-- DESKTOP GAME LAYOUT - Removed lg:flex to fix refresh glitch -->
+        <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
             <div class="flex-grow flex flex-col gap-6 w-5/12 overflow-y-auto custom-scroll pr-2">
                 <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
@@ -313,7 +316,8 @@
                         <div id="desk-status" class="text-2xl font-bold text-white">Ready</div>
                     </div>
                 </div>
-                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20" id="desk-board-container"></div>
+                <!-- Added touch-action here too for consistency on touch desktops -->
+                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20" id="desk-board-container" style="touch-action: none;"></div>
             </div>
         </div>
     </main>
@@ -544,20 +548,12 @@
                 this.active = false;
                 this.magnifier.style.display = 'none';
                 
-                // If the magnifier was showing, trigger click on the element under the magnifier
-                // This requires us to know what element was highlighted last.
-                // We re-check elementFromPoint to be sure.
                 if (this.magnifier.style.display === 'block' || document.querySelector('.hover-highlight')) {
                     const touch = e.changedTouches[0];
                     const el = document.elementFromPoint(touch.clientX, touch.clientY);
                     
-                    // We must clear highlights first or they might stick
                     document.querySelectorAll('.hover-highlight').forEach(x => {
                         x.classList.remove('hover-highlight');
-                        // If we are releasing, dispatch the click
-                        // NOTE: Since the magnifier might block the click target if not handled,
-                        // pointer-events: none on the magnifier div is crucial (which we have).
-                        // However, finding the SVG element requires us to look 'through' everything.
                     });
 
                     if(el && el.classList.contains('dartboard-segment')) {
@@ -569,7 +565,6 @@
                 this.magnifier.style.display = 'block';
                 const originalSvg = document.getElementById(boardId);
                 this.magnifier.innerHTML = ''; 
-                // Deep clone the SVG
                 const clone = originalSvg.cloneNode(true);
                 clone.removeAttribute('id');
                 clone.style.width = '100%';
@@ -581,7 +576,6 @@
                 const touch = e.touches[0] || e.changedTouches[0];
                 const rect = document.getElementById(boardId).getBoundingClientRect();
                 
-                // Position magnifier
                 this.magnifier.style.left = touch.clientX + 'px';
                 this.magnifier.style.top = (touch.clientY - 60) + 'px'; 
                 
@@ -594,19 +588,15 @@
                     svg.style.transform = 'scale(3)'; 
                 }
                 
-                // Identify element under finger
                 const el = document.elementFromPoint(touch.clientX, touch.clientY);
                 
-                // Reset highlights everywhere
                 document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
                 const magSvg = this.magnifier.querySelector('svg');
                 if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
 
                 if(el && el.classList.contains('dartboard-segment')) {
-                    // Highlight Main Board Element
                     el.classList.add('hover-highlight');
                     
-                    // Highlight Magnifier Element (SYNCED)
                     const id = el.getAttribute('id');
                     if (id && magSvg) {
                         const cloneEl = magSvg.querySelector(`[id="${id}"]`);
@@ -661,69 +651,6 @@
                 m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
                 document.body.appendChild(m); setTimeout(() => m.remove(), 600);
                 Game.processThrow(pts, mul, lbl);
-            }
-        };
-        const VoiceEngine = {
-            recognition: null, isListening: false, mode: 'off', useTrigger: false, triggerWord: "dart",
-            init: function() {
-                if(!('webkitSpeechRecognition' in window)) return;
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                this.recognition = new SR(); this.recognition.continuous = false; this.recognition.lang = 'en-US';
-                this.recognition.onstart = () => { this.isListening = true; this.updateUI(); };
-                this.recognition.onend = () => { this.isListening = false; this.updateUI(); if(this.mode==='always' || (this.mode==='turn' && !Game.turn.won && Game.turn.dartsThrown<3)) this.startListening(); else this.setMode('off'); };
-                this.recognition.onresult = (e) => {
-                    const t = e.results[0][0].transcript.toLowerCase().trim();
-                    console.log("Heard:", t);
-                    if(this.useTrigger) {
-                        if(t.startsWith(this.triggerWord) || t.startsWith("score")) this.parse(t.replace(this.triggerWord, "").replace("score", "").trim());
-                    } else this.parse(t);
-                };
-            },
-            toggleTrigger: function() {
-                this.useTrigger = !this.useTrigger;
-                // Desktop
-                const btnD = document.querySelector('#btn-trigger-toggle-desk div');
-                if(btnD) {
-                    btnD.style.transform = this.useTrigger ? "translateX(100%)" : "translateX(0)";
-                    document.getElementById('btn-trigger-toggle-desk').parentElement.classList.toggle('bg-green-500', this.useTrigger);
-                }
-            },
-            setMode: function(m) { if(!this.recognition) AudioEngine.init(); this.init(); if(this.isListening && this.mode === m) { this.stopListening(); return; } this.mode = m; if(this.isListening) this.recognition.stop(); if(m !== 'off') setTimeout(() => this.startListening(), 100); this.updateUI(); },
-            startListening: function() { if(this.isListening) return; try{this.recognition.start();}catch(e){} },
-            stopListening: function() { this.mode = 'off'; if(this.recognition) this.recognition.stop(); },
-            updateUI: function() {
-                const els = document.querySelectorAll('.desk-mic-btn, .mob-mic-btn');
-                els.forEach(el => el.classList.remove('mic-btn-active'));
-                
-                if(this.isListening && this.mode !== 'off') {
-                    document.getElementById(`desk-btn-${this.mode}`)?.classList.add('mic-btn-active');
-                    document.getElementById(`mob-btn-${this.mode}`)?.classList.add('mic-btn-active');
-                }
-                document.getElementById('mic-status-text').textContent = this.isListening ? `Voice: ${this.mode.toUpperCase()}` : "Voice: OFF";
-            },
-            parse: function(txt) {
-                if(txt.includes("undo")) { Game.undo(); return; }
-                if(txt.includes("redo")) { Game.redo(); return; }
-                let norm = txt.replace(/[.,]/g, ' ');
-                const map = {
-                    'one':1, 'two':2, 'three':3, 'four':4, 'five':5, 'six':6, 'seven':7, 'eight':8, 'nine':9, 'ten':10, 
-                    'eleven':11, 'twelve':12, 'thirteen':13, 'fourteen':14, 'fifteen':15, 'sixteen':16, 'seventeen':17, 'eighteen':18, 'nineteen':19, 'twenty':20,
-                    'double': 'd', 'triple': 't', 'treble': 't', 'bull': 'b', 'bullseye': 'b'
-                };
-                Object.keys(map).forEach(k => { norm = norm.replace(new RegExp(k, 'g'), map[k]); });
-                const parts = norm.split(' ');
-                let mul = 1;
-                for(let part of parts) {
-                    if(part === 'd') { mul=2; continue; }
-                    if(part === 't') { mul=3; continue; }
-                    if(part.includes('b')) { Game.processThrow(part==='b'?25:50, part==='b'?1:2, "Bull"); mul=1; continue; }
-                    const val = parseInt(part);
-                    if(!isNaN(val) && val <= 20) {
-                        const lbl = (mul===1?"Single ":mul===2?"Double ":"Triple ") + val;
-                        Game.processThrow(val*mul, mul, lbl);
-                        mul = 1;
-                    }
-                }
             }
         };
     </script>
