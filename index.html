@@ -170,6 +170,13 @@
             <span class="font-bold text-xl tracking-tight text-white">Darts<span class="text-purple-400">OS</span></span>
         </div>
         <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-slate-600">
+                <button onclick="Game.cycleMicMode()" class="px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-white/10 text-slate-400 flex items-center gap-2 transition" id="btn-mic-header-desk">
+                    <span>🎙️</span> <span id="lbl-mic-header-desk">OFF</span>
+                </button>
+                <button onclick="App.toggleInfo()" class="w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-[10px] font-bold text-slate-300 transition" title="Voice Help">?</button>
+            </div>
+            <div class="w-px h-6 bg-white/10 mx-1"></div>
             <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2"><span>Undo</span></button>
             <button onclick="App.toggleStats()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-cyan-400">Stats</button>
             <button onclick="App.openSettings()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-blue-400">Settings</button>
@@ -180,6 +187,10 @@
         <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
         <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
         <div class="flex gap-2">
+            <div class="flex items-center glass-panel p-1 rounded-lg gap-1">
+                <button onclick="Game.cycleMicMode()" class="p-1 px-2 rounded text-slate-400" id="btn-mic-header-mob">🎙️</button>
+                <button onclick="App.toggleInfo()" class="w-6 h-6 flex items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-slate-300">?</button>
+            </div>
             <button onclick="Game.undo()" class="glass-panel p-2 rounded-lg text-amber-400">↩️</button>
             <button onclick="App.toggleStats()" class="glass-panel p-2 rounded-lg text-cyan-400">📊</button>
             <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
@@ -232,6 +243,7 @@
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center font-bold text-sm border border-white/10">P<span id="mob-p-num">1</span></div>
                         <span class="font-bold text-base opacity-90" id="mob-p-name">Player 1</span>
+                        <button onclick="App.openSettings()" class="ml-2 text-xs opacity-50 p-1 hover:opacity-100">✏️</button>
                     </div>
                     <div class="bg-black/20 px-2 py-0.5 rounded text-xs font-mono font-bold border border-white/10" id="mob-legs">Legs: 0</div>
                 </div>
@@ -301,13 +313,15 @@
                         <div class="text-4xl mb-4">🎙️</div>
                         <h3 class="text-xl font-bold mb-2">Voice Control</h3>
                         <p class="text-sm text-slate-400 mb-6">"Triple 20", "Undo", "Next Turn"</p>
+                        <div class="p-4 rounded-lg bg-white/5 border border-white/10 text-sm text-left space-y-2">
+                            <p><strong>Commands:</strong></p>
+                            <ul class="list-disc pl-4 text-slate-300">
+                                <li>"Double 16", "25", "Bullseye"</li>
+                                <li>"Next Turn", "Undo", "Correction"</li>
+                                <li>"Score" (Reads current score)</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-4">
-                        <button onclick="Game.setMicMode('single')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Single Throw</button>
-                        <button onclick="Game.setMicMode('turn')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Full Turn (3)</button>
-                        <button onclick="Game.setMicMode('always')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Always On</button>
-                    </div>
-                    <button onclick="Game.stopMic()" class="mt-4 py-3 rounded-xl bg-red-900/30 text-red-400 border border-red-900/50 font-bold text-sm">Stop Microphone</button>
                 </div>
             </div>
         </div>
@@ -319,19 +333,6 @@
                 <!-- Player List Container -->
                 <div id="desktop-player-list" class="flex flex-col gap-4">
                     <!-- Dynamic content generated by UI.render -->
-                </div>
-
-                <!-- Voice Controls -->
-                <div class="glass-panel rounded-2xl p-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Voice Controls</h3>
-                        <div class="text-xs text-slate-500 font-mono" id="desk-mic-status">OFF</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button onclick="Game.setMicMode('single')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Single</button>
-                        <button onclick="Game.setMicMode('turn')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Turn</button>
-                        <button onclick="Game.setMicMode('always')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Always</button>
-                    </div>
                 </div>
 
                 <!-- Game Log -->
@@ -400,6 +401,60 @@
                 </div>
                 <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-slate-700 text-white font-bold mt-2">Close</button>
             </div>
+        </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div id="info-modal" class="absolute inset-0 z-[85] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-lg border-slate-700 max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Voice Commands & Help</h2>
+                <button onclick="App.toggleInfo()" class="text-2xl text-slate-400 hover:text-white">✕</button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-indigo-400 text-sm font-bold uppercase tracking-widest mb-3 border-b border-indigo-500/30 pb-1">Microphone Modes</h3>
+                    <div class="grid gap-3">
+                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-blue-400 text-sm">SINGLE</span>
+                                <span class="text-[10px] bg-blue-900/50 text-blue-200 px-2 py-0.5 rounded">Click 1x</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Mic turns off automatically after recognizing one valid score. Best for noisy rooms.</p>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-orange-400 text-sm">TURN</span>
+                                <span class="text-[10px] bg-orange-900/50 text-orange-200 px-2 py-0.5 rounded">Click 2x</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Mic stays on for 3 darts (one full turn), then turns off.</p>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-red-400 text-sm">ALWAYS</span>
+                                <span class="text-[10px] bg-red-900/50 text-red-200 px-2 py-0.5 rounded">Click 3x</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Mic stays on indefinitely until you manually turn it off.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-emerald-400 text-sm font-bold uppercase tracking-widest mb-3 border-b border-emerald-500/30 pb-1">Voice Commands</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"Triple 20"</span> <span>Scores 60 points. Works for Single, Double, Triple.</span></li>
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"25"</span> <span>Scores Outer Bull (Green).</span></li>
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"Bullseye"</span> <span>Scores Inner Bull (Red, 50).</span></li>
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"Undo"</span> <span>Removes the last dart thrown.</span></li>
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"Correction"</span> <span>Same as Undo. Useful if it misheard you.</span></li>
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"Next Turn"</span> <span>Ends current player's turn.</span></li>
+                        <li class="flex gap-3"><span class="text-white font-mono w-24 shrink-0">"Score"</span> <span>Reads out your current remaining score.</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button onclick="App.toggleInfo()" class="w-full mt-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition">Got it</button>
         </div>
     </div>
 
@@ -799,6 +854,12 @@
                 this.micMode = m; if(this.isListening) this.recognition.stop();
                 setTimeout(() => this.startMic(), 100);
             },
+            cycleMicMode: function() {
+                const modes = ['off', 'single', 'turn', 'always'];
+                const currentIdx = modes.indexOf(this.micMode);
+                const nextMode = modes[(currentIdx + 1) % modes.length];
+                this.setMicMode(nextMode);
+            },
             startMic: function() { if(!this.isListening && this.recognition) try{this.recognition.start()}catch(e){} },
             stopMic: function() { this.micMode = 'off'; if(this.recognition) this.recognition.stop(); },
             
@@ -965,7 +1026,10 @@
                     card.innerHTML = `
                         <div class="absolute top-[-10px] right-[-10px] opacity-10 text-8xl font-black select-none z-0">${idx+1}</div>
                         <div class="flex justify-between items-start relative z-10">
-                            <h2 class="font-bold text-slate-200 text-lg uppercase tracking-widest">${name}</h2>
+                            <h2 class="font-bold text-slate-200 text-lg uppercase tracking-widest flex items-center group">
+                                ${name}
+                                <button onclick="App.openSettings()" class="ml-2 opacity-0 group-hover:opacity-100 transition text-sm" title="Edit Names">✏️</button>
+                            </h2>
                             <div class="text-xs font-mono font-bold text-slate-400">LEGS <span class="text-white bg-slate-800 px-2 py-1 rounded">${Game.legs[idx]}</span></div>
                         </div>
                         ${cricketHtml}
@@ -993,6 +1057,19 @@
                 
                 // Update Settings Inputs if modal open
                 if(!document.getElementById('settings-modal').classList.contains('hidden')) this.renderSettingsInputs();
+                
+                // Update Header Mic UI
+                this.updateMicUI(Game.micMode !== 'off', Game.micMode);
+            },
+            renderLog: function() {
+                const rev = [...Game.gameLog].reverse();
+                const mkLog = (arr) => arr.map(l => `<div class="py-1 border-b border-white/5">${l}</div>`).join('');
+                
+                const deskLog = document.getElementById('desktop-game-log');
+                if(deskLog) deskLog.innerHTML = mkLog(rev);
+                
+                const mobLog = document.getElementById('mobile-game-log');
+                if(mobLog) mobLog.innerHTML = mkLog(rev);
             },
             drawMarker: function(x, y, player) {
                 const m = document.createElement('div');
@@ -1000,12 +1077,6 @@
                 m.style.left = x + 'px';
                 m.style.top = y + 'px';
                 document.body.appendChild(m);
-            },
-            renderLog: function() {
-                const rev = [...Game.gameLog].reverse();
-                const mkLog = (arr) => arr.map(l => `<div class="py-1 border-b border-white/5">${l}</div>`).join('');
-                document.getElementById('desktop-game-log').innerHTML = mkLog(rev);
-                document.getElementById('mobile-game-log').innerHTML = mkLog(rev);
             },
             updateSettingsUI: function() {
                 const doBtn = document.getElementById('btn-do');
@@ -1031,9 +1102,26 @@
                 });
             },
             updateMicUI: function(active, mode) {
-                const status = document.getElementById('desk-mic-status');
-                if(active) { status.textContent = `${mode.toUpperCase()} ON`; status.classList.add('text-red-400'); } 
-                else { status.textContent = "OFF"; status.classList.remove('text-red-400'); }
+                const btnDesk = document.getElementById('btn-mic-header-desk');
+                const lblDesk = document.getElementById('lbl-mic-header-desk');
+                const btnMob = document.getElementById('btn-mic-header-mob');
+                
+                let text = "OFF";
+                let colorClass = "text-slate-400";
+                
+                if (mode === 'single') { text = "SINGLE"; colorClass = "text-blue-400"; }
+                else if (mode === 'turn') { text = "TURN"; colorClass = "text-orange-400"; }
+                else if (mode === 'always') { text = "ALWAYS"; colorClass = "text-red-400"; }
+                
+                // Clear old colors
+                const colors = ["text-slate-400", "text-blue-400", "text-orange-400", "text-red-400"];
+                btnDesk.classList.remove(...colors);
+                btnMob.classList.remove(...colors);
+                
+                // Set new state
+                btnDesk.classList.add(colorClass);
+                btnMob.classList.add(colorClass);
+                lblDesk.textContent = text;
             },
             renderStats: function() {
                 const container = document.getElementById('stats-container');
@@ -1205,6 +1293,14 @@
                 const el = document.getElementById('stats-modal');
                 if(el.classList.contains('hidden')) { 
                     UI.renderStats();
+                    el.classList.remove('hidden'); el.classList.add('flex'); 
+                } else { 
+                    el.classList.add('hidden'); el.classList.remove('flex'); 
+                }
+            },
+            toggleInfo: function() {
+                const el = document.getElementById('info-modal');
+                if(el.classList.contains('hidden')) { 
                     el.classList.remove('hidden'); el.classList.add('flex'); 
                 } else { 
                     el.classList.add('hidden'); el.classList.remove('flex'); 
