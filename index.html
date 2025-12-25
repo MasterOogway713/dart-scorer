@@ -11,18 +11,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700;800&family=Oswald:wght@500;700&display=swap');
 
         :root {
-            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-bg: rgba(15, 23, 42, 0.65);
             --glass-border: rgba(255, 255, 255, 0.1);
             --active-card-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(185, 28, 28, 0.9));
         }
 
-        html, body { 
-            height: 100%; 
-            width: 100%; 
-            margin: 0; 
-            padding: 0; 
-            overflow: hidden; 
-        }
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; overflow: hidden; }
 
         body {
             font-family: 'Space Grotesk', sans-serif;
@@ -39,8 +33,7 @@
         .font-condensed { font-family: 'Oswald', sans-serif; }
 
         .glass-panel {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             background-color: var(--glass-bg);
             border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
@@ -48,8 +41,7 @@
 
         .mobile-card {
             @apply glass-panel;
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
+            border-radius: 1.5rem; transition: all 0.3s ease;
         }
         .mobile-card.active {
             background: var(--active-card-bg);
@@ -59,11 +51,8 @@
 
         .dartboard-segment { transition: opacity 0.1s; cursor: pointer; stroke: #94a3b8; stroke-width: 1px; }
         .dartboard-segment:hover, .dartboard-segment.hover-highlight { 
-            opacity: 1; 
-            stroke: #fff; 
-            stroke-width: 3px; 
-            filter: brightness(1.5) drop-shadow(0 0 4px rgba(255,255,255,0.5)); 
-            z-index: 100;
+            opacity: 1; stroke: #fff; stroke-width: 3px; 
+            filter: brightness(1.5) drop-shadow(0 0 4px rgba(255,255,255,0.5)); z-index: 100;
         }
         .dartboard-text { font-family: 'JetBrains Mono'; font-weight: 800; fill: #fff; pointer-events: none; text-anchor: middle; dominant-baseline: middle; font-size: 32px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
@@ -71,14 +60,9 @@
         @keyframes pulse-gold { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         .keypad-btn {
-            background: rgba(255,255,255,0.03);
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.8rem;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 0.75rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.1s;
+            background: rgba(255,255,255,0.03); font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: white;
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 0.75rem;
+            display: flex; align-items: center; justify-content: center; transition: background 0.1s;
         }
         .keypad-btn:active { background: rgba(255,255,255,0.15); }
 
@@ -93,17 +77,11 @@
         }
         @keyframes ping { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
 
-        /* Magnifier */
         #magnifier {
             position: fixed; pointer-events: none; z-index: 9999;
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.9);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            background: #0f172a;
-            display: none;
-            transform: translate(-50%, -130%);
+            width: 140px; height: 140px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.9);
+            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background: #0f172a;
+            display: none; transform: translate(-50%, -130%);
         }
         #magnifier svg { width: 100%; height: 100%; display: block; }
 
@@ -116,10 +94,12 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
         
+        .cricket-row { display: flex; justify-content: space-between; font-family: 'JetBrains Mono'; font-size: 0.75rem; margin-top: 2px; }
+        .cricket-mark { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .cricket-closed { background: #22c55e; color: #000; }
+        
         @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         .mic-btn-active { animation: pulse-red 2s infinite; background-color: #b91c1c !important; border-color: #ef4444 !important; color: white !important; }
     </style>
@@ -131,22 +111,18 @@
     
     <div id="magnifier"></div>
 
-    <!-- DESKTOP HEADER -->
+    <!-- HEADER -->
     <header class="hidden lg:flex glass-panel sticky top-0 z-40 h-16 items-center justify-between px-6 border-b-0 border-b-slate-700/50 rounded-b-2xl mx-4 mt-2 shrink-0">
         <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition" onclick="App.setView('dashboard')">
             <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">D</div>
             <span class="font-bold text-xl tracking-tight text-white">Darts<span class="text-purple-400">OS</span></span>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
-                <span>Undo</span>
-            </button>
+            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2"><span>Undo</span></button>
             <button onclick="App.openSettings()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-blue-400">Settings</button>
         </div>
     </header>
 
-    <!-- MOBILE HEADER -->
     <header class="lg:hidden flex items-center justify-between p-4 z-40 shrink-0 bg-transparent">
         <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
         <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
@@ -163,8 +139,7 @@
             <div class="min-h-full flex flex-col items-center justify-center p-6">
                 <div class="glass-panel p-8 rounded-3xl w-full max-w-4xl flex flex-col items-center border-slate-700/50">
                     <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-tight text-center">Select Game</h1>
-                    <p class="text-slate-400 mb-10 text-center">Touch & Voice Scoring</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-10">
                         <button onclick="App.startGame('x01')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
                             <div class="text-5xl group-hover:scale-110 transition">🎯</div>
                             <h3 class="text-xl font-bold text-white">X01</h3>
@@ -195,18 +170,20 @@
                     </div>
                     <div class="bg-black/20 px-2 py-0.5 rounded text-xs font-mono font-bold border border-white/10" id="mob-legs">Legs: 0</div>
                 </div>
-                <div class="flex justify-between items-end mt-1">
+                <!-- Score / Content Area -->
+                <div class="flex justify-between items-end mt-1 mb-1">
                     <div class="font-condensed text-[5.5rem] leading-[0.85] font-bold tracking-tighter drop-shadow-md" id="mob-score">501</div>
                     <div class="flex flex-col items-end gap-1 mb-2">
                         <div class="bg-black/30 backdrop-blur rounded px-2 py-1 text-[10px] font-bold border border-white/10" id="mob-last">Last: -</div>
                     </div>
                 </div>
+                <!-- Cricket Grid Container (Hidden by default) -->
+                <div id="mob-cricket-grid" class="hidden flex-col gap-1 mb-2"></div>
+
                 <div class="flex justify-between text-[10px] font-bold opacity-80 mt-2 pt-3 border-t border-white/20">
                     <div class="flex flex-col">
                         <span class="opacity-60 uppercase">Turn</span>
-                        <div class="flex gap-1 items-center" id="mob-turn-score">
-                            <span class="opacity-50">0</span>
-                        </div>
+                        <div class="flex gap-1 items-center" id="mob-turn-score"><span class="opacity-50">0</span></div>
                     </div>
                     <div class="flex flex-col items-end">
                         <span class="opacity-60 uppercase">Darts</span>
@@ -216,7 +193,7 @@
             </div>
 
             <div class="flex justify-between items-center px-1">
-                <div class="font-condensed text-lg font-bold text-amber-400 uppercase tracking-wide">Your Turn</div>
+                <div class="font-condensed text-lg font-bold text-amber-400 uppercase tracking-wide" id="mob-status">Your Turn</div>
                 <div class="text-xs text-slate-300 font-mono bg-white/5 px-2 py-1 rounded" id="mob-suggestion">Checkout: -</div>
             </div>
 
@@ -227,7 +204,6 @@
             </div>
 
             <div class="flex-grow relative overflow-hidden rounded-2xl glass-panel border-slate-700/30">
-                <!-- Mobile Keypad -->
                 <div id="mob-tab-keypad" class="mobile-tab-content active flex-col h-full p-3 gap-2">
                     <div class="h-12 flex items-center justify-between px-3 bg-black/20 rounded-xl border border-white/5 mb-1">
                         <div class="text-xl font-mono font-bold text-white/90" id="mob-input-display">Enter score</div>
@@ -248,16 +224,12 @@
                         <button class="keypad-btn text-sm font-bold text-red-400" onclick="Game.clearInput()">DEL</button>
                     </div>
                 </div>
-
-                <!-- Mobile Board -->
                 <div id="mob-tab-board" class="mobile-tab-content flex-col h-full relative">
-                    <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20" id="mob-darts-strip">
+                    <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20">
                         <div class="text-slate-500 text-xs italic">Touch & Hold to Zoom</div>
                     </div>
                     <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container" style="touch-action: none;"></div>
                 </div>
-
-                <!-- Mobile Voice -->
                 <div id="mob-tab-voice" class="mobile-tab-content flex-col h-full p-6 justify-center gap-6">
                     <div class="text-center">
                         <div class="text-4xl mb-4">🎙️</div>
@@ -278,6 +250,7 @@
         <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
             <!-- Left Panel -->
             <div class="flex-grow flex flex-col gap-6 w-5/12 overflow-y-auto custom-scroll p-2 min-h-0">
+                <!-- P1 -->
                 <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
                     <div class="flex justify-between items-start relative z-10">
@@ -286,6 +259,9 @@
                         </h2>
                         <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p1-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
                     </div>
+                    <!-- Cricket Grid Desk -->
+                    <div id="desk-p1-cricket" class="hidden grid-cols-7 gap-1 mt-2 mb-2 relative z-10"></div>
+                    
                     <div class="flex justify-between items-end mt-4 relative z-10">
                         <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
                         <div class="text-right">
@@ -295,6 +271,7 @@
                     </div>
                 </div>
 
+                <!-- P2 -->
                 <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">2</div>
                     <div class="flex justify-between items-start relative z-10">
@@ -303,6 +280,9 @@
                         </h2>
                         <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p2-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
                     </div>
+                    <!-- Cricket Grid Desk -->
+                    <div id="desk-p2-cricket" class="hidden grid-cols-7 gap-1 mt-2 mb-2 relative z-10"></div>
+
                     <div class="flex justify-between items-end mt-4 relative z-10">
                         <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
                         <div class="text-right">
@@ -328,9 +308,7 @@
                 <!-- Game Log -->
                 <div class="glass-panel rounded-2xl p-4 flex-grow flex flex-col overflow-hidden min-h-[150px]">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-700 pb-2">Game Log</h3>
-                    <div id="desktop-game-log" class="overflow-y-auto custom-scroll flex-grow font-mono text-xs space-y-1 text-slate-300">
-                        <div class="opacity-50 italic">Game Started</div>
-                    </div>
+                    <div id="desktop-game-log" class="overflow-y-auto custom-scroll flex-grow font-mono text-xs space-y-1 text-slate-300"></div>
                 </div>
             </div>
 
@@ -357,10 +335,9 @@
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <button onclick="Game.manualEditScore()" class="col-span-2 p-4 rounded bg-amber-600/20 text-amber-400 font-bold hover:bg-amber-600/30 border border-amber-600/50 flex items-center justify-center gap-2">
-                        <span>✏️</span> Manually Edit Score
+                        <span>✏️</span> Edit Current Score
                     </button>
-                    <button onclick="Game.setStartScore(501); App.closeSettings()" class="p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">New 501</button>
-                    <button onclick="Game.setStartScore(301); App.closeSettings()" class="p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">New 301</button>
+                    <button onclick="App.startGame(Game.mode); App.closeSettings()" class="col-span-2 p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">Restart Game</button>
                 </div>
                 <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-indigo-600 text-white font-bold mt-4">Close</button>
             </div>
@@ -380,7 +357,7 @@
         <div class="text-8xl mb-6 animate-bounce">🏆</div>
         <h1 id="winner-name" class="text-4xl md:text-6xl font-black text-white mb-2">Player 1 Wins!</h1>
         <div class="flex gap-4 mt-8">
-             <button onclick="location.reload()" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold">New Game</button>
+             <button onclick="App.startGame(Game.mode)" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold">Play Again</button>
         </div>
     </div>
 
@@ -389,37 +366,71 @@
         const Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1}};
 
         const Game = {
-            scores: [501, 501], legs: [0, 0], currentPlayer: 0,
+            mode: 'x01', scores: [501, 501], legs: [0, 0], currentPlayer: 0,
             turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false },
             historyStack: [], inputBuffer: '', settings: { startScore: 501 },
             micMode: 'off', recognition: null, isListening: false, gameLog: [],
+            cricket: [[], []], atc: [1, 1],
 
-            init: function(startScore) {
-                this.settings.startScore = startScore || 501;
-                this.scores = [this.settings.startScore, this.settings.startScore];
-                this.legs = [0, 0]; this.currentPlayer = 0;
-                this.gameLog = [];
+            init: function(mode) {
+                this.mode = mode || 'x01';
+                this.legs = [0, 0]; this.currentPlayer = 0; this.gameLog = [];
+                this.cricket = [ // Player 1 & 2 Map: 20,19,18,17,16,15,25(B)
+                    {20:0,19:0,18:0,17:0,16:0,15:0,25:0}, {20:0,19:0,18:0,17:0,16:0,15:0,25:0}
+                ];
+                this.atc = [1, 1]; // Current target for P1, P2
+                
+                let start = 501;
+                if(mode === '301') { this.mode='x01'; start=301; }
+                else if(mode === 'x01') start=501;
+                else if(mode === 'cricket') start=0; 
+                else if(mode === 'atc') start=1; // Display target
+
+                this.settings.startScore = start;
+                this.scores = [start, start];
+                
                 this.resetTurn();
-                Confetti.init(); AudioEngine.init(); 
-                this.initMic();
-                document.getElementById('desktop-game-log').innerHTML = '<div class="opacity-50 italic">Game Started</div>';
-                document.getElementById('mobile-game-log').innerHTML = '<div class="opacity-50 italic">Game Started</div>';
+                Confetti.init(); AudioEngine.init(); this.initMic();
+                document.getElementById('winner-modal').classList.add('hidden');
+                document.getElementById('winner-modal').classList.remove('flex');
+                this.logAction(`Game Started: ${this.mode.toUpperCase()}`);
                 UI.render();
             },
             resetTurn: function() {
-                this.turn = { dartsThrown: 0, score: 0, history: [], darts: [], startScore: this.scores[this.currentPlayer], bust: false, won: false };
+                let start = this.scores[this.currentPlayer];
+                // For ATC, start score is just the target, doesn't revert on bust usually
+                this.turn = { dartsThrown: 0, score: 0, history: [], darts: [], startScore: start, bust: false, won: false };
             },
             processThrow: function(points, multiplier, label) {
                 if(this.turn.won || this.turn.bust || this.turn.dartsThrown >= 3) return;
                 this.saveState();
-                if(points === 0) AudioEngine.playTone(150, 'sawtooth', 0.1);
-                else if(multiplier === 3) AudioEngine.playTriple();
-                else if(multiplier === 2) AudioEngine.playDouble();
-                else AudioEngine.playHit();
                 
+                // Sound
+                if(points===0) AudioEngine.playTone(150,'sawtooth',0.1);
+                else if(multiplier===3) AudioEngine.playTriple();
+                else if(multiplier===2) AudioEngine.playDouble();
+                else AudioEngine.playHit();
+
+                // Logic Branch
+                if(this.mode === 'x01') this.handleX01(points, multiplier, label);
+                else if(this.mode === 'cricket') this.handleCricket(points, multiplier, label);
+                else if(this.mode === 'atc') this.handleATC(points, multiplier, label);
+
+                // 180 FX
+                if(this.turn.history.length === 3 && this.turn.history.every(h => h.includes("Triple 20"))) {
+                    document.getElementById('one80-overlay').classList.remove('hidden');
+                    AudioEngine.play180();
+                    setTimeout(() => document.getElementById('one80-overlay').classList.add('hidden'), 2000);
+                }
+
+                UI.render();
+                // Auto next turn
+                if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
+            },
+            handleX01: function(points, mul, label) {
                 const rem = this.scores[this.currentPlayer] - points;
                 let bust = false;
-                const isDouble = multiplier === 2 || label.includes("Bullseye");
+                const isDouble = mul === 2 || label.includes("Bullseye");
                 if (rem < 0 || rem === 1 || (rem === 0 && !isDouble)) bust = true;
 
                 if(bust) {
@@ -436,50 +447,128 @@
                     this.logAction(`P${this.currentPlayer+1}: ${label} (${points})`);
                     if(rem === 0) this.winLeg();
                 }
-                
-                if(this.turn.history.length === 3 && this.turn.history.every(h => h.includes("Triple 20"))) {
-                    document.getElementById('one80-overlay').classList.remove('hidden');
-                    AudioEngine.play180();
-                    setTimeout(() => document.getElementById('one80-overlay').classList.add('hidden'), 2000);
-                }
-
-                UI.render();
-                if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
             },
-            saveState: function() { this.historyStack.push(JSON.parse(JSON.stringify({ s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs, log: this.gameLog }))); },
+            handleCricket: function(points, mul, label) {
+                // Segment ID: 20..15, 25 (Bull)
+                // points is total (e.g. 60). We need segment.
+                let seg = 0;
+                if(label.includes('Bull')) seg = 25;
+                else if(points > 0) seg = points / mul;
+
+                this.turn.dartsThrown++;
+                this.turn.history.push(label);
+                this.turn.darts.push(label.split(' ')[0][0] + seg); // Show like T20, S19
+
+                if([20,19,18,17,16,15,25].includes(seg)) {
+                    const p = this.currentPlayer;
+                    const opp = p===0?1:0;
+                    const hits = this.cricket[p][seg];
+                    let scoreToAdd = 0;
+
+                    // Add hits
+                    let newHits = hits + mul;
+                    if(hits < 3) {
+                        // Opening logic
+                        if(newHits > 3) {
+                            // Overflow
+                            if(this.cricket[opp][seg] < 3) {
+                                scoreToAdd = (newHits - 3) * seg;
+                            }
+                            this.cricket[p][seg] = 3; // Closed
+                        } else {
+                            this.cricket[p][seg] = newHits;
+                        }
+                    } else {
+                        // Already closed, scoring
+                        if(this.cricket[opp][seg] < 3) {
+                            scoreToAdd = mul * seg;
+                        }
+                    }
+                    
+                    if(scoreToAdd > 0) {
+                        this.scores[p] += scoreToAdd;
+                        this.turn.score += scoreToAdd;
+                        this.logAction(`P${p+1} Scored ${scoreToAdd} on ${seg==25?'Bull':seg}`);
+                    } else {
+                        this.logAction(`P${p+1} Hit ${label}`);
+                    }
+                    // Win Check
+                    const allClosed = [20,19,18,17,16,15,25].every(k => this.cricket[p][k] >= 3);
+                    if(allClosed && this.scores[p] >= this.scores[opp]) this.winLeg();
+
+                } else {
+                    this.logAction(`P${p+1} Miss/Null (${label})`);
+                }
+            },
+            handleATC: function(points, mul, label) {
+                const target = this.atc[this.currentPlayer];
+                // Derive segment
+                let seg = 0;
+                if(label.includes('Bull')) seg = 25; // Treat Bullseye/Outer same for ATC target
+                else if(points > 0) seg = points / mul;
+
+                this.turn.dartsThrown++;
+                this.turn.history.push(label);
+                this.turn.darts.push(points > 0 ? seg : 0);
+
+                let hit = false;
+                // Target is 1..20. Then 25 (Bull)
+                if(target <= 20 && seg === target) hit = true;
+                else if(target === 25 && seg === 25) hit = true; // Bull needed
+
+                if(hit) {
+                    AudioEngine.playDouble(); // Success sound
+                    this.logAction(`P${this.currentPlayer+1} Hit Target ${target}!`);
+                    if(target === 25) {
+                        this.scores[this.currentPlayer] = "WIN";
+                        this.winLeg();
+                    } else {
+                        this.atc[this.currentPlayer] = (target === 20) ? 25 : target + 1;
+                        this.scores[this.currentPlayer] = this.atc[this.currentPlayer] === 25 ? "BULL" : this.atc[this.currentPlayer];
+                    }
+                } else {
+                    this.logAction(`P${this.currentPlayer+1} Missed Target ${target} (${label})`);
+                }
+            },
+            saveState: function() { 
+                this.historyStack.push(JSON.parse(JSON.stringify({ 
+                    s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs, 
+                    log: this.gameLog, crick: this.cricket, atc: this.atc 
+                }))); 
+            },
             undo: function() {
                 if(this.historyStack.length === 0) return;
                 const st = this.historyStack.pop();
                 this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l; this.gameLog = st.log;
+                if(st.crick) this.cricket = st.crick;
+                if(st.atc) this.atc = st.atc;
                 UI.render(); UI.renderLog(); AudioEngine.speak("Undo");
             },
             manualEditScore: function() {
                 App.closeSettings();
                 const current = this.scores[this.currentPlayer];
-                const input = prompt(`Edit Player ${this.currentPlayer + 1} Score manually.\nCurrent: ${current}`, current);
+                const input = prompt(`Edit P${this.currentPlayer + 1} Score/Target.\nCurrent: ${current}`, current);
                 if(input !== null) {
                     const val = parseInt(input);
-                    if(!isNaN(val) && val >= 0) {
+                    // For ATC/Cricket allow raw edits
+                    if(val || val === 0) {
                         this.saveState();
                         this.scores[this.currentPlayer] = val;
-                        // Reset turn stats to prevent math conflicts
-                        this.turn.dartsThrown = 0; this.turn.score = 0; this.turn.startScore = val; this.turn.history = []; this.turn.darts = [];
+                        if(this.mode === 'atc') this.atc[this.currentPlayer] = val;
+                        this.turn.dartsThrown = 0; this.turn.score = 0; this.turn.history = []; this.turn.darts = [];
                         this.logAction(`Manual Edit: P${this.currentPlayer+1} set to ${val}`);
                         UI.render();
                     }
                 }
             },
-            logAction: function(msg) {
-                this.gameLog.push(msg);
-                UI.renderLog();
-            },
+            logAction: function(msg) { this.gameLog.push(msg); UI.renderLog(); },
             winLeg: function() {
                 this.turn.won = true; this.legs[this.currentPlayer]++;
                 AudioEngine.playWin(); Confetti.start();
                 this.stopMic();
-                setTimeout(() => { 
-                    if(confirm("Player " + (this.currentPlayer+1) + " Wins! New Game?")) Game.init(Game.settings.startScore); 
-                }, 1000);
+                document.getElementById('winner-name').textContent = `Player ${this.currentPlayer + 1} Wins!`;
+                document.getElementById('winner-modal').classList.remove('hidden');
+                document.getElementById('winner-modal').classList.add('flex');
             },
             nextTurn: function() {
                 this.currentPlayer = this.currentPlayer === 0 ? 1 : 0;
@@ -499,14 +588,13 @@
                 if(!isNaN(val)) {
                     let mul = 1; let lbl = "Single " + val;
                     if(val === 50) { mul=2; lbl="Bullseye"; }
+                    else if(val === 25) { mul=1; lbl="Outer Bull"; }
                     else if(val > 60) { mul=3; lbl="Total " + val; }
                     
-                    if(val > 60 || this.turn.dartsThrown === 0) {
+                    if((val > 60 || this.turn.dartsThrown === 0) && this.mode === 'x01') {
+                        // Bulk input for X01
                         this.processThrow(val, mul, lbl);
-                        if(this.turn.dartsThrown < 3) { 
-                             this.turn.dartsThrown = 3; 
-                             setTimeout(() => this.nextTurn(), 1000); 
-                        }
+                        if(this.turn.dartsThrown < 3) { this.turn.dartsThrown = 3; setTimeout(() => this.nextTurn(), 1000); }
                     } else {
                         this.processThrow(val, mul, lbl);
                     }
@@ -514,8 +602,6 @@
                 this.clearInput();
             },
             setStartScore: function(s) { this.init(s); },
-            
-            // --- Mic Logic ---
             initMic: function() {
                 if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) return;
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -577,56 +663,96 @@
         const UI = {
             render: function() {
                 const p = Game.currentPlayer;
-                const p1 = Game.scores[0], p2 = Game.scores[1];
+                const p1S = Game.scores[0], p2S = Game.scores[1];
                 
+                // Logic for Score Display vs Target Display
+                let p1D = p1S, p2D = p2S;
+                if(Game.mode === 'atc') {
+                    p1D = (p1S===25||p1S==="BULL") ? "BULL" : p1S;
+                    p2D = (p2S===25||p2S==="BULL") ? "BULL" : p2S;
+                }
+
+                // Render Cricket Grids
+                const renderCrick = (pid, elemId) => {
+                    if(Game.mode !== 'cricket') { document.getElementById(elemId).style.display = 'none'; return; }
+                    const el = document.getElementById(elemId);
+                    el.style.display = 'grid'; // Enable grid
+                    el.innerHTML = '';
+                    [20,19,18,17,16,15,25].forEach(k => {
+                        const hits = Game.cricket[pid][k];
+                        const sym = hits>=3 ? '⬤' : (hits===2 ? '╳' : (hits===1 ? '⟋' : '·'));
+                        const col = hits>=3 ? 'text-green-400' : 'text-slate-500';
+                        el.innerHTML += `<div class="flex flex-col items-center"><span class="text-[10px] text-slate-400">${k===25?'B':k}</span><span class="font-bold ${col}">${sym}</span></div>`;
+                    });
+                };
+                
+                // Mobile Updates
                 const card = document.getElementById('mob-active-card');
-                if (p === 0) { card.style.background = '#ef4444'; } else { card.style.background = '#3b82f6'; }
+                card.style.background = p===0 ? '#ef4444' : '#3b82f6';
                 document.getElementById('mob-p-num').textContent = p + 1;
                 document.getElementById('mob-p-name').textContent = `Player ${p+1}`;
-                document.getElementById('mob-score').textContent = Game.scores[p];
+                document.getElementById('mob-score').textContent = p===0 ? p1D : p2D;
+                document.getElementById('mob-score').style.fontSize = (typeof(p1D)==='string' && p1D.length>3) ? "3.5rem" : "5.5rem";
+                
                 document.getElementById('mob-legs').textContent = `Legs: ${Game.legs[p]}`;
                 document.getElementById('mob-darts').textContent = Game.turn.dartsThrown;
                 document.getElementById('mob-last').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : '-';
-                const check = this.getCheckout(Game.scores[p]);
-                document.getElementById('mob-suggestion').textContent = check ? `Checkout: ${check}` : "Score High";
                 
-                // Mob Darts
-                 const mobDartsHtml = Game.turn.darts.length > 0 ? 
-                    Game.turn.darts.map(d => `<div class="bg-white/20 rounded px-2 py-0.5 min-w-[2rem] text-center inline-flex items-center justify-center">${d}</div>`).join('') : 
-                    '<span class="opacity-50">0</span>';
+                let suggestion = "-";
+                if(Game.mode === 'x01') suggestion = this.getCheckout(Game.scores[p]) || "Score High";
+                else if(Game.mode === 'atc') suggestion = `Target: ${Game.scores[p]}`;
+                else if(Game.mode === 'cricket') suggestion = "Close 20-15 & Bull";
+                document.getElementById('mob-suggestion').textContent = suggestion;
+                
+                // Mobile Cricket Grid
+                const mobGrid = document.getElementById('mob-cricket-grid');
+                if(Game.mode === 'cricket') {
+                    mobGrid.style.display = 'flex';
+                    let html = `<div class="cricket-row text-white/50 border-b border-white/10 pb-1">`;
+                    [20,19,18,17,16,15,25].forEach(k => html += `<span>${k===25?'B':k}</span>`);
+                    html += `</div><div class="cricket-row font-bold text-lg">`;
+                    [20,19,18,17,16,15,25].forEach(k => {
+                        const hits = Game.cricket[p][k];
+                        html += `<span>${hits>=3 ? '⬤' : (hits===2 ? '╳' : (hits===1 ? '⟋' : '·'))}</span>`;
+                    });
+                    html += `</div>`;
+                    mobGrid.innerHTML = html;
+                } else {
+                    mobGrid.style.display = 'none';
+                }
+
+                // Darts display
+                const mobDartsHtml = Game.turn.darts.length > 0 ? 
+                    Game.turn.darts.map(d => `<div class="bg-white/20 rounded px-2 py-0.5 min-w-[2rem] text-center inline-flex items-center justify-center">${d}</div>`).join('') : '<span class="opacity-50">0</span>';
                 document.getElementById('mob-turn-score').innerHTML = mobDartsHtml;
 
-                document.getElementById('desk-p1-score').textContent = p1;
-                document.getElementById('desk-p2-score').textContent = p2;
+                // Desktop Updates
+                document.getElementById('desk-p1-score').textContent = p1D;
+                document.getElementById('desk-p2-score').textContent = p2D;
                 document.getElementById('desk-p1-legs').textContent = Game.legs[0];
                 document.getElementById('desk-p2-legs').textContent = Game.legs[1];
                 document.getElementById('desk-status').textContent = `Player ${p+1}'s Turn`;
                 
-                // Desk Darts
+                renderCrick(0, 'desk-p1-cricket');
+                renderCrick(1, 'desk-p2-cricket');
+
                 const deskDartsHtml = Game.turn.darts.length > 0 ? 
-                    Game.turn.darts.map(d => `<div class="bg-white/10 rounded-lg px-3 py-1 min-w-[3rem] text-center border border-white/5 shadow-inner text-2xl inline-flex items-center justify-center">${d}</div>`).join('') : 
-                    '<span class="opacity-50 text-2xl">0</span>';
+                    Game.turn.darts.map(d => `<div class="bg-white/10 rounded-lg px-3 py-1 min-w-[3rem] text-center border border-white/5 shadow-inner text-2xl inline-flex items-center justify-center">${d}</div>`).join('') : '<span class="opacity-50 text-2xl">0</span>';
                 document.getElementById('desk-turn-total').innerHTML = deskDartsHtml;
 
-                // Border Ring Logic - Red/Blue
                 const dP1 = document.getElementById('p1-card'), dP2 = document.getElementById('p2-card');
                 if(p===0) { 
-                    dP1.classList.add('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100'); 
-                    dP1.classList.remove('opacity-50');
-                    dP2.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100');
-                    dP2.classList.add('opacity-50');
+                    dP1.classList.add('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100'); dP1.classList.remove('opacity-50');
+                    dP2.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100'); dP2.classList.add('opacity-50');
                 } else { 
-                    dP2.classList.add('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100');
-                    dP2.classList.remove('opacity-50');
-                    dP1.classList.remove('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100');
-                    dP1.classList.add('opacity-50');
+                    dP2.classList.add('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100'); dP2.classList.remove('opacity-50');
+                    dP1.classList.remove('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100'); dP1.classList.add('opacity-50');
                 }
                 
                 document.querySelectorAll('.segment-highlight').forEach(el => el.classList.remove('segment-highlight'));
-                if(check) this.highlightCheckout(check);
+                if(Game.mode === 'x01' && this.getCheckout(Game.scores[p])) this.highlightCheckout(this.getCheckout(Game.scores[p]));
             },
             renderLog: function() {
-                // Reverse log for display so newest is at top
                 const rev = [...Game.gameLog].reverse();
                 const mkLog = (arr) => arr.map(l => `<div class="py-1 border-b border-white/5">${l}</div>`).join('');
                 document.getElementById('desktop-game-log').innerHTML = mkLog(rev);
@@ -634,24 +760,53 @@
             },
             updateMicUI: function(active, mode) {
                 const status = document.getElementById('desk-mic-status');
-                if(active) {
-                    status.textContent = `${mode.toUpperCase()} ON`; status.classList.add('text-red-400');
-                } else {
-                    status.textContent = "OFF"; status.classList.remove('text-red-400');
-                }
+                if(active) { status.textContent = `${mode.toUpperCase()} ON`; status.classList.add('text-red-400'); } 
+                else { status.textContent = "OFF"; status.classList.remove('text-red-400'); }
             },
             getCheckout: function(s) {
-                const c = { 170:"T20 T20 Bull", 160:"T20 T20 D20", 100:"T20 D20", 40:"D20", 32:"D16" };
+                if (s > 170 || s < 2) return "";
+                const c = {
+                    170: "T20 T20 Bull", 167: "T20 T19 Bull", 164: "T20 T18 Bull", 161: "T20 T17 Bull", 160: "T20 T20 D20",
+                    158: "T20 T20 D19", 157: "T20 T19 D20", 156: "T20 T20 D18", 155: "T20 T19 D19", 154: "T20 T18 D20",
+                    153: "T20 T19 D18", 152: "T20 T20 D16", 151: "T20 T17 D20", 150: "T20 T18 D18", 149: "T20 T19 D16",
+                    148: "T20 T16 D20", 147: "T20 T17 D18", 146: "T20 T18 D16", 145: "T20 T15 D20", 144: "T20 T20 D12",
+                    143: "T20 T17 D16", 142: "T20 T14 D20", 141: "T20 T19 D12", 140: "T20 T16 D16", 139: "T20 T13 D20",
+                    138: "T20 T18 D12", 137: "T19 T16 D16", 136: "T20 T20 D8", 135: "T20 T17 D12", 134: "T20 T14 D16",
+                    133: "T20 T19 D8", 132: "T20 T20 D6", 131: "T20 T13 D16", 130: "T20 T18 D8", 129: "T19 T16 D12",
+                    128: "T18 T14 D16", 127: "T20 T17 D8", 126: "T19 T19 D6", 125: "Bull T20 D20", 124: "T20 T16 D8",
+                    123: "T19 T16 D9", 122: "T18 T20 D4", 121: "T20 T15 D8", 120: "T20 20 D20", 119: "T19 T10 D16",
+                    118: "T20 18 D20", 117: "T20 17 D20", 116: "T20 16 D20", 115: "T20 15 D20", 114: "T20 14 D20",
+                    113: "T20 13 D20", 112: "T20 12 D20", 111: "T20 19 D16", 110: "T20 10 D20", 109: "T20 17 D16",
+                    108: "T20 16 D16", 107: "T19 10 D20", 106: "T20 14 D16", 105: "T20 13 D16", 104: "T18 10 D20",
+                    103: "T20 3 D20", 102: "T20 10 D16", 101: "T17 10 D20", 100: "T20 D20", 99: "T19 10 D16",
+                    98: "T20 D19", 97: "T19 D20", 96: "T20 D18", 95: "T19 D19", 94: "T18 D20",
+                    93: "T19 D18", 92: "T20 D16", 91: "T17 D20", 90: "T18 D18", 89: "T19 D16",
+                    88: "T16 D20", 87: "T17 D18", 86: "T18 D16", 85: "T15 D20", 84: "T20 D12",
+                    83: "T17 D16", 82: "T14 D20", 81: "T15 D18", 80: "T20 D10", 79: "T13 D20",
+                    78: "T18 D12", 77: "T19 D10", 76: "T20 D8", 75: "T17 D12", 74: "T14 D16",
+                    73: "T19 D8", 72: "T16 D12", 71: "T13 D16", 70: "T18 D8", 69: "T15 D12",
+                    68: "T20 D4", 67: "T17 D8", 66: "T10 D18", 65: "T19 D4", 64: "T16 D8",
+                    63: "T13 D12", 62: "T10 D16", 61: "T15 D8", 60: "20 D20", 59: "19 D20",
+                    58: "18 D20", 57: "17 D20", 56: "16 D20", 55: "15 D20", 54: "14 D20",
+                    53: "13 D20", 52: "12 D20", 51: "11 D20", 50: "Bull", 49: "9 D20",
+                    48: "16 D16", 47: "7 D20", 46: "6 D20", 45: "13 D16", 44: "4 D20",
+                    43: "3 D20", 42: "6 D18", 41: "9 D16", 40: "D20", 39: "7 D16",
+                    38: "D19", 37: "5 D16", 36: "D18", 35: "3 D16", 34: "D17",
+                    33: "1 D16", 32: "D16", 31: "15 D8", 30: "D15", 29: "13 D8",
+                    28: "D14", 27: "11 D8", 26: "D13", 25: "9 D8", 24: "D12",
+                    23: "7 D8", 22: "D11", 21: "5 D8", 20: "D10", 19: "3 D8",
+                    18: "D9", 17: "1 D8", 16: "D8", 15: "7 D4", 14: "D7",
+                    13: "5 D4", 12: "D6", 11: "3 D4", 10: "D5", 9: "1 D4",
+                    8: "D4", 7: "3 D2", 6: "D3", 5: "1 D2", 4: "D2",
+                    3: "1 D1", 2: "D1"
+                };
                 return c[s] || "";
             },
             highlightCheckout: function(str) {
-                let target = str.split(' ')[0];
-                let id = "";
+                let target = str.split(' ')[0]; let id = "";
                 if(target.startsWith('T')) id = `segment-t-${target.substring(1)}`;
                 else if(target.startsWith('D')) id = `segment-d-${target.substring(1)}`;
-                else if(target === 'Bull') id = 'segment-50';
-                else if(target === '25') id = 'segment-25';
-                else if(!isNaN(target)) id = `segment-s-${target}`;
+                else if(target === 'Bull') id = 'segment-50'; else if(target === '25') id = 'segment-25'; else if(!isNaN(target)) id = `segment-s-${target}`;
                 if(id) { const sel = `[id="${id}"]`; document.querySelectorAll(sel).forEach(el => el.classList.add('segment-highlight')); }
             }
         };
@@ -661,46 +816,33 @@
             closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
             toggleMobileLog: function() {
                 const el = document.getElementById('mobile-log-modal');
-                if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); }
-                else { el.classList.add('hidden'); el.classList.remove('flex'); }
+                if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); } else { el.classList.add('hidden'); el.classList.remove('flex'); }
             },
             setMobileTab: function(tab) {
                 document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
                 document.getElementById(`mob-tab-${tab}`).classList.add('active');
                 const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board'), btnV = document.getElementById('tab-btn-voice');
-                [btnK, btnB, btnV].forEach(b => {
-                    if(b) { b.classList.remove('bg-white/10', 'text-white'); b.classList.add('text-slate-400'); }
-                });
+                [btnK, btnB, btnV].forEach(b => { if(b) { b.classList.remove('bg-white/10', 'text-white'); b.classList.add('text-slate-400'); } });
                 const activeBtn = document.getElementById(`tab-btn-${tab}`);
                 if(activeBtn) { activeBtn.classList.add('bg-white/10', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
             },
             setView: function(v) {
-                document.getElementById('view-dashboard').classList.add('hidden'); 
-                document.getElementById('view-game-mobile').classList.add('hidden');
+                document.getElementById('view-dashboard').classList.add('hidden'); document.getElementById('view-game-mobile').classList.add('hidden');
                 document.getElementById('view-game-desktop').classList.remove('flex'); document.getElementById('view-game-desktop').classList.add('hidden');
-                
-                if(v === 'dashboard') {
-                    document.getElementById('view-dashboard').classList.remove('hidden');
-                } else {
-                    if(window.innerWidth < 1024) {
-                        document.getElementById('view-game-mobile').classList.remove('hidden');
-                        document.getElementById('view-game-mobile').classList.add('flex');
-                    } else {
-                        document.getElementById('view-game-desktop').classList.remove('hidden');
-                        document.getElementById('view-game-desktop').classList.add('flex');
-                    }
+                if(v === 'dashboard') document.getElementById('view-dashboard').classList.remove('hidden');
+                else {
+                    if(window.innerWidth < 1024) { document.getElementById('view-game-mobile').classList.remove('hidden'); document.getElementById('view-game-mobile').classList.add('flex'); }
+                    else { document.getElementById('view-game-desktop').classList.remove('hidden'); document.getElementById('view-game-desktop').classList.add('flex'); }
                 }
             },
-            startGame: function(mode) { this.setView('game'); Game.init(mode==='x01'?501:301); }
+            startGame: function(mode) { this.setView('game'); Game.init(mode); }
         };
 
         window.addEventListener('load', () => {
-            Dartboard.create('desk-board-container', 'dartboard-desk');
-            Dartboard.create('mob-board-container', 'dartboard-mob');
+            Dartboard.create('desk-board-container', 'dartboard-desk'); Dartboard.create('mob-board-container', 'dartboard-mob');
             App.setView('dashboard');
         });
 
-        // FIXED TOUCH ZOOM
         const TouchZoom = {
             timer: null, magnifier: document.getElementById('magnifier'), active: false,
             start: function(e, boardId) { this.active = true; this.timer = setTimeout(() => this.show(e, boardId), 200); },
@@ -714,29 +856,22 @@
                 }
             },
             show: function(e, boardId) {
-                this.magnifier.style.display = 'block';
-                const originalSvg = document.getElementById(boardId);
-                this.magnifier.innerHTML = ''; 
-                const clone = originalSvg.cloneNode(true);
+                this.magnifier.style.display = 'block'; const originalSvg = document.getElementById(boardId);
+                this.magnifier.innerHTML = ''; const clone = originalSvg.cloneNode(true);
                 clone.removeAttribute('id'); clone.style.width = '100%'; clone.style.height = '100%';
-                this.magnifier.appendChild(clone);
-                this.update(e, boardId);
+                this.magnifier.appendChild(clone); this.update(e, boardId);
             },
             update: function(e, boardId) {
-                const touch = e.touches[0] || e.changedTouches[0];
-                const rect = document.getElementById(boardId).getBoundingClientRect();
+                const touch = e.touches[0] || e.changedTouches[0]; const rect = document.getElementById(boardId).getBoundingClientRect();
                 this.magnifier.style.left = touch.clientX + 'px'; this.magnifier.style.top = (touch.clientY - 60) + 'px'; 
                 const svg = this.magnifier.querySelector('svg');
-                const perX = (touch.clientX - rect.left) / rect.width;
-                const perY = (touch.clientY - rect.top) / rect.height;
+                const perX = (touch.clientX - rect.left) / rect.width; const perY = (touch.clientY - rect.top) / rect.height;
                 if (svg) { svg.style.transformOrigin = `${perX * 100}% ${perY * 100}%`; svg.style.transform = 'scale(3)'; }
                 const el = document.elementFromPoint(touch.clientX, touch.clientY);
                 document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                const magSvg = this.magnifier.querySelector('svg');
-                if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
+                const magSvg = this.magnifier.querySelector('svg'); if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
                 if(el && el.classList.contains('dartboard-segment')) {
-                    el.classList.add('hover-highlight');
-                    const id = el.getAttribute('id');
+                    el.classList.add('hover-highlight'); const id = el.getAttribute('id');
                     if (id && magSvg) { const cloneEl = magSvg.querySelector(`[id="${id}"]`); if (cloneEl) cloneEl.classList.add('hover-highlight'); }
                 }
             }
@@ -750,7 +885,6 @@
                 container.addEventListener('touchstart', (e) => TouchZoom.start(e, svgId), {passive: false});
                 container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
                 container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
-
                 const sectors = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
                 const r = { do: 170, di: 162, to: 107, ti: 99, bo: 16, bi: 6 };
                 sectors.forEach((num, i) => {
@@ -762,8 +896,7 @@
                     const ta = (s+e)/2*Math.PI/180;
                     const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
                     txt.setAttribute("x", Math.cos(ta)*195); txt.setAttribute("y", Math.sin(ta)*195);
-                    txt.setAttribute("class", "dartboard-text"); txt.textContent = num;
-                    svg.appendChild(txt);
+                    txt.setAttribute("class", "dartboard-text"); txt.textContent = num; svg.appendChild(txt);
                 });
                 this.circ(svg, r.bo, "#22c55e", 25, "Outer Bull", "segment-25");
                 this.circ(svg, r.bi, "#ef4444", 50, "Bullseye", "segment-50");
