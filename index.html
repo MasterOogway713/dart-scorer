@@ -105,11 +105,7 @@
             display: none;
             transform: translate(-50%, -130%);
         }
-        #magnifier svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        #magnifier svg { width: 100%; height: 100%; display: block; }
 
         #one80-overlay { pointer-events: none; }
         .one80-text { font-size: 15vw; font-weight: 900; color: #facc15; text-shadow: 0 0 50px rgba(234, 179, 8, 0.8); animation: zoom-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -142,7 +138,10 @@
             <span class="font-bold text-xl tracking-tight text-white">Darts<span class="text-purple-400">OS</span></span>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2"><span>Undo</span></button>
+            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                <span>Undo</span>
+            </button>
             <button onclick="App.openSettings()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-blue-400">Settings</button>
         </div>
     </header>
@@ -151,12 +150,15 @@
     <header class="lg:hidden flex items-center justify-between p-4 z-40 shrink-0 bg-transparent">
         <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
         <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
-        <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
+        <div class="flex gap-2">
+            <button onclick="App.toggleMobileLog()" class="glass-panel p-2 rounded-lg text-slate-300">📋</button>
+            <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
+        </div>
     </header>
 
     <main id="main-container" class="flex-grow relative overflow-hidden flex flex-col h-full lg:p-6 lg:gap-6">
         
-        <!-- DASHBOARD - Fixed Scrolling -->
+        <!-- DASHBOARD -->
         <div id="view-dashboard" class="absolute inset-0 z-50 overflow-y-auto bg-[#020617] lg:bg-transparent">
             <div class="min-h-full flex flex-col items-center justify-center p-6">
                 <div class="glass-panel p-8 rounded-3xl w-full max-w-4xl flex flex-col items-center border-slate-700/50">
@@ -202,7 +204,6 @@
                 <div class="flex justify-between text-[10px] font-bold opacity-80 mt-2 pt-3 border-t border-white/20">
                     <div class="flex flex-col">
                         <span class="opacity-60 uppercase">Turn</span>
-                        <!-- Separate darts display mobile -->
                         <div class="flex gap-1 items-center" id="mob-turn-score">
                             <span class="opacity-50">0</span>
                         </div>
@@ -222,9 +223,11 @@
             <div class="glass-panel rounded-full p-1 flex shrink-0">
                 <button onclick="App.setMobileTab('keypad')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors bg-white/10 text-white shadow-sm" id="tab-btn-keypad">Keypad</button>
                 <button onclick="App.setMobileTab('board')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-white" id="tab-btn-board">Board</button>
+                <button onclick="App.setMobileTab('voice')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-white" id="tab-btn-voice">Voice</button>
             </div>
 
             <div class="flex-grow relative overflow-hidden rounded-2xl glass-panel border-slate-700/30">
+                <!-- Mobile Keypad -->
                 <div id="mob-tab-keypad" class="mobile-tab-content active flex-col h-full p-3 gap-2">
                     <div class="h-12 flex items-center justify-between px-3 bg-black/20 rounded-xl border border-white/5 mb-1">
                         <div class="text-xl font-mono font-bold text-white/90" id="mob-input-display">Enter score</div>
@@ -246,93 +249,131 @@
                     </div>
                 </div>
 
+                <!-- Mobile Board -->
                 <div id="mob-tab-board" class="mobile-tab-content flex-col h-full relative">
                     <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20" id="mob-darts-strip">
                         <div class="text-slate-500 text-xs italic">Touch & Hold to Zoom</div>
                     </div>
                     <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container" style="touch-action: none;"></div>
                 </div>
+
+                <!-- Mobile Voice -->
+                <div id="mob-tab-voice" class="mobile-tab-content flex-col h-full p-6 justify-center gap-6">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🎙️</div>
+                        <h3 class="text-xl font-bold mb-2">Voice Control</h3>
+                        <p class="text-sm text-slate-400 mb-6">"Triple 20", "Bullseye", "25"</p>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <button onclick="Game.setMicMode('single')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Single Throw</button>
+                        <button onclick="Game.setMicMode('turn')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Full Turn (3)</button>
+                        <button onclick="Game.setMicMode('always')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Always On</button>
+                    </div>
+                    <button onclick="Game.stopMic()" class="mt-4 py-3 rounded-xl bg-red-900/30 text-red-400 border border-red-900/50 font-bold text-sm">Stop Microphone</button>
+                </div>
             </div>
         </div>
 
-        <!-- DESKTOP GAME LAYOUT - Added p-2 to container to prevent ring clipping -->
+        <!-- DESKTOP GAME LAYOUT -->
         <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
+            <!-- Left Panel -->
             <div class="flex-grow flex flex-col gap-6 w-5/12 overflow-y-auto custom-scroll p-2 min-h-0">
-                <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
+                <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
                     <div class="flex justify-between items-start relative z-10">
                         <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
                             <span id="desk-p1-name">Player 1</span>
-                            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded hidden" id="p1-indicator-desk">THROWING</span>
                         </h2>
                         <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p1-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
                     </div>
                     <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-8xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
+                        <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
                         <div class="text-right">
-                             <div id="desk-p1-sug" class="text-amber-400 font-mono font-bold text-2xl animate-pulse h-8"></div>
+                             <div id="desk-p1-sug" class="text-amber-400 font-mono font-bold text-xl animate-pulse h-6"></div>
                              <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
                         </div>
                     </div>
                 </div>
 
-                <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
+                <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">2</div>
                     <div class="flex justify-between items-start relative z-10">
                         <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
                             <span id="desk-p2-name">Player 2</span>
-                            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded hidden" id="p2-indicator-desk">THROWING</span>
                         </h2>
                         <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p2-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
                     </div>
                     <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-8xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
+                        <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
                         <div class="text-right">
-                             <div id="desk-p2-sug" class="text-amber-400 font-mono font-bold text-2xl animate-pulse h-8"></div>
+                             <div id="desk-p2-sug" class="text-amber-400 font-mono font-bold text-xl animate-pulse h-6"></div>
                              <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-6 mt-auto">
-                    <div class="flex justify-between items-center mb-4">
+                <!-- Voice Controls -->
+                <div class="glass-panel rounded-2xl p-4">
+                    <div class="flex justify-between items-center mb-3">
                         <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Voice Controls</h3>
                         <div class="text-xs text-slate-500 font-mono" id="desk-mic-status">OFF</div>
                     </div>
-                    <div class="grid grid-cols-3 gap-4">
-                        <button onclick="Game.setMicMode('single')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Single</button>
-                        <button onclick="Game.setMicMode('turn')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Turn</button>
-                        <button onclick="Game.setMicMode('always')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Always</button>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="Game.setMicMode('single')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Single</button>
+                        <button onclick="Game.setMicMode('turn')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Turn</button>
+                        <button onclick="Game.setMicMode('always')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Always</button>
+                    </div>
+                </div>
+
+                <!-- Game Log -->
+                <div class="glass-panel rounded-2xl p-4 flex-grow flex flex-col overflow-hidden min-h-[150px]">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-700 pb-2">Game Log</h3>
+                    <div id="desktop-game-log" class="overflow-y-auto custom-scroll flex-grow font-mono text-xs space-y-1 text-slate-300">
+                        <div class="opacity-50 italic">Game Started</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Right Panel -->
             <div class="w-7/12 flex flex-col h-full relative gap-6">
                 <div class="shrink-0 glass-panel rounded-2xl p-6 flex justify-between items-center bg-indigo-950/20">
                     <div>
                         <span class="text-xs uppercase text-indigo-300 font-bold">Turn Total</span>
-                        <!-- Separate boxes for turn scores -->
                         <div id="desk-turn-total" class="flex gap-2 items-center text-white">0</div>
                     </div>
                     <div class="text-right">
                         <div id="desk-status" class="text-2xl font-bold text-white">Ready</div>
                     </div>
                 </div>
-                <!-- Added touch-action here too for consistency on touch desktops -->
                 <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20 overflow-hidden" id="desk-board-container" style="touch-action: none;"></div>
             </div>
         </div>
     </main>
 
+    <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="absolute inset-0 z-[80] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
         <div class="glass-panel p-8 rounded-2xl w-full max-w-md border-slate-700">
             <h2 class="text-2xl font-bold text-white mb-6">Settings</h2>
             <div class="space-y-4">
-                <button onclick="Game.setStartScore(501); App.closeSettings()" class="w-full p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">501 Game</button>
-                <button onclick="Game.setStartScore(301); App.closeSettings()" class="w-full p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">301 Game</button>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="Game.manualEditScore()" class="col-span-2 p-4 rounded bg-amber-600/20 text-amber-400 font-bold hover:bg-amber-600/30 border border-amber-600/50 flex items-center justify-center gap-2">
+                        <span>✏️</span> Manually Edit Score
+                    </button>
+                    <button onclick="Game.setStartScore(501); App.closeSettings()" class="p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">New 501</button>
+                    <button onclick="Game.setStartScore(301); App.closeSettings()" class="p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">New 301</button>
+                </div>
                 <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-indigo-600 text-white font-bold mt-4">Close</button>
             </div>
         </div>
+    </div>
+
+    <!-- LOG MODAL (Mobile) -->
+    <div id="mobile-log-modal" class="fixed inset-0 z-[70] bg-slate-900/95 backdrop-blur-xl hidden flex-col p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-white">Match History</h2>
+            <button onclick="App.toggleMobileLog()" class="text-slate-400 text-xl">✕</button>
+        </div>
+        <div id="mobile-game-log" class="overflow-y-auto custom-scroll flex-grow font-mono text-sm space-y-2 text-slate-300"></div>
     </div>
 
     <div id="winner-modal" class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center text-center p-6">
@@ -351,15 +392,18 @@
             scores: [501, 501], legs: [0, 0], currentPlayer: 0,
             turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false },
             historyStack: [], inputBuffer: '', settings: { startScore: 501 },
-            micMode: 'off', recognition: null, isListening: false,
+            micMode: 'off', recognition: null, isListening: false, gameLog: [],
 
             init: function(startScore) {
                 this.settings.startScore = startScore || 501;
                 this.scores = [this.settings.startScore, this.settings.startScore];
                 this.legs = [0, 0]; this.currentPlayer = 0;
+                this.gameLog = [];
                 this.resetTurn();
                 Confetti.init(); AudioEngine.init(); 
                 this.initMic();
+                document.getElementById('desktop-game-log').innerHTML = '<div class="opacity-50 italic">Game Started</div>';
+                document.getElementById('mobile-game-log').innerHTML = '<div class="opacity-50 italic">Game Started</div>';
                 UI.render();
             },
             resetTurn: function() {
@@ -380,6 +424,7 @@
 
                 if(bust) {
                     this.turn.bust = true; AudioEngine.playBust();
+                    this.logAction(`P${this.currentPlayer+1} BUST (${label})`);
                     this.scores[this.currentPlayer] = this.turn.startScore;
                     setTimeout(() => this.nextTurn(), 1500);
                 } else {
@@ -388,6 +433,7 @@
                     this.turn.dartsThrown++;
                     this.turn.history.push(label);
                     this.turn.darts.push(points);
+                    this.logAction(`P${this.currentPlayer+1}: ${label} (${points})`);
                     if(rem === 0) this.winLeg();
                 }
                 
@@ -400,12 +446,32 @@
                 UI.render();
                 if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
             },
-            saveState: function() { this.historyStack.push(JSON.parse(JSON.stringify({ s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs }))); },
+            saveState: function() { this.historyStack.push(JSON.parse(JSON.stringify({ s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs, log: this.gameLog }))); },
             undo: function() {
                 if(this.historyStack.length === 0) return;
                 const st = this.historyStack.pop();
-                this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l;
-                UI.render(); AudioEngine.speak("Undo");
+                this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l; this.gameLog = st.log;
+                UI.render(); UI.renderLog(); AudioEngine.speak("Undo");
+            },
+            manualEditScore: function() {
+                App.closeSettings();
+                const current = this.scores[this.currentPlayer];
+                const input = prompt(`Edit Player ${this.currentPlayer + 1} Score manually.\nCurrent: ${current}`, current);
+                if(input !== null) {
+                    const val = parseInt(input);
+                    if(!isNaN(val) && val >= 0) {
+                        this.saveState();
+                        this.scores[this.currentPlayer] = val;
+                        // Reset turn stats to prevent math conflicts
+                        this.turn.dartsThrown = 0; this.turn.score = 0; this.turn.startScore = val; this.turn.history = []; this.turn.darts = [];
+                        this.logAction(`Manual Edit: P${this.currentPlayer+1} set to ${val}`);
+                        UI.render();
+                    }
+                }
+            },
+            logAction: function(msg) {
+                this.gameLog.push(msg);
+                UI.renderLog();
             },
             winLeg: function() {
                 this.turn.won = true; this.legs[this.currentPlayer]++;
@@ -438,7 +504,6 @@
                     if(val > 60 || this.turn.dartsThrown === 0) {
                         this.processThrow(val, mul, lbl);
                         if(this.turn.dartsThrown < 3) { 
-                             // Simulate full turn
                              this.turn.dartsThrown = 3; 
                              setTimeout(() => this.nextTurn(), 1000); 
                         }
@@ -450,7 +515,7 @@
             },
             setStartScore: function(s) { this.init(s); },
             
-            // --- Mic Logic Merged ---
+            // --- Mic Logic ---
             initMic: function() {
                 if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) return;
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -560,6 +625,13 @@
                 document.querySelectorAll('.segment-highlight').forEach(el => el.classList.remove('segment-highlight'));
                 if(check) this.highlightCheckout(check);
             },
+            renderLog: function() {
+                // Reverse log for display so newest is at top
+                const rev = [...Game.gameLog].reverse();
+                const mkLog = (arr) => arr.map(l => `<div class="py-1 border-b border-white/5">${l}</div>`).join('');
+                document.getElementById('desktop-game-log').innerHTML = mkLog(rev);
+                document.getElementById('mobile-game-log').innerHTML = mkLog(rev);
+            },
             updateMicUI: function(active, mode) {
                 const status = document.getElementById('desk-mic-status');
                 if(active) {
@@ -587,17 +659,20 @@
         const App = {
             openSettings: function() { document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex'); },
             closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
+            toggleMobileLog: function() {
+                const el = document.getElementById('mobile-log-modal');
+                if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); }
+                else { el.classList.add('hidden'); el.classList.remove('flex'); }
+            },
             setMobileTab: function(tab) {
                 document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
                 document.getElementById(`mob-tab-${tab}`).classList.add('active');
-                const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board');
-                if(tab==='keypad') {
-                    btnK.classList.add('bg-white/10', 'text-white'); btnK.classList.remove('text-slate-400');
-                    btnB.classList.remove('bg-white/10', 'text-white'); btnB.classList.add('text-slate-400');
-                } else {
-                    btnB.classList.add('bg-white/10', 'text-white'); btnB.classList.remove('text-slate-400');
-                    btnK.classList.remove('bg-white/10', 'text-white'); btnK.classList.add('text-slate-400');
-                }
+                const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board'), btnV = document.getElementById('tab-btn-voice');
+                [btnK, btnB, btnV].forEach(b => {
+                    if(b) { b.classList.remove('bg-white/10', 'text-white'); b.classList.add('text-slate-400'); }
+                });
+                const activeBtn = document.getElementById(`tab-btn-${tab}`);
+                if(activeBtn) { activeBtn.classList.add('bg-white/10', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
             },
             setView: function(v) {
                 document.getElementById('view-dashboard').classList.add('hidden'); 
