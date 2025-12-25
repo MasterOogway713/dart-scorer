@@ -2,657 +2,738 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Voice DartsOS Ultimate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Darts Scorer 501</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700;800&family=Oswald:wght@500;700&display=swap');
-
-        :root {
-            --glass-bg: rgba(15, 23, 42, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --active-card-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(185, 28, 28, 0.9));
-        }
-
-        html, body { 
-            height: 100%; 
-            width: 100%; 
-            margin: 0; 
-            padding: 0; 
-            overflow: hidden; 
-            /* Removed global touch-action: none to allow scrolling */
-        }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
 
         body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: #020617;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.4), transparent 40%), 
-                radial-gradient(circle at 85% 30%, rgba(13, 148, 136, 0.25), transparent 40%);
-            background-repeat: no-repeat;
-            background-size: cover;
-            color: #fff;
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0;
+            overflow-x: hidden;
         }
 
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .font-condensed { font-family: 'Oswald', sans-serif; }
-
-        .glass-panel {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background-color: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .mobile-card {
-            @apply glass-panel;
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
+        /* Dartboard specific styles */
+        .dartboard-segment {
+            stroke: #d1d5db; /* Gray 300 */
+            stroke-width: 1px;
+            transition: opacity 0.1s;
+            cursor: pointer;
         }
-        .mobile-card.active {
-            background: var(--active-card-bg);
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+        .dartboard-segment:hover {
+            opacity: 0.8;
+            stroke: #fff;
+            stroke-width: 2px;
+            z-index: 10;
         }
-
-        .dartboard-segment { transition: opacity 0.1s; cursor: pointer; stroke: #94a3b8; stroke-width: 1px; }
-        .dartboard-segment:hover, .dartboard-segment.hover-highlight { 
-            opacity: 1; 
-            stroke: #fff; 
-            stroke-width: 3px; 
-            filter: brightness(1.5) drop-shadow(0 0 4px rgba(255,255,255,0.5)); 
-            z-index: 100;
+        .dartboard-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            fill: #fff;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            font-size: 24px;
         }
-        .dartboard-text { font-family: 'JetBrains Mono'; font-weight: 800; fill: #fff; pointer-events: none; text-anchor: middle; dominant-baseline: middle; font-size: 32px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-
-        .segment-highlight { fill: #f59e0b !important; filter: drop-shadow(0 0 8px #f59e0b); stroke: #fff; stroke-width: 2px; animation: pulse-gold 1s infinite; }
-        @keyframes pulse-gold { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-        .keypad-btn {
-            background: rgba(255,255,255,0.03);
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.8rem;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 0.75rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.1s;
-        }
-        .keypad-btn:active { background: rgba(255,255,255,0.15); }
-
-        #confetti-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100; width: 100%; height: 100%; }
         
-        .hit-marker {
-            position: absolute; width: 24px; height: 24px;
-            background: radial-gradient(circle, #facc15 30%, transparent 70%);
-            border-radius: 50%; transform: translate(-50%, -50%);
-            animation: ping 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
-            pointer-events: none; z-index: 50; box-shadow: 0 0 10px #facc15;
-        }
-        @keyframes ping { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
-
-        /* Magnifier */
-        #magnifier {
-            position: fixed; pointer-events: none; z-index: 9999;
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.9);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            background: #0f172a;
-            display: none;
-            transform: translate(-50%, -130%);
-        }
-        #magnifier svg {
-            width: 100%;
-            height: 100%;
-            display: block;
+        .mic-active {
+            animation: pulse-red 2s infinite;
         }
 
-        #one80-overlay { pointer-events: none; }
-        .one80-text { font-size: 15vw; font-weight: 900; color: #facc15; text-shadow: 0 0 50px rgba(234, 179, 8, 0.8); animation: zoom-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes zoom-in { 0% { transform: scale(0) rotate(-45deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
-        
-        .mobile-tab-content { display: none; }
-        .mobile-tab-content.active { display: flex; }
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
-        
         @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .mic-btn-active { animation: pulse-red 2s infinite; background-color: #b91c1c !important; border-color: #ef4444 !important; color: white !important; }
+
+        .active-player-card {
+            border: 2px solid #3b82f6; /* Blue 500 */
+            background-color: rgba(59, 130, 246, 0.1);
+            transform: scale(1.02);
+        }
+
+        /* Hit animation */
+        .hit-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #fbbf24 20%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: fadeOut 1s forwards;
+            z-index: 50;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+        }
     </style>
 </head>
-<body class="flex flex-col h-[100dvh] text-slate-200 selection:bg-purple-500 selection:text-white overflow-hidden">
+<body class="min-h-screen flex flex-col items-center">
 
-    <canvas id="confetti-canvas"></canvas>
-    <div id="one80-overlay" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm"><div class="one80-text">180!</div></div>
-    
-    <div id="magnifier"></div>
-
-    <!-- DESKTOP HEADER -->
-    <header class="hidden lg:flex glass-panel sticky top-0 z-40 h-16 items-center justify-between px-6 border-b-0 border-b-slate-700/50 rounded-b-2xl mx-4 mt-2 shrink-0">
-        <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition" onclick="App.setView('dashboard')">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">D</div>
-            <span class="font-bold text-xl tracking-tight text-white">Darts<span class="text-purple-400">OS</span></span>
-        </div>
-        <div class="flex items-center gap-3">
-            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2"><span>Undo</span></button>
-            <button onclick="App.openSettings()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-blue-400">Settings</button>
+    <!-- Header -->
+    <header class="w-full bg-slate-800 p-4 shadow-lg mb-4">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold text-blue-400 tracking-tight">🎯 Voice Darts 501</h1>
+            <div class="flex gap-2">
+                 <button onclick="manualEditScore()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-yellow-400 transition border border-slate-600">Edit Score</button>
+                 <button onclick="resetGame()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-slate-300 transition border border-slate-600">Reset Game</button>
+            </div>
         </div>
     </header>
 
-    <!-- MOBILE HEADER -->
-    <header class="lg:hidden flex items-center justify-between p-4 z-40 shrink-0 bg-transparent">
-        <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
-        <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
-        <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
-    </header>
-
-    <main id="main-container" class="flex-grow relative overflow-hidden flex flex-col h-full lg:p-6 lg:gap-6">
+    <main class="w-full max-w-5xl flex flex-col lg:flex-row gap-8 px-4 pb-8 flex-grow">
         
-        <!-- DASHBOARD - Fixed Scrolling -->
-        <div id="view-dashboard" class="absolute inset-0 z-50 overflow-y-auto bg-[#020617] lg:bg-transparent">
-            <div class="min-h-full flex flex-col items-center justify-center p-6">
-                <div class="glass-panel p-8 rounded-3xl w-full max-w-4xl flex flex-col items-center border-slate-700/50">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-tight text-center">Select Game</h1>
-                    <p class="text-slate-400 mb-10 text-center">Touch & Voice Scoring</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <button onclick="App.startGame('x01')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                            <div class="text-5xl group-hover:scale-110 transition">🎯</div>
-                            <h3 class="text-xl font-bold text-white">X01</h3>
-                            <p class="text-slate-400 text-xs">501, 301, Double Out</p>
-                        </button>
-                        <button onclick="App.startGame('cricket')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                            <div class="text-5xl group-hover:scale-110 transition">🏏</div>
-                            <h3 class="text-xl font-bold text-white">Cricket</h3>
-                            <p class="text-slate-400 text-xs">Tactical Territory</p>
-                        </button>
-                        <button onclick="App.startGame('atc')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                            <div class="text-5xl group-hover:scale-110 transition">🕰️</div>
-                            <h3 class="text-xl font-bold text-white">Clock</h3>
-                            <p class="text-slate-400 text-xs">Around the World</p>
-                        </button>
+        <!-- Left Column: Scoreboard -->
+        <div class="flex-1 flex flex-col gap-4">
+            
+            <!-- Player Scores -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Player 1 -->
+                <div id="p1-card" class="bg-slate-800 p-6 rounded-xl shadow-md transition-all duration-300 active-player-card relative overflow-hidden">
+                    <div class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-1">Player 1</div>
+                    <div id="p1-score" class="text-6xl font-black font-mono text-white">501</div>
+                    <div class="mt-4 flex gap-1 h-2">
+                        <div id="p1-dart-1" class="flex-1 bg-slate-700 rounded-full transition-colors"></div>
+                        <div id="p1-dart-2" class="flex-1 bg-slate-700 rounded-full transition-colors"></div>
+                        <div id="p1-dart-3" class="flex-1 bg-slate-700 rounded-full transition-colors"></div>
                     </div>
+                    <div id="p1-last" class="mt-2 text-xs text-slate-500 h-4">Last: -</div>
                 </div>
+
+                <!-- Player 2 -->
+                <div id="p2-card" class="bg-slate-800 p-6 rounded-xl shadow-md transition-all duration-300 relative overflow-hidden">
+                    <div class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-1">Player 2</div>
+                    <div id="p2-score" class="text-6xl font-black font-mono text-white">501</div>
+                    <div class="mt-4 flex gap-1 h-2">
+                        <div id="p2-dart-1" class="flex-1 bg-slate-700 rounded-full transition-colors"></div>
+                        <div id="p2-dart-2" class="flex-1 bg-slate-700 rounded-full transition-colors"></div>
+                        <div id="p2-dart-3" class="flex-1 bg-slate-700 rounded-full transition-colors"></div>
+                    </div>
+                    <div id="p2-last" class="mt-2 text-xs text-slate-500 h-4">Last: -</div>
+                </div>
+            </div>
+
+            <!-- Current Turn Info -->
+            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex justify-between items-center">
+                <div>
+                    <span class="text-slate-400 text-xs uppercase">Turn Total</span>
+                    <div id="turn-total" class="text-3xl font-bold text-blue-400">0</div>
+                </div>
+                <div class="text-right">
+                    <span class="text-slate-400 text-xs uppercase">Message</span>
+                    <div id="status-msg" class="text-sm font-semibold text-white">Ready to throw</div>
+                </div>
+            </div>
+
+            <!-- Voice Controls -->
+            <div class="bg-slate-800 p-4 rounded-lg shadow-inner">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-slate-300">🎙️ Voice Mode</h3>
+                    <div id="mic-status" class="text-xs text-slate-500 font-mono">OFF</div>
+                </div>
+                
+                <!-- Mic Buttons Grid -->
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <button onclick="setMicMode('single')" id="btn-single" class="py-2 px-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold transition flex flex-col items-center gap-1 border border-slate-600">
+                        <span>🎤</span>
+                        <span>Single</span>
+                    </button>
+                    <button onclick="setMicMode('turn')" id="btn-turn" class="py-2 px-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold transition flex flex-col items-center gap-1 border border-slate-600">
+                        <span>🔄</span>
+                        <span>Turn</span>
+                    </button>
+                    <button onclick="setMicMode('always')" id="btn-always" class="py-2 px-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold transition flex flex-col items-center gap-1 border border-slate-600">
+                        <span>♾️</span>
+                        <span>Always</span>
+                    </button>
+                </div>
+
+                <!-- Stop / Undo -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="stopListening()" class="py-2 rounded bg-red-900/50 hover:bg-red-900 text-red-200 text-xs font-bold transition border border-red-800/50">
+                        Stop Mic
+                    </button>
+                    <button onclick="undoLastThrow()" class="py-2 rounded bg-amber-900/50 hover:bg-amber-900 text-amber-200 text-xs font-bold transition border border-amber-800/50 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                        Undo Last
+                    </button>
+                </div>
+
+                <p class="text-[10px] text-slate-500 mt-3 text-center">
+                    Say: "Triple 20", "Bullseye", "25", "Double 16"
+                </p>
+            </div>
+
+            <!-- Log -->
+            <div class="flex-grow bg-slate-900 rounded-lg p-2 overflow-y-auto max-h-48 border border-slate-800 font-mono text-xs text-slate-400" id="game-log">
+                <div class="p-1 border-b border-slate-800">Game Started - 501</div>
             </div>
         </div>
 
-        <!-- MOBILE GAME LAYOUT -->
-        <div id="view-game-mobile" class="lg:hidden flex flex-col h-full p-4 gap-3">
-            <div id="mob-active-card" class="mobile-card active w-full p-5 flex flex-col justify-between min-h-[30%] relative transition-all duration-500">
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center font-bold text-sm border border-white/10">P<span id="mob-p-num">1</span></div>
-                        <span class="font-bold text-base opacity-90" id="mob-p-name">Player 1</span>
-                    </div>
-                    <div class="bg-black/20 px-2 py-0.5 rounded text-xs font-mono font-bold border border-white/10" id="mob-legs">Legs: 0</div>
-                </div>
-                <div class="flex justify-between items-end mt-1">
-                    <div class="font-condensed text-[5.5rem] leading-[0.85] font-bold tracking-tighter drop-shadow-md" id="mob-score">501</div>
-                    <div class="flex flex-col items-end gap-1 mb-2">
-                        <div class="bg-black/30 backdrop-blur rounded px-2 py-1 text-[10px] font-bold border border-white/10" id="mob-last">Last: -</div>
-                    </div>
-                </div>
-                <div class="flex justify-between text-[10px] font-bold opacity-80 mt-2 pt-3 border-t border-white/20">
-                    <div class="flex flex-col">
-                        <span class="opacity-60 uppercase">Avg</span>
-                        <span class="text-sm" id="mob-avg">0.0</span>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span class="opacity-60 uppercase">Darts</span>
-                        <span class="text-sm" id="mob-darts">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center px-1">
-                <div class="font-condensed text-lg font-bold text-amber-400 uppercase tracking-wide">Your Turn</div>
-                <div class="text-xs text-slate-300 font-mono bg-white/5 px-2 py-1 rounded" id="mob-suggestion">Checkout: -</div>
-            </div>
-
-            <div class="glass-panel rounded-full p-1 flex shrink-0">
-                <button onclick="App.setMobileTab('keypad')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors bg-white/10 text-white shadow-sm" id="tab-btn-keypad">Keypad</button>
-                <button onclick="App.setMobileTab('board')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-white" id="tab-btn-board">Board</button>
-            </div>
-
-            <div class="flex-grow relative overflow-hidden rounded-2xl glass-panel border-slate-700/30">
-                <div id="mob-tab-keypad" class="mobile-tab-content active flex-col h-full p-3 gap-2">
-                    <div class="h-12 flex items-center justify-between px-3 bg-black/20 rounded-xl border border-white/5 mb-1">
-                        <div class="text-xl font-mono font-bold text-white/90" id="mob-input-display">Enter score</div>
-                        <button onclick="Game.submitInputBuffer()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-lg">SUBMIT</button>
-                    </div>
-                    <div class="grid grid-cols-3 flex-grow gap-2">
-                        <button class="keypad-btn" onclick="Game.inputDigit(1)">1</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(2)">2</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(3)">3</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(4)">4</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(5)">5</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(6)">6</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(7)">7</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(8)">8</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(9)">9</button>
-                        <button class="keypad-btn text-sm font-bold text-amber-400" onclick="Game.undo()">UNDO</button>
-                        <button class="keypad-btn" onclick="Game.inputDigit(0)">0</button>
-                        <button class="keypad-btn text-sm font-bold text-red-400" onclick="Game.clearInput()">DEL</button>
-                    </div>
-                </div>
-
-                <div id="mob-tab-board" class="mobile-tab-content flex-col h-full relative">
-                    <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20" id="mob-darts-strip">
-                        <div class="text-slate-500 text-xs italic">Touch & Hold to Zoom</div>
-                    </div>
-                    <!-- Added style="touch-action: none" to enable drag without scrolling -->
-                    <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container" style="touch-action: none;"></div>
-                </div>
+        <!-- Right Column: Interactive Dartboard -->
+        <div class="flex-1 flex justify-center items-start min-h-[400px] relative">
+            <div id="board-container" class="relative w-full max-w-[500px] aspect-square">
+                <!-- SVG Board Injected Here -->
+                <svg id="dartboard" viewBox="-220 -220 440 440" class="w-full h-full drop-shadow-2xl">
+                    <!-- Circles and Paths will be generated by JS -->
+                </svg>
             </div>
         </div>
 
-        <!-- DESKTOP GAME LAYOUT - Removed lg:flex to fix refresh glitch -->
-        <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
-            <div class="flex-grow flex flex-col gap-6 w-5/12 overflow-y-auto custom-scroll pr-2">
-                <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
-                    <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
-                    <div class="flex justify-between items-start relative z-10">
-                        <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
-                            <span id="desk-p1-name">Player 1</span>
-                            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded hidden" id="p1-indicator-desk">THROWING</span>
-                        </h2>
-                        <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p1-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
-                    </div>
-                    <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-8xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
-                        <div class="text-right">
-                             <div id="desk-p1-sug" class="text-amber-400 font-mono font-bold text-2xl animate-pulse h-8"></div>
-                             <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
-                    <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">2</div>
-                    <div class="flex justify-between items-start relative z-10">
-                        <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
-                            <span id="desk-p2-name">Player 2</span>
-                            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded hidden" id="p2-indicator-desk">THROWING</span>
-                        </h2>
-                        <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p2-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
-                    </div>
-                    <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-8xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
-                        <div class="text-right">
-                             <div id="desk-p2-sug" class="text-amber-400 font-mono font-bold text-2xl animate-pulse h-8"></div>
-                             <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 mt-auto">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Voice Controls</h3>
-                        <div class="text-xs text-slate-500 font-mono" id="desk-mic-status">OFF</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4">
-                        <button onclick="setMicMode('single')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Single</button>
-                        <button onclick="setMicMode('turn')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Turn</button>
-                        <button onclick="setMicMode('always')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Always</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-7/12 flex flex-col h-full relative gap-6">
-                <div class="shrink-0 glass-panel rounded-2xl p-6 flex justify-between items-center bg-indigo-950/20">
-                    <div>
-                        <span class="text-xs uppercase text-indigo-300 font-bold">Turn Total</span>
-                        <div id="desk-turn-total" class="text-5xl font-mono font-bold text-white">0</div>
-                    </div>
-                    <div class="text-right">
-                        <div id="desk-status" class="text-2xl font-bold text-white">Ready</div>
-                    </div>
-                </div>
-                <!-- Added touch-action here too for consistency on touch desktops -->
-                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20" id="desk-board-container" style="touch-action: none;"></div>
-            </div>
-        </div>
     </main>
 
-    <div id="settings-modal" class="absolute inset-0 z-[80] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
-        <div class="glass-panel p-8 rounded-2xl w-full max-w-md border-slate-700">
-            <h2 class="text-2xl font-bold text-white mb-6">Settings</h2>
-            <div class="space-y-4">
-                <button onclick="Game.setStartScore(501); App.closeSettings()" class="w-full p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">501 Game</button>
-                <button onclick="Game.setStartScore(301); App.closeSettings()" class="w-full p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">301 Game</button>
-                <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-indigo-600 text-white font-bold mt-4">Close</button>
-            </div>
+    <!-- Winner Modal -->
+    <div id="winner-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
+        <div class="bg-slate-800 p-8 rounded-2xl text-center max-w-sm mx-4 border border-blue-500 shadow-2xl">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-3xl font-bold text-white mb-2" id="winner-name">Player 1 Wins!</h2>
+            <p class="text-slate-400 mb-6">Game Over</p>
+            <button onclick="resetGame(); closeModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold w-full">Play Again</button>
         </div>
     </div>
 
-    <div id="winner-modal" class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center text-center p-6">
-        <div class="text-8xl mb-6 animate-bounce">🏆</div>
-        <h1 id="winner-name" class="text-4xl md:text-6xl font-black text-white mb-2">Player 1 Wins!</h1>
-        <div class="flex gap-4 mt-8">
-             <button onclick="location.reload()" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold">New Game</button>
-        </div>
-    </div>
+<script>
+    // --- Configuration & Constants ---
+    const SECTOR_ORDER = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+    const COLORS = {
+        black: "#1e293b", // Slate 800
+        white: "#f1f5f9", // Slate 100
+        red: "#ef4444",   // Red 500
+        green: "#22c55e", // Green 500
+        bullRed: "#dc2626",
+        bullGreen: "#16a34a"
+    };
+    
+    // Radii for dartboard rings (arbitrary units for SVG viewbox)
+    const R_BULL_INNER = 6.35;
+    const R_BULL_OUTER = 15.9;
+    const R_TRIPLE_INNER = 99;
+    const R_TRIPLE_OUTER = 107;
+    const R_DOUBLE_INNER = 162;
+    const R_DOUBLE_OUTER = 170;
 
-    <script>
-        const AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},speak:function(e){if(window.speechSynthesis){window.speechSynthesis.cancel();const t=new SpeechSynthesisUtterance(e);t.rate=1.1,window.speechSynthesis.speak(t)}}};
-        const Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1}};
+    // --- State ---
+    let gameState = {
+        scores: [501, 501],
+        currentPlayer: 0, // 0 for P1, 1 for P2
+        dartsThrown: 0, // 0-3
+        currentTurnScore: 0,
+        startOfTurnScore: 501,
+        history: [], // For Undo
+        gameOver: false
+    };
 
-        const Game = {
-            scores: [501, 501], legs: [0, 0], currentPlayer: 0,
-            turn: { dartsThrown: 0, score: 0, history: [], startScore: 501, bust: false, won: false },
-            historyStack: [], inputBuffer: '', settings: { startScore: 501 },
+    let recognition = null;
+    let isListening = false;
+    let micMode = 'off'; // 'off', 'single', 'turn', 'always'
 
-            init: function(startScore) {
-                this.settings.startScore = startScore || 501;
-                this.scores = [this.settings.startScore, this.settings.startScore];
-                this.legs = [0, 0]; this.currentPlayer = 0;
-                this.resetTurn();
-                Confetti.init(); AudioEngine.init(); UI.render();
-            },
-            resetTurn: function() {
-                this.turn = { dartsThrown: 0, score: 0, history: [], startScore: this.scores[this.currentPlayer], bust: false, won: false };
-            },
-            processThrow: function(points, multiplier, label) {
-                if(this.turn.won || this.turn.bust || this.turn.dartsThrown >= 3) return;
-                this.saveState();
-                if(points === 0) AudioEngine.playTone(150, 'sawtooth', 0.1);
-                else if(multiplier === 3) AudioEngine.playTriple();
-                else if(multiplier === 2) AudioEngine.playDouble();
-                else AudioEngine.playHit();
-                
-                const rem = this.scores[this.currentPlayer] - points;
-                let bust = false;
-                const isDouble = multiplier === 2 || label.includes("Bullseye");
-                if (rem < 0 || rem === 1 || (rem === 0 && !isDouble)) bust = true;
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+        drawDartboard();
+        updateUI();
+        initSpeechRecognition();
+    });
 
-                if(bust) {
-                    this.turn.bust = true; AudioEngine.playBust();
-                    this.scores[this.currentPlayer] = this.turn.startScore;
-                    setTimeout(() => this.nextTurn(), 1500);
-                } else {
-                    this.scores[this.currentPlayer] = rem;
-                    this.turn.score += points;
-                    this.turn.dartsThrown++;
-                    this.turn.history.push(label);
-                    if(rem === 0) this.winLeg();
-                }
-                
-                if(this.turn.history.length === 3 && this.turn.history.every(h => h.includes("Triple 20"))) {
-                    document.getElementById('one80-overlay').classList.remove('hidden');
-                    AudioEngine.play180();
-                    setTimeout(() => document.getElementById('one80-overlay').classList.add('hidden'), 2000);
-                }
+    // --- Dartboard Generation ---
+    function drawDartboard() {
+        const svg = document.getElementById('dartboard');
+        const centerGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        
+        SECTOR_ORDER.forEach((number, i) => {
+            const anglePerSlice = 360 / 20;
+            const startAngle = -90 - (anglePerSlice / 2) + (i * anglePerSlice);
+            const endAngle = startAngle + anglePerSlice;
 
-                UI.render();
-                if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
-            },
-            saveState: function() { this.historyStack.push(JSON.parse(JSON.stringify({ s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs }))); },
-            undo: function() {
-                if(this.historyStack.length === 0) return;
-                const st = this.historyStack.pop();
-                this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l;
-                UI.render(); AudioEngine.speak("Undo");
-            },
-            winLeg: function() {
-                this.turn.won = true; this.legs[this.currentPlayer]++;
-                AudioEngine.playWin(); Confetti.start();
-                setTimeout(() => { if(confirm("New Game?")) Game.init(Game.settings.startScore); }, 1000);
-            },
-            nextTurn: function() {
-                this.currentPlayer = this.currentPlayer === 0 ? 1 : 0;
-                this.resetTurn(); UI.render();
-            },
-            inputDigit: function(d) {
-                this.inputBuffer += d; 
-                document.getElementById('mob-input-display').textContent = this.inputBuffer;
-            },
-            clearInput: function() { 
-                this.inputBuffer = ''; 
-                document.getElementById('mob-input-display').textContent = 'Enter score'; 
-            },
-            submitInputBuffer: function() {
-                const val = parseInt(this.inputBuffer);
-                if(!isNaN(val)) {
-                    let mul = 1; let lbl = "Single " + val;
-                    if(val === 50) { mul=2; lbl="Bullseye"; }
-                    else if(val > 60) { mul=3; lbl="Total " + val; }
-                    
-                    if(val > 60 || this.turn.dartsThrown === 0) {
-                        this.processThrow(val, mul, lbl);
-                        if(this.turn.dartsThrown < 3) { this.turn.dartsThrown = 3; setTimeout(() => this.nextTurn(), 1000); }
-                    } else {
-                        this.processThrow(val, mul, lbl);
-                    }
-                }
-                this.clearInput();
-            },
-            setStartScore: function(s) { this.init(s); }
-        };
+            const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            group.setAttribute("data-value", number);
 
-        const UI = {
-            render: function() {
-                const p = Game.currentPlayer;
-                const p1 = Game.scores[0], p2 = Game.scores[1];
-                
-                const card = document.getElementById('mob-active-card');
-                if (p === 0) { card.style.background = '#ef4444'; } else { card.style.background = '#3b82f6'; }
-                document.getElementById('mob-p-num').textContent = p + 1;
-                document.getElementById('mob-p-name').textContent = `Player ${p+1}`;
-                document.getElementById('mob-score').textContent = Game.scores[p];
-                document.getElementById('mob-legs').textContent = `Legs: ${Game.legs[p]}`;
-                document.getElementById('mob-darts').textContent = Game.turn.dartsThrown;
-                document.getElementById('mob-last').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : '-';
-                const check = this.getCheckout(Game.scores[p]);
-                document.getElementById('mob-suggestion').textContent = check ? `Checkout: ${check}` : "Score High";
+            const isEven = i % 2 === 0;
+            const singleColor = isEven ? COLORS.black : COLORS.white;
+            const ringColor = isEven ? COLORS.red : COLORS.green;
 
-                document.getElementById('desk-p1-score').textContent = p1;
-                document.getElementById('desk-p2-score').textContent = p2;
-                document.getElementById('desk-p1-legs').textContent = Game.legs[0];
-                document.getElementById('desk-p2-legs').textContent = Game.legs[1];
-                document.getElementById('desk-turn-total').textContent = Game.turn.score;
-                document.getElementById('desk-status').textContent = `Player ${p+1}'s Turn`;
-                
-                const dP1 = document.getElementById('p1-card'), dP2 = document.getElementById('p2-card');
-                if(p===0) { dP1.classList.add('player-active'); dP2.classList.remove('player-active'); }
-                else { dP2.classList.add('player-active'); dP1.classList.remove('player-active'); }
-                
-                document.querySelectorAll('.segment-highlight').forEach(el => el.classList.remove('segment-highlight'));
-                if(check) this.highlightCheckout(check);
-            },
-            getCheckout: function(s) {
-                const c = { 170:"T20 T20 Bull", 160:"T20 T20 D20", 100:"T20 D20", 40:"D20", 32:"D16" };
-                return c[s] || "";
-            },
-            highlightCheckout: function(str) {
-                let target = str.split(' ')[0];
-                let id = "";
-                if(target.startsWith('T')) id = `segment-t-${target.substring(1)}`;
-                else if(target.startsWith('D')) id = `segment-d-${target.substring(1)}`;
-                else if(target === 'Bull') id = 'segment-50';
-                else if(target === '25') id = 'segment-25';
-                else if(!isNaN(target)) id = `segment-s-${target}`;
-                
-                if(id) {
-                    const selector = `[id="${id}"]`;
-                    document.querySelectorAll(selector).forEach(el => el.classList.add('segment-highlight'));
-                }
-            }
-        };
-
-        const App = {
-            openSettings: function() { document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex'); },
-            closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
-            setMobileTab: function(tab) {
-                document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
-                document.getElementById(`mob-tab-${tab}`).classList.add('active');
-                const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board');
-                if(tab==='keypad') {
-                    btnK.classList.add('bg-white/10', 'text-white'); btnK.classList.remove('text-slate-400');
-                    btnB.classList.remove('bg-white/10', 'text-white'); btnB.classList.add('text-slate-400');
-                } else {
-                    btnB.classList.add('bg-white/10', 'text-white'); btnB.classList.remove('text-slate-400');
-                    btnK.classList.remove('bg-white/10', 'text-white'); btnK.classList.add('text-slate-400');
-                }
-            },
-            setView: function(v) {
-                document.getElementById('view-dashboard').classList.add('hidden'); 
-                document.getElementById('view-game-mobile').classList.add('hidden');
-                document.getElementById('view-game-desktop').classList.remove('flex'); document.getElementById('view-game-desktop').classList.add('hidden');
-                
-                if(v === 'dashboard') {
-                    document.getElementById('view-dashboard').classList.remove('hidden');
-                } else {
-                    if(window.innerWidth < 1024) {
-                        document.getElementById('view-game-mobile').classList.remove('hidden');
-                        document.getElementById('view-game-mobile').classList.add('flex');
-                    } else {
-                        document.getElementById('view-game-desktop').classList.remove('hidden');
-                        document.getElementById('view-game-desktop').classList.add('flex');
-                    }
-                }
-            },
-            startGame: function(mode) { this.setView('game'); Game.init(mode==='x01'?501:301); }
-        };
-
-        window.addEventListener('load', () => {
-            Dartboard.create('desk-board-container', 'dartboard-desk');
-            Dartboard.create('mob-board-container', 'dartboard-mob');
-            App.setView('dashboard');
+            createArc(group, R_DOUBLE_INNER, R_DOUBLE_OUTER, startAngle, endAngle, ringColor, `Double ${number}`, number * 2);
+            createArc(group, R_TRIPLE_OUTER, R_DOUBLE_INNER, startAngle, endAngle, singleColor, `Single ${number}`, number);
+            createArc(group, R_TRIPLE_INNER, R_TRIPLE_OUTER, startAngle, endAngle, ringColor, `Triple ${number}`, number * 3);
+            createArc(group, R_BULL_OUTER, R_TRIPLE_INNER, startAngle, endAngle, singleColor, `Single ${number}`, number);
+            
+            const textRadius = R_DOUBLE_OUTER + 20;
+            const midAngle = (startAngle + endAngle) / 2;
+            const rad = midAngle * Math.PI / 180;
+            const tx = Math.cos(rad) * textRadius;
+            const ty = Math.sin(rad) * textRadius;
+            
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", tx);
+            text.setAttribute("y", ty);
+            text.setAttribute("class", "dartboard-text");
+            text.textContent = number;
+            
+            svg.appendChild(group);
+            svg.appendChild(text);
         });
 
-        // FIXED TOUCH ZOOM
-        const TouchZoom = {
-            timer: null,
-            magnifier: document.getElementById('magnifier'),
-            active: false,
+        const outerBull = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        outerBull.setAttribute("r", R_BULL_OUTER);
+        outerBull.setAttribute("fill", COLORS.bullGreen);
+        outerBull.setAttribute("class", "dartboard-segment");
+        outerBull.onclick = (e) => handleThrow(25, "Outer Bull", e);
+        svg.appendChild(outerBull);
+
+        const innerBull = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        innerBull.setAttribute("r", R_BULL_INNER);
+        innerBull.setAttribute("fill", COLORS.bullRed);
+        innerBull.setAttribute("class", "dartboard-segment");
+        innerBull.onclick = (e) => handleThrow(50, "Bullseye", e);
+        svg.appendChild(innerBull);
+    }
+
+    function createArc(group, innerR, outerR, startAngle, endAngle, color, label, points) {
+        const startRad = (startAngle * Math.PI) / 180;
+        const endRad = (endAngle * Math.PI) / 180;
+        const x1 = Math.cos(startRad) * outerR;
+        const y1 = Math.sin(startRad) * outerR;
+        const x2 = Math.cos(endRad) * outerR;
+        const y2 = Math.sin(endRad) * outerR;
+        const x3 = Math.cos(endRad) * innerR;
+        const y3 = Math.sin(endRad) * innerR;
+        const x4 = Math.cos(startRad) * innerR;
+        const y4 = Math.sin(startRad) * innerR;
+
+        const pathStr = `M ${x1} ${y1} A ${outerR} ${outerR} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${innerR} ${innerR} 0 0 0 ${x4} ${y4} Z`;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathStr);
+        path.setAttribute("fill", color);
+        path.setAttribute("class", "dartboard-segment");
+        path.onclick = (e) => handleThrow(points, label, e);
+        group.appendChild(path);
+    }
+
+    // --- Game Logic ---
+
+    function saveState() {
+        // Deep clone the state for history
+        const snapshot = JSON.parse(JSON.stringify({
+            scores: gameState.scores,
+            currentPlayer: gameState.currentPlayer,
+            dartsThrown: gameState.dartsThrown,
+            currentTurnScore: gameState.currentTurnScore,
+            startOfTurnScore: gameState.startOfTurnScore,
+            gameOver: gameState.gameOver
+        }));
+        gameState.history.push(snapshot);
+        // Optional: limit history size
+        if(gameState.history.length > 50) gameState.history.shift();
+    }
+
+    function undoLastThrow() {
+        if (gameState.history.length === 0) {
+            log("Nothing to undo.");
+            return;
+        }
+        
+        const prevState = gameState.history.pop();
+        gameState.scores = prevState.scores;
+        gameState.currentPlayer = prevState.currentPlayer;
+        gameState.dartsThrown = prevState.dartsThrown;
+        gameState.currentTurnScore = prevState.currentTurnScore;
+        gameState.startOfTurnScore = prevState.startOfTurnScore;
+        gameState.gameOver = prevState.gameOver;
+        
+        log("↩️ Undid last action");
+        document.getElementById('status-msg').textContent = "Correction made";
+        closeModal();
+        updateUI();
+    }
+
+    function manualEditScore() {
+        const player = gameState.currentPlayer;
+        const currentScore = gameState.scores[player];
+        const newScoreStr = prompt(`Edit Player ${player + 1} Score manually.\nCurrent: ${currentScore}`, currentScore);
+        
+        if (newScoreStr !== null) {
+            const newScore = parseInt(newScoreStr);
+            if (!isNaN(newScore) && newScore >= 0) {
+                saveState();
+                gameState.scores[player] = newScore;
+                // If we manually edited, we might want to reset the turn state to avoid confusion
+                // But generally users just want to fix the math.
+                // Let's reset darts thrown if they edit the score manually to prevent weird "turn" math conflicts
+                gameState.dartsThrown = 0;
+                gameState.currentTurnScore = 0;
+                gameState.startOfTurnScore = newScore;
+                log(`✏️ Manual Edit: P${player+1} set to ${newScore}`);
+                updateUI();
+            }
+        }
+    }
+
+    function handleThrow(points, label, event) {
+        if (gameState.gameOver) return;
+
+        saveState(); // Save before modifying
+
+        if (event) {
+            spawnHitMarker(event.clientX, event.clientY);
+        }
+
+        const player = gameState.currentPlayer;
+        const currentScore = gameState.scores[player];
+        let newScore = currentScore - points;
+
+        gameState.dartsThrown++;
+        gameState.currentTurnScore += points;
+        
+        // Bust Logic
+        if (newScore < 0) {
+            log(`Player ${player + 1} BUST! (${label})`);
+            document.getElementById('status-msg').textContent = "BUST!";
+            endTurn(true); 
+            return;
+        } else if (newScore === 0) {
+            gameState.scores[player] = 0;
+            log(`Player ${player + 1} HIT ${label} - CHECKOUT!`);
+            winGame(player);
+            updateUI();
             
-            start: function(e, boardId) {
-                this.active = true;
-                this.timer = setTimeout(() => this.show(e, boardId), 200);
-            },
-            move: function(e, boardId) {
-                if(this.active && this.magnifier.style.display === 'block') {
-                    this.update(e, boardId);
-                }
-            },
-            end: function(e) {
-                clearTimeout(this.timer);
-                this.active = false;
-                this.magnifier.style.display = 'none';
-                
-                if (this.magnifier.style.display === 'block' || document.querySelector('.hover-highlight')) {
-                    const touch = e.changedTouches[0];
-                    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-                    
-                    document.querySelectorAll('.hover-highlight').forEach(x => {
-                        x.classList.remove('hover-highlight');
-                    });
+            // Stop mic on game over
+            if (isListening) stopListening();
+            return;
+        }
 
-                    if(el && el.classList.contains('dartboard-segment')) {
-                        el.dispatchEvent(new MouseEvent('click', { 'view': window, 'bubbles': true, 'cancelable': true }));
-                    }
-                }
-            },
-            show: function(e, boardId) {
-                this.magnifier.style.display = 'block';
-                const originalSvg = document.getElementById(boardId);
-                this.magnifier.innerHTML = ''; 
-                const clone = originalSvg.cloneNode(true);
-                clone.removeAttribute('id');
-                clone.style.width = '100%';
-                clone.style.height = '100%';
-                this.magnifier.appendChild(clone);
-                this.update(e, boardId);
-            },
-            update: function(e, boardId) {
-                const touch = e.touches[0] || e.changedTouches[0];
-                const rect = document.getElementById(boardId).getBoundingClientRect();
-                
-                this.magnifier.style.left = touch.clientX + 'px';
-                this.magnifier.style.top = (touch.clientY - 60) + 'px'; 
-                
-                const svg = this.magnifier.querySelector('svg');
-                const perX = (touch.clientX - rect.left) / rect.width;
-                const perY = (touch.clientY - rect.top) / rect.height;
-                
-                if (svg) {
-                    svg.style.transformOrigin = `${perX * 100}% ${perY * 100}%`;
-                    svg.style.transform = 'scale(3)'; 
-                }
-                
-                const el = document.elementFromPoint(touch.clientX, touch.clientY);
-                
-                document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                const magSvg = this.magnifier.querySelector('svg');
-                if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
+        gameState.scores[player] = newScore;
+        log(`P${player+1}: ${label} (${points})`);
+        
+        updateUI();
 
-                if(el && el.classList.contains('dartboard-segment')) {
-                    el.classList.add('hover-highlight');
-                    
-                    const id = el.getAttribute('id');
-                    if (id && magSvg) {
-                        const cloneEl = magSvg.querySelector(`[id="${id}"]`);
-                        if (cloneEl) cloneEl.classList.add('hover-highlight');
-                    }
+        // Mic logic: Check if we need to stop listening based on mode
+        if (micMode === 'turn' && gameState.dartsThrown >= 3) {
+            // We wait a moment for the user to see the result, but typically we stop recognizing new inputs for this turn
+            // However, the transition happens below in setTimeout. 
+            // We'll let the endTurn function handle the state reset.
+        }
+
+        if (gameState.dartsThrown >= 3) {
+            setTimeout(() => endTurn(false), 800);
+        }
+    }
+
+    function endTurn(isBust) {
+        const player = gameState.currentPlayer;
+        
+        if (isBust) {
+            gameState.scores[player] = gameState.startOfTurnScore;
+        }
+
+        // Switch Player
+        gameState.currentPlayer = player === 0 ? 1 : 0;
+        gameState.dartsThrown = 0;
+        gameState.currentTurnScore = 0;
+        gameState.startOfTurnScore = gameState.scores[gameState.currentPlayer];
+        
+        document.getElementById('status-msg').textContent = `Player ${gameState.currentPlayer + 1}'s Turn`;
+        updateUI();
+
+        // If mode is 'turn', and turn just ended, we stop listening.
+        if (micMode === 'turn') {
+            stopListening();
+        }
+    }
+
+    function winGame(playerId) {
+        gameState.gameOver = true;
+        document.getElementById('winner-name').textContent = `Player ${playerId + 1} Wins!`;
+        document.getElementById('winner-modal').classList.replace('hidden', 'flex');
+    }
+
+    function resetGame() {
+        if(isListening) stopListening();
+        gameState = {
+            scores: [501, 501],
+            currentPlayer: 0,
+            dartsThrown: 0,
+            currentTurnScore: 0,
+            startOfTurnScore: 501,
+            history: [],
+            gameOver: false
+        };
+        document.getElementById('game-log').innerHTML = '<div class="p-1 border-b border-slate-800">Game Started - 501</div>';
+        document.getElementById('winner-modal').classList.replace('flex', 'hidden');
+        closeModal();
+        updateUI();
+    }
+
+    function closeModal() {
+        document.getElementById('winner-modal').classList.add('hidden');
+        document.getElementById('winner-modal').classList.remove('flex');
+    }
+
+    function updateUI() {
+        document.getElementById('p1-score').textContent = gameState.scores[0];
+        document.getElementById('p2-score').textContent = gameState.scores[1];
+        
+        const p1Card = document.getElementById('p1-card');
+        const p2Card = document.getElementById('p2-card');
+        
+        if (gameState.currentPlayer === 0) {
+            p1Card.classList.add('active-player-card', 'ring-2', 'ring-blue-500');
+            p2Card.classList.remove('active-player-card', 'ring-2', 'ring-blue-500');
+            p2Card.classList.add('opacity-50');
+            p1Card.classList.remove('opacity-50');
+        } else {
+            p2Card.classList.add('active-player-card', 'ring-2', 'ring-blue-500');
+            p1Card.classList.remove('active-player-card', 'ring-2', 'ring-blue-500');
+            p1Card.classList.add('opacity-50');
+            p2Card.classList.remove('opacity-50');
+        }
+
+        document.getElementById('turn-total').textContent = gameState.currentTurnScore;
+
+        const p = gameState.currentPlayer + 1;
+        const darts = gameState.dartsThrown;
+        
+        [1, 2].forEach(pl => {
+            for(let i=1; i<=3; i++) document.getElementById(`p${pl}-dart-${i}`).classList.remove('bg-green-500', 'bg-slate-700');
+        });
+
+        for(let i=1; i<=3; i++) {
+             const el = document.getElementById(`p${p}-dart-${i}`);
+             el.classList.add('bg-slate-700');
+             if (i <= darts) {
+                 el.classList.remove('bg-slate-700');
+                 el.classList.add('bg-green-500');
+             }
+        }
+    }
+
+    function log(msg) {
+        const logEl = document.getElementById('game-log');
+        const entry = document.createElement('div');
+        entry.className = 'p-1 border-b border-slate-800 text-slate-300';
+        entry.textContent = msg;
+        logEl.prepend(entry);
+    }
+
+    function spawnHitMarker(x, y) {
+        const marker = document.createElement('div');
+        marker.className = 'hit-marker';
+        marker.style.left = `${x}px`;
+        marker.style.top = `${y}px`;
+        document.body.appendChild(marker);
+        setTimeout(() => marker.remove(), 1000);
+    }
+
+    // --- Voice Recognition ---
+
+    function updateMicUI(listening, mode) {
+        const status = document.getElementById('mic-status');
+        const btnSingle = document.getElementById('btn-single');
+        const btnTurn = document.getElementById('btn-turn');
+        const btnAlways = document.getElementById('btn-always');
+
+        // Reset Styles
+        [btnSingle, btnTurn, btnAlways].forEach(btn => {
+            btn.classList.remove('bg-red-600', 'mic-active');
+            btn.classList.add('bg-slate-700');
+        });
+
+        if (listening) {
+            status.textContent = `${mode.toUpperCase()} MODE ACTIVE`;
+            status.className = "text-xs text-red-400 font-bold font-mono";
+            
+            if (mode === 'single') btnSingle.classList.add('bg-red-600', 'mic-active');
+            if (mode === 'turn') btnTurn.classList.add('bg-red-600', 'mic-active');
+            if (mode === 'always') btnAlways.classList.add('bg-red-600', 'mic-active');
+        } else {
+            status.textContent = "OFF";
+            status.className = "text-xs text-slate-500 font-mono";
+        }
+    }
+
+    function initSpeechRecognition() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            document.getElementById('mic-status').textContent = "Not Supported";
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false; 
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+            isListening = true;
+            updateMicUI(true, micMode);
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            updateMicUI(false, micMode);
+            
+            // Auto-restart logic
+            if (micMode === 'always') {
+                if(!gameState.gameOver) startListening();
+            } else if (micMode === 'turn') {
+                // Keep listening if turn is not over
+                if (!gameState.gameOver && gameState.dartsThrown < 3) {
+                     startListening();
+                } else {
+                    // Turn is over or game over, stop fully
+                    micMode = 'off';
+                    updateMicUI(false, 'off');
                 }
+            } else if (micMode === 'single') {
+                micMode = 'off';
+                updateMicUI(false, 'off');
             }
         };
 
-        const Dartboard = {
-            create: function(containerId, svgId) {
-                const container = document.getElementById(containerId);
-                container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="w-full h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
-                const svg = document.getElementById(svgId);
-                
-                container.addEventListener('touchstart', (e) => TouchZoom.start(e, svgId), {passive: false});
-                container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
-                container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
-
-                const sectors = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
-                const r = { do: 170, di: 162, to: 107, ti: 99, bo: 16, bi: 6 };
-                sectors.forEach((num, i) => {
-                    const a = 360/20, s = -90-(a/2)+(i*a), e = s+a, ev = i%2===0;
-                    this.arc(svg, r.to, r.di, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-s-${num}`);
-                    this.arc(svg, r.bo, r.ti, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-si-${num}`);
-                    this.arc(svg, r.di, r.do, s, e, ev?'#ef4444':'#22c55e', num, 2, `Double ${num}`, `segment-d-${num}`);
-                    this.arc(svg, r.ti, r.to, s, e, ev?'#ef4444':'#22c55e', num, 3, `Triple ${num}`, `segment-t-${num}`);
-                    const ta = (s+e)/2*Math.PI/180;
-                    const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    txt.setAttribute("x", Math.cos(ta)*195); txt.setAttribute("y", Math.sin(ta)*195);
-                    txt.setAttribute("class", "dartboard-text"); txt.textContent = num;
-                    svg.appendChild(txt);
-                });
-                this.circ(svg, r.bo, "#22c55e", 25, "Outer Bull", "segment-25");
-                this.circ(svg, r.bi, "#ef4444", 50, "Bullseye", "segment-50");
-            },
-            arc: function(svg, r1, r2, a1, a2, col, v, m, l, id) {
-                const rad = d => d * Math.PI / 180;
-                const x1=Math.cos(rad(a1))*r2, y1=Math.sin(rad(a1))*r2, x2=Math.cos(rad(a2))*r2, y2=Math.sin(rad(a2))*r2, x3=Math.cos(rad(a2))*r1, y3=Math.sin(rad(a2))*r1, x4=Math.cos(rad(a1))*r1, y4=Math.sin(rad(a1))*r1;
-                const d = `M ${x1} ${y1} A ${r2} ${r2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 0 0 ${x4} ${y4} Z`;
-                const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                p.setAttribute("d", d); p.setAttribute("fill", col); p.setAttribute("class", "dartboard-segment"); if(id) p.setAttribute("id", id);
-                p.onclick = (e) => this.click(e, v*m, m, l); svg.appendChild(p);
-            },
-            circ: function(svg, r, col, v, l, id) {
-                const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                c.setAttribute("r", r); c.setAttribute("fill", col); c.setAttribute("class", "dartboard-segment"); if(id) c.setAttribute("id", id);
-                c.onclick = (e) => this.click(e, v, 1, l); svg.appendChild(c);
-            },
-            click: function(e, pts, mul, lbl) {
-                const m = document.createElement('div'); m.className = 'hit-marker';
-                m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
-                document.body.appendChild(m); setTimeout(() => m.remove(), 600);
-                Game.processThrow(pts, mul, lbl);
-            }
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            log(`🎤 Heard: "${transcript}"`);
+            parseVoiceInput(transcript);
         };
-    </script>
+        
+        recognition.onerror = (event) => {
+            if (event.error === 'aborted') return;
+            if (event.error === 'not-allowed') {
+                 log("Mic access denied.");
+                 micMode = 'off';
+            }
+            // For always/turn mode, errors often mean silence timeout. We let onend handle restart.
+        };
+    }
+
+    function setMicMode(mode) {
+        if (!recognition) return;
+        
+        // If already in that mode, stop it
+        if (isListening && micMode === mode) {
+            stopListening();
+            return;
+        }
+
+        micMode = mode;
+        // Stop current before starting new mode to ensure clean state
+        if (isListening) recognition.stop(); 
+        
+        // Wait slightly for stop to process before starting (logic handled in startListening call via UI button click usually, but here we force start)
+        setTimeout(() => startListening(), 100);
+    }
+
+    function startListening() {
+        if (isListening) return;
+        try {
+            recognition.start();
+        } catch (e) {
+            console.warn("Recog start error", e);
+        }
+    }
+
+    function stopListening() {
+        micMode = 'off';
+        if (recognition) recognition.stop();
+        isListening = false;
+        updateMicUI(false, 'off');
+    }
+
+    function parseVoiceInput(text) {
+        const lower = text.toLowerCase()
+            .replace(/[.,]/g, ' ') 
+            .replace(/\s+/g, ' ')  
+            .trim();
+
+        const parts = lower.split(' ');
+        let i = 0;
+        
+        const parseNum = (word) => {
+            if(!word) return null;
+            if (word === 'one') return 1;
+            if (word === 'two' || word === 'to' || word === 'too') return 2;
+            if (word === 'three') return 3;
+            if (word === 'four' || word === 'for') return 4;
+            if (word === 'five') return 5;
+            if (word === 'six') return 6;
+            if (word === 'seven') return 7;
+            if (word === 'eight') return 8;
+            if (word === 'nine') return 9;
+            if (word === 'ten') return 10;
+            if (word === 'twenty') return 20;
+            const num = parseInt(word);
+            return isNaN(num) ? null : num;
+        };
+
+        while (i < parts.length) {
+            // Check limits for Turn Mode inside the loop to prevent processing extra spoken words after bust/win
+            if (micMode === 'turn' && (gameState.dartsThrown >= 3 || gameState.gameOver)) break;
+            
+            const word = parts[i];
+            
+            if (word.includes('bull')) {
+                if (word === 'outer') {
+                    handleThrow(25, "Outer Bull");
+                    i+=2; 
+                } else {
+                    handleThrow(50, "Bullseye");
+                    i++;
+                }
+                continue;
+            }
+
+            let multiplier = 1;
+            let labelPrefix = "Single";
+            let val = null;
+
+            if (word === 'single') {
+                multiplier = 1;
+                i++;
+            } else if (word === 'double') {
+                multiplier = 2;
+                labelPrefix = "Double";
+                i++;
+            } else if (word === 'triple' || word === 'treble') {
+                multiplier = 3;
+                labelPrefix = "Triple";
+                i++;
+            }
+
+            if (i < parts.length) {
+                if (parts[i] === 'twenty' && parts[i+1] === 'five') {
+                    val = 25;
+                    i+=2;
+                } else {
+                    val = parseNum(parts[i]);
+                    i++;
+                }
+            }
+
+            if (val !== null) {
+                if (val === 25 && multiplier === 1) {
+                    handleThrow(25, "Outer Bull");
+                } 
+                else if (val >= 0 && val <= 20) {
+                    handleThrow(val * multiplier, `${labelPrefix} ${val}`);
+                }
+            } else {
+                // Skip unrecognized word to keep loop moving
+                // i++ is already handled if we consumed a multiplier but no number
+                // if we didn't consume anything, force i++
+                if (multiplier === 1 && val === null && !word.includes('bull')) {
+                    i++;
+                }
+            }
+        }
+    }
+</script>
 </body>
 </html>
