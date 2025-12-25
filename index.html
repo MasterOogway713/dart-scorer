@@ -185,7 +185,7 @@
 
     <header class="lg:hidden flex items-center justify-between p-4 z-40 shrink-0 bg-transparent">
         <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
-        <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
+        <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">DartsOS</div>
         <div class="flex gap-2">
             <div class="flex items-center glass-panel p-1 rounded-lg gap-1">
                 <button onclick="Game.cycleMicMode()" class="p-1 px-2 rounded text-slate-400" id="btn-mic-header-mob">🎙️</button>
@@ -281,7 +281,7 @@
                 <button onclick="App.setMobileTab('voice')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-white" id="tab-btn-voice">Voice</button>
             </div>
 
-            <div class="flex-grow relative overflow-hidden rounded-2xl glass-panel border-slate-700/30">
+            <div class="flex-grow relative overflow-hidden rounded-2xl glass-panel border-slate-700/30 min-h-0">
                 <div id="mob-tab-keypad" class="mobile-tab-content active flex-col h-full p-3 gap-2">
                     <div class="h-12 flex items-center justify-between px-3 bg-black/20 rounded-xl border border-white/5 mb-1">
                         <div class="text-xl font-mono font-bold text-white/90" id="mob-input-display">Enter score</div>
@@ -306,9 +306,9 @@
                     <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20">
                         <div class="text-slate-500 text-xs italic">Touch & Hold to Zoom</div>
                     </div>
-                    <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container" style="touch-action: none;"></div>
+                    <div class="flex-grow relative flex items-center justify-center p-2 overflow-hidden" id="mob-board-container" style="touch-action: none;"></div>
                 </div>
-                <div id="mob-tab-voice" class="mobile-tab-content flex-col h-full p-6 justify-center gap-6">
+                <div id="mob-tab-voice" class="mobile-tab-content flex-col h-full p-6 gap-6 overflow-y-auto custom-scroll">
                     <div class="text-center">
                         <div class="text-4xl mb-4">🎙️</div>
                         <h3 class="text-xl font-bold mb-2">Voice Control</h3>
@@ -504,7 +504,15 @@
     </div>
 
     <script>
-        const AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},speak:function(e){if(window.speechSynthesis){window.speechSynthesis.cancel();const t=new SpeechSynthesisUtterance(e);t.rate=1.1,window.speechSynthesis.speak(t)}}};
+        const AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},
+        speak:function(text){
+            if(window.speechSynthesis){
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = 1.1; u.pitch = 1.0;
+                window.speechSynthesis.speak(u);
+            }
+        }};
         const Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1; if(this.ctx) this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height); }};
 
         const PlayerColors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#a855f7', '#f97316'];
@@ -522,10 +530,12 @@
             init: function(mode, resetLegs = true) {
                 this.mode = mode || 'x01';
                 
-                // Set default names if empty
-                if (this.matchConfig.playerNames.length !== this.matchConfig.playerCount) {
-                    this.matchConfig.playerNames = [];
-                    for(let i=0; i<this.matchConfig.playerCount; i++) this.matchConfig.playerNames.push(`Player ${i+1}`);
+                // Ensure names array matches count (Bug Fix)
+                while(this.matchConfig.playerNames.length < this.matchConfig.playerCount) {
+                    this.matchConfig.playerNames.push(`Player ${this.matchConfig.playerNames.length+1}`);
+                }
+                if(this.matchConfig.playerNames.length > this.matchConfig.playerCount) {
+                    this.matchConfig.playerNames = this.matchConfig.playerNames.slice(0, this.matchConfig.playerCount);
                 }
 
                 if(resetLegs) { 
@@ -537,7 +547,6 @@
                     this.gameLog = [];
                 }
                 
-                // Initialize Arrays for N players
                 this.cricket = Array.from({length: this.matchConfig.playerCount}, () => ({20:0,19:0,18:0,17:0,16:0,15:0,25:0}));
                 this.atc = new Array(this.matchConfig.playerCount).fill(1);
                 
@@ -570,12 +579,6 @@
                 UI.render();
             },
             nextLeg: function() {
-                // Check match win
-                let winner = -1;
-                this.legs.forEach((l, i) => { if(l >= this.matchConfig.legsToWin) winner = i; });
-                if(winner > -1) {
-                    // Match Over - for now just restart leg
-                }
                 this.init(this.mode, false);
             },
             resetTurn: function() {
@@ -584,36 +587,34 @@
                     dartsThrown: 0, score: 0, history: [], darts: [], 
                     startScore: start, bust: false, won: false, markers: [] 
                 };
-                // Remove markers from board
                 document.querySelectorAll('.hit-marker').forEach(e => e.remove());
             },
             processThrow: function(points, multiplier, label, coords) {
                 if(this.turn.won || this.turn.bust || this.turn.dartsThrown >= 3) return;
                 this.saveState();
                 
-                // Render sticky marker
                 if (coords) UI.drawMarker(coords.x, coords.y, this.currentPlayer);
 
-                // Sound
                 if(points===0) AudioEngine.playTone(150,'sawtooth',0.1);
                 else if(multiplier===3) AudioEngine.playTriple();
                 else if(multiplier===2) AudioEngine.playDouble();
                 else AudioEngine.playHit();
 
-                // Logic Branch
                 if(this.mode === 'x01') this.handleX01(points, multiplier, label);
                 else if(this.mode === 'cricket') this.handleCricket(points, multiplier, label);
                 else if(this.mode === 'atc') this.handleATC(points, multiplier, label);
 
-                // 180 FX (Specific)
-                if(this.turn.history.length === 3 && this.turn.history.every(h => h.includes("Triple 20"))) {
-                    AudioEngine.play180();
+                // Caller Logic
+                if (this.mode === 'x01' && this.turn.dartsThrown === 3 && !this.turn.bust && !this.turn.won) {
+                    if (this.turn.score === 180) AudioEngine.speak("One Hundred and Eighty");
+                    else if (this.turn.score >= 140) AudioEngine.speak("One Hundred and Forty");
+                    else if (this.turn.score >= 100) AudioEngine.speak("One Hundred");
+                    else AudioEngine.speak(this.turn.score.toString());
                 }
 
                 UI.render();
                 this.persist();
                 
-                // Auto next turn
                 if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
             },
             updateStats: function(points, isCheckoutAttempt, isCheckoutHit) {
@@ -639,7 +640,6 @@
                     if (rem < 0) bust = true;
                 }
 
-                // Check for checkout step hit
                 const currentScore = this.scores[this.currentPlayer];
                 const suggested = UI.getCheckout(currentScore);
                 if (suggested && !bust) {
@@ -655,6 +655,7 @@
 
                 if(bust) {
                     this.turn.bust = true; AudioEngine.playBust();
+                    AudioEngine.speak("Bust");
                     this.logAction(`${this.pName()} BUST (${label})`);
                     document.body.classList.add('anim-shake');
                     setTimeout(() => document.body.classList.remove('anim-shake'), 400);
@@ -687,13 +688,10 @@
                     let scoreToAdd = 0;
                     let newHits = hits + mul;
                     
-                    // Cricket Multi-player logic:
-                    // You score if you have it closed (3 hits) AND ANY other player has NOT closed it.
                     let canScore = false;
                     
                     if(hits < 3) {
                         if(newHits > 3) {
-                            // Check if anyone else has it open
                             const othersOpen = this.cricket.some((c, i) => i !== p && c[seg] < 3);
                             if(othersOpen) scoreToAdd = (newHits - 3) * seg;
                             this.cricket[p][seg] = 3; 
@@ -717,7 +715,6 @@
                     this.playerStats[p].totalDarts++;
 
                     const allClosed = [20,19,18,17,16,15,25].every(k => this.cricket[p][k] >= 3);
-                    // Win condition: All closed AND highest score (or tied highest)
                     const myScore = this.scores[p];
                     const highestOpponent = Math.max(...this.scores.filter((s, i) => i !== p));
                     
@@ -804,6 +801,7 @@
                 this.turn.won = true; this.legs[this.currentPlayer]++;
                 UI.render(); 
                 AudioEngine.playWin(); Confetti.start();
+                AudioEngine.speak("Game Shot");
                 this.stopMic();
                 setTimeout(() => {
                     document.getElementById('winner-name').textContent = `${this.pName()} Wins!`;
@@ -1015,7 +1013,9 @@
                 const deskList = document.getElementById('desktop-player-list');
                 deskList.innerHTML = '';
                 
-                Game.matchConfig.playerNames.forEach((name, idx) => {
+                // Safety check: iterate based on count, not array length if mismatched
+                for(let idx = 0; idx < Game.matchConfig.playerCount; idx++) {
+                    const name = Game.matchConfig.playerNames[idx];
                     const isActive = idx === p;
                     const pScore = Game.scores[idx];
                     let dScore = pScore;
@@ -1063,7 +1063,7 @@
                         </div>
                     `;
                     deskList.appendChild(card);
-                });
+                }
 
                 document.getElementById('desk-status').textContent = `${Game.matchConfig.playerNames[p]}'s Turn`;
                 
@@ -1420,7 +1420,7 @@
         const Dartboard = {
             create: function(containerId, svgId) {
                 const container = document.getElementById(containerId);
-                container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="w-full h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
+                container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="max-w-full max-h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
                 const svg = document.getElementById(svgId);
                 svg.addEventListener('click', (e) => {
                     if (e.target === svg || !e.target.classList.contains('dartboard-segment')) {
