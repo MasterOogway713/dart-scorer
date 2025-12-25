@@ -11,7 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700;800&family=Oswald:wght@500;700&display=swap');
 
         :root {
-            --glass-bg: rgba(15, 17, 42, 0.7);
+            --glass-bg: rgba(15, 23, 42, 0.6);
             --glass-border: rgba(255, 255, 255, 0.1);
             --active-card-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(185, 28, 28, 0.9));
         }
@@ -22,6 +22,10 @@
             margin: 0; 
             padding: 0; 
             overflow: hidden; 
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
             background-color: #020617;
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.4), transparent 40%), 
@@ -29,8 +33,6 @@
             background-repeat: no-repeat;
             background-size: cover;
             color: #fff;
-            font-family: 'Space Grotesk', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .font-mono { font-family: 'JetBrains Mono', monospace; }
@@ -55,7 +57,6 @@
             box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
         }
 
-        /* Dartboard Styles */
         .dartboard-segment { transition: opacity 0.1s; cursor: pointer; stroke: #94a3b8; stroke-width: 1px; }
         .dartboard-segment:hover, .dartboard-segment.hover-highlight { 
             opacity: 1; 
@@ -69,7 +70,6 @@
         .segment-highlight { fill: #f59e0b !important; filter: drop-shadow(0 0 8px #f59e0b); stroke: #fff; stroke-width: 2px; animation: pulse-gold 1s infinite; }
         @keyframes pulse-gold { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* Inputs & Buttons */
         .keypad-btn {
             background: rgba(255,255,255,0.03);
             font-family: 'Oswald', sans-serif;
@@ -82,7 +82,6 @@
         }
         .keypad-btn:active { background: rgba(255,255,255,0.15); }
 
-        /* FX */
         #confetti-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100; width: 100%; height: 100%; }
         
         .hit-marker {
@@ -106,32 +105,27 @@
             display: none;
             transform: translate(-50%, -130%);
         }
-        #magnifier svg { width: 100%; height: 100%; display: block; }
+        #magnifier svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
-        /* Overlay */
         #one80-overlay { pointer-events: none; }
         .one80-text { font-size: 15vw; font-weight: 900; color: #facc15; text-shadow: 0 0 50px rgba(234, 179, 8, 0.8); animation: zoom-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes zoom-in { 0% { transform: scale(0) rotate(-45deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
         
-        /* Mobile Tabs */
         .mobile-tab-content { display: none; }
         .mobile-tab-content.active { display: flex; }
-        
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
-
-        /* Mic Animations */
-        @keyframes pulse-red-border {
-            0% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            50% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
-            100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .mic-active-btn { 
-            animation: pulse-red-border 2s infinite; 
-            background-color: rgba(220, 38, 38, 0.3) !important; 
-            color: #fff !important;
-            border-color: #ef4444 !important;
-        }
+        .mic-btn-active { animation: pulse-red 2s infinite; background-color: #b91c1c !important; border-color: #ef4444 !important; color: white !important; }
     </style>
 </head>
 <body class="flex flex-col h-[100dvh] text-slate-200 selection:bg-purple-500 selection:text-white overflow-hidden">
@@ -148,10 +142,7 @@
             <span class="font-bold text-xl tracking-tight text-white">Darts<span class="text-purple-400">OS</span></span>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
-                <span>Undo</span>
-            </button>
+            <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2"><span>Undo</span></button>
             <button onclick="App.openSettings()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-blue-400">Settings</button>
         </div>
     </header>
@@ -160,10 +151,7 @@
     <header class="lg:hidden flex items-center justify-between p-4 z-40 shrink-0 bg-transparent">
         <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
         <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
-        <div class="flex gap-2">
-            <button onclick="App.toggleMobileLog()" class="glass-panel p-2 rounded-lg text-slate-300">📋</button>
-            <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
-        </div>
+        <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
     </header>
 
     <main id="main-container" class="flex-grow relative overflow-hidden flex flex-col h-full lg:p-6 lg:gap-6">
@@ -175,20 +163,20 @@
                     <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-tight text-center">Select Game</h1>
                     <p class="text-slate-400 mb-10 text-center">Touch & Voice Scoring</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <button onclick="App.startGame('501')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
+                        <button onclick="App.startGame('x01')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
                             <div class="text-5xl group-hover:scale-110 transition">🎯</div>
-                            <h3 class="text-xl font-bold text-white">501</h3>
-                            <p class="text-slate-400 text-xs">Standard Tournament</p>
+                            <h3 class="text-xl font-bold text-white">X01</h3>
+                            <p class="text-slate-400 text-xs">501, 301, Double Out</p>
                         </button>
-                        <button onclick="App.startGame('301')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
-                            <div class="text-5xl group-hover:scale-110 transition">⚡</div>
-                            <h3 class="text-xl font-bold text-white">301</h3>
-                            <p class="text-slate-400 text-xs">Quick Fire</p>
-                        </button>
-                        <button onclick="alert('Clock/Cricket logic coming soon! Starting 501 for now.'); App.startGame('501')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3 opacity-60">
+                        <button onclick="App.startGame('cricket')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
                             <div class="text-5xl group-hover:scale-110 transition">🏏</div>
                             <h3 class="text-xl font-bold text-white">Cricket</h3>
-                            <p class="text-slate-400 text-xs">Coming Soon</p>
+                            <p class="text-slate-400 text-xs">Tactical Territory</p>
+                        </button>
+                        <button onclick="App.startGame('atc')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
+                            <div class="text-5xl group-hover:scale-110 transition">🕰️</div>
+                            <h3 class="text-xl font-bold text-white">Clock</h3>
+                            <p class="text-slate-400 text-xs">Around the World</p>
                         </button>
                     </div>
                 </div>
@@ -214,34 +202,29 @@
                 <div class="flex justify-between text-[10px] font-bold opacity-80 mt-2 pt-3 border-t border-white/20">
                     <div class="flex flex-col">
                         <span class="opacity-60 uppercase">Turn</span>
-                        <!-- Mobile Turn Darts Display -->
+                        <!-- Separate darts display mobile -->
                         <div class="flex gap-1 items-center" id="mob-turn-score">
                             <span class="opacity-50">0</span>
                         </div>
                     </div>
                     <div class="flex flex-col items-end">
                         <span class="opacity-60 uppercase">Darts</span>
-                        <span class="text-sm" id="mob-darts">0/3</span>
+                        <span class="text-sm" id="mob-darts">0</span>
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-between items-center px-1">
-                <div class="font-condensed text-lg font-bold text-amber-400 uppercase tracking-wide flex items-center gap-2">
-                    <span id="mob-status-text">Your Turn</span>
-                    <span id="mob-mic-indicator" class="hidden w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                </div>
+                <div class="font-condensed text-lg font-bold text-amber-400 uppercase tracking-wide">Your Turn</div>
                 <div class="text-xs text-slate-300 font-mono bg-white/5 px-2 py-1 rounded" id="mob-suggestion">Checkout: -</div>
             </div>
 
             <div class="glass-panel rounded-full p-1 flex shrink-0">
                 <button onclick="App.setMobileTab('keypad')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors bg-white/10 text-white shadow-sm" id="tab-btn-keypad">Keypad</button>
                 <button onclick="App.setMobileTab('board')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-white" id="tab-btn-board">Board</button>
-                <button onclick="App.setMobileTab('voice')" class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-white" id="tab-btn-voice">Voice</button>
             </div>
 
             <div class="flex-grow relative overflow-hidden rounded-2xl glass-panel border-slate-700/30">
-                <!-- Mobile Keypad -->
                 <div id="mob-tab-keypad" class="mobile-tab-content active flex-col h-full p-3 gap-2">
                     <div class="h-12 flex items-center justify-between px-3 bg-black/20 rounded-xl border border-white/5 mb-1">
                         <div class="text-xl font-mono font-bold text-white/90" id="mob-input-display">Enter score</div>
@@ -263,269 +246,128 @@
                     </div>
                 </div>
 
-                <!-- Mobile Board -->
                 <div id="mob-tab-board" class="mobile-tab-content flex-col h-full relative">
-                    <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20">
+                    <div class="h-10 flex items-center justify-center gap-2 border-b border-white/5 shrink-0 bg-black/20" id="mob-darts-strip">
                         <div class="text-slate-500 text-xs italic">Touch & Hold to Zoom</div>
                     </div>
                     <div class="flex-grow relative flex items-center justify-center p-2" id="mob-board-container" style="touch-action: none;"></div>
                 </div>
-
-                <!-- Mobile Voice -->
-                <div id="mob-tab-voice" class="mobile-tab-content flex-col h-full p-6 justify-center gap-6">
-                    <div class="text-center">
-                        <div class="text-4xl mb-4">🎙️</div>
-                        <h3 class="text-xl font-bold mb-2">Voice Control</h3>
-                        <p class="text-sm text-slate-400 mb-6">"Triple 20", "Bullseye", "25"</p>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <button id="mob-btn-single" onclick="VoiceEngine.setMode('single')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Single Throw</button>
-                        <button id="mob-btn-turn" onclick="VoiceEngine.setMode('turn')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Full Turn (3)</button>
-                        <button id="mob-btn-always" onclick="VoiceEngine.setMode('always')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Always On</button>
-                    </div>
-                    <button onclick="VoiceEngine.stop()" class="mt-4 py-3 rounded-xl bg-red-900/30 text-red-400 border border-red-900/50 font-bold text-sm">Stop Microphone</button>
-                </div>
             </div>
         </div>
 
-        <!-- DESKTOP GAME LAYOUT -->
-        <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2 overflow-hidden">
-            <!-- Left Column: Players & Controls -->
-            <div class="flex-grow flex flex-col gap-4 w-5/12 overflow-y-auto custom-scroll pr-2 min-h-0">
-                <!-- P1 -->
-                <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
+        <!-- DESKTOP GAME LAYOUT - Added p-2 to container to prevent ring clipping -->
+        <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
+            <div class="flex-grow flex flex-col gap-6 w-5/12 overflow-y-auto custom-scroll p-2 min-h-0">
+                <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
                     <div class="flex justify-between items-start relative z-10">
                         <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
                             <span id="desk-p1-name">Player 1</span>
+                            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded hidden" id="p1-indicator-desk">THROWING</span>
                         </h2>
                         <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p1-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
                     </div>
                     <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
+                        <div class="text-8xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
                         <div class="text-right">
-                             <div id="desk-p1-sug" class="text-amber-400 font-mono font-bold text-xl animate-pulse h-6"></div>
-                             <div class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
+                             <div id="desk-p1-sug" class="text-amber-400 font-mono font-bold text-2xl animate-pulse h-8"></div>
+                             <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- P2 -->
-                <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
+                <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[200px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">2</div>
                     <div class="flex justify-between items-start relative z-10">
                         <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
                             <span id="desk-p2-name">Player 2</span>
+                            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded hidden" id="p2-indicator-desk">THROWING</span>
                         </h2>
                         <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p2-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
                     </div>
                     <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
+                        <div class="text-8xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
                         <div class="text-right">
-                             <div id="desk-p2-sug" class="text-amber-400 font-mono font-bold text-xl animate-pulse h-6"></div>
-                             <div class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
+                             <div id="desk-p2-sug" class="text-amber-400 font-mono font-bold text-2xl animate-pulse h-8"></div>
+                             <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Voice Controls -->
-                <div class="glass-panel rounded-2xl p-4">
-                    <div class="flex justify-between items-center mb-3">
+                <div class="glass-panel rounded-2xl p-6 mt-auto">
+                    <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Voice Controls</h3>
                         <div class="text-xs text-slate-500 font-mono" id="desk-mic-status">OFF</div>
                     </div>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button id="desk-btn-single" onclick="VoiceEngine.setMode('single')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700 flex flex-col items-center gap-1">
-                            <span>🎤</span> Single
-                        </button>
-                        <button id="desk-btn-turn" onclick="VoiceEngine.setMode('turn')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700 flex flex-col items-center gap-1">
-                            <span>🔄</span> Turn
-                        </button>
-                        <button id="desk-btn-always" onclick="VoiceEngine.setMode('always')" class="py-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700 flex flex-col items-center gap-1">
-                            <span>♾️</span> Always
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Game Log -->
-                <div class="glass-panel rounded-2xl p-4 flex-grow flex flex-col overflow-hidden min-h-[150px]">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-700 pb-2">Game Log</h3>
-                    <div id="desktop-game-log" class="overflow-y-auto custom-scroll flex-grow font-mono text-xs space-y-1 text-slate-300">
-                        <div class="opacity-50 italic">Game Started</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <button onclick="Game.setMicMode('single')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Single</button>
+                        <button onclick="Game.setMicMode('turn')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Turn</button>
+                        <button onclick="Game.setMicMode('always')" class="py-4 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 text-slate-200 text-xs font-bold transition border border-slate-700">Always</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Board & Stats -->
-            <div class="w-7/12 flex flex-col h-full relative gap-4 min-h-0">
-                <div class="shrink-0 glass-panel rounded-2xl p-4 flex justify-between items-center bg-indigo-950/20">
-                    <div class="flex items-center gap-6">
-                        <div>
-                            <span class="text-[10px] uppercase text-indigo-300 font-bold block">Turn Total</span>
-                            <!-- Desktop Turn Darts Display -->
-                            <div id="desk-turn-total" class="flex gap-2 text-2xl font-mono font-bold text-white items-center">
-                                <span class="opacity-50">0</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-1">
-                            <div id="desk-dart-1" class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors"></div>
-                            <div id="desk-dart-2" class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors"></div>
-                            <div id="desk-dart-3" class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors"></div>
-                        </div>
+            <div class="w-7/12 flex flex-col h-full relative gap-6">
+                <div class="shrink-0 glass-panel rounded-2xl p-6 flex justify-between items-center bg-indigo-950/20">
+                    <div>
+                        <span class="text-xs uppercase text-indigo-300 font-bold">Turn Total</span>
+                        <!-- Separate boxes for turn scores -->
+                        <div id="desk-turn-total" class="flex gap-2 items-center text-white">0</div>
                     </div>
                     <div class="text-right">
                         <div id="desk-status" class="text-2xl font-bold text-white">Ready</div>
-                        <div class="text-xs text-slate-400" id="desk-last-call">Waiting for throw...</div>
                     </div>
                 </div>
-                
-                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-2 bg-black/20 overflow-hidden" id="desk-board-container" style="touch-action: none;"></div>
+                <!-- Added touch-action here too for consistency on touch desktops -->
+                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20 overflow-hidden" id="desk-board-container" style="touch-action: none;"></div>
             </div>
         </div>
     </main>
 
-    <!-- SETTINGS MODAL -->
-    <div id="settings-modal" class="fixed inset-0 z-[80] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
+    <div id="settings-modal" class="absolute inset-0 z-[80] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
         <div class="glass-panel p-8 rounded-2xl w-full max-w-md border-slate-700">
             <h2 class="text-2xl font-bold text-white mb-6">Settings</h2>
             <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="Game.manualEditScore()" class="col-span-2 p-4 rounded bg-amber-600/20 text-amber-400 font-bold hover:bg-amber-600/30 border border-amber-600/50 flex items-center justify-center gap-2">
-                        <span>✏️</span> Manually Edit Score
-                    </button>
-                    <button onclick="App.startGame('501'); App.closeSettings()" class="p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">New 501</button>
-                    <button onclick="App.startGame('301'); App.closeSettings()" class="p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">New 301</button>
-                </div>
+                <button onclick="Game.setStartScore(501); App.closeSettings()" class="w-full p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">501 Game</button>
+                <button onclick="Game.setStartScore(301); App.closeSettings()" class="w-full p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">301 Game</button>
                 <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-indigo-600 text-white font-bold mt-4">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- LOG MODAL (Mobile) -->
-    <div id="mobile-log-modal" class="fixed inset-0 z-[70] bg-slate-900/95 backdrop-blur-xl hidden flex-col p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-white">Match History</h2>
-            <button onclick="App.toggleMobileLog()" class="text-slate-400 text-xl">✕</button>
-        </div>
-        <div id="mobile-game-log" class="overflow-y-auto custom-scroll flex-grow font-mono text-sm space-y-2 text-slate-300"></div>
-    </div>
-
-    <!-- WINNER MODAL -->
-    <div id="winner-modal" class="fixed inset-0 z-[90] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center text-center p-6">
+    <div id="winner-modal" class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center text-center p-6">
         <div class="text-8xl mb-6 animate-bounce">🏆</div>
         <h1 id="winner-name" class="text-4xl md:text-6xl font-black text-white mb-2">Player 1 Wins!</h1>
         <div class="flex gap-4 mt-8">
-             <button onclick="App.startGame(Game.settings.startScore.toString())" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold hover:scale-105 transition">Play Again</button>
+             <button onclick="location.reload()" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold">New Game</button>
         </div>
     </div>
 
     <script>
-        // --- AUDIO ENGINE ---
-        const AudioEngine = {
-            ctx: null,
-            init: function() { window.AudioContext = window.AudioContext || window.webkitAudioContext; if(!this.ctx) this.ctx = new AudioContext(); },
-            playTone: function(freq, type, duration) {
-                if(!this.ctx) this.init();
-                if(this.ctx.state === 'suspended') this.ctx.resume();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                gain.gain.setValueAtTime(0, this.ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.15, this.ctx.currentTime + 0.02);
-                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + duration);
-            },
-            playHit: function() { this.playTone(400, "sine", 0.15); },
-            playDouble: function() { this.playTone(600, "triangle", 0.2); },
-            playTriple: function() { this.playTone(800, "square", 0.15); },
-            playBust: function() { this.playTone(150, "sawtooth", 0.4); },
-            playWin: function() {
-                if(!this.ctx) this.init();
-                [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => setTimeout(() => this.playTone(f, "triangle", 0.3), 150 * i));
-            },
-            play180: function() { this.playWin(); this.speak("One Hundred and Eighty!"); },
-            speak: function(text) {
-                if(window.speechSynthesis) {
-                    window.speechSynthesis.cancel();
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.rate = 1.1;
-                    window.speechSynthesis.speak(u);
-                }
-            }
-        };
+        const AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},speak:function(e){if(window.speechSynthesis){window.speechSynthesis.cancel();const t=new SpeechSynthesisUtterance(e);t.rate=1.1,window.speechSynthesis.speak(t)}}};
+        const Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1}};
 
-        // --- FX: CONFETTI ---
-        const Confetti = {
-            canvas: document.getElementById("confetti-canvas"),
-            ctx: document.getElementById("confetti-canvas").getContext("2d"),
-            particles: [], active: false,
-            init: function() { this.resize(); window.addEventListener("resize", () => this.resize()); },
-            resize: function() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; },
-            start: function() {
-                this.active = true; this.particles = [];
-                for(let i=0; i<150; i++) this.particles.push({
-                    x: Math.random()*this.canvas.width, y: Math.random()*this.canvas.height-this.canvas.height,
-                    color: ["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],
-                    size: 4*Math.random()+4, speedY: 3*Math.random()+2, speedX: 2*Math.random()-1,
-                    rotation: 360*Math.random(), rotationSpeed: 10*Math.random()-5
-                });
-                this.loop();
-            },
-            loop: function() {
-                if(!this.active) return this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-                this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-                this.particles.forEach(p => {
-                    p.y += p.speedY; p.x += p.speedX; p.rotation += p.rotationSpeed;
-                    if(p.y > this.canvas.height) p.y = -20;
-                    this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.rotation*Math.PI/180);
-                    this.ctx.fillStyle = p.color; this.ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-                    this.ctx.restore();
-                });
-                requestAnimationFrame(() => this.loop());
-            },
-            stop: function() { this.active = false; }
-        };
-
-        // --- GAME LOGIC ---
         const Game = {
             scores: [501, 501], legs: [0, 0], currentPlayer: 0,
-            // Updated turn object to include darts array
             turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false },
             historyStack: [], inputBuffer: '', settings: { startScore: 501 },
-            gameLog: [],
+            micMode: 'off', recognition: null, isListening: false,
 
             init: function(startScore) {
-                this.settings.startScore = parseInt(startScore) || 501;
+                this.settings.startScore = startScore || 501;
                 this.scores = [this.settings.startScore, this.settings.startScore];
                 this.legs = [0, 0]; this.currentPlayer = 0;
-                this.gameLog = [];
                 this.resetTurn();
-                Confetti.init(); AudioEngine.init();
-                
-                document.getElementById('winner-modal').classList.add('hidden');
-                document.getElementById('winner-modal').classList.remove('flex');
-                document.getElementById('desktop-game-log').innerHTML = '<div class="opacity-50 italic">Game Started</div>';
-                document.getElementById('mobile-game-log').innerHTML = '<div class="opacity-50 italic">Game Started</div>';
-                
+                Confetti.init(); AudioEngine.init(); 
+                this.initMic();
                 UI.render();
             },
-
             resetTurn: function() {
-                // Initialize darts array
                 this.turn = { dartsThrown: 0, score: 0, history: [], darts: [], startScore: this.scores[this.currentPlayer], bust: false, won: false };
-                UI.updateStatus();
             },
-
             processThrow: function(points, multiplier, label) {
                 if(this.turn.won || this.turn.bust || this.turn.dartsThrown >= 3) return;
-
                 this.saveState();
-                
-                // Audio
                 if(points === 0) AudioEngine.playTone(150, 'sawtooth', 0.1);
                 else if(multiplier === 3) AudioEngine.playTriple();
                 else if(multiplier === 2) AudioEngine.playDouble();
@@ -534,34 +376,21 @@
                 const rem = this.scores[this.currentPlayer] - points;
                 let bust = false;
                 const isDouble = multiplier === 2 || label.includes("Bullseye");
-                
-                // Bust Rules (Standard 501 Double Out)
                 if (rem < 0 || rem === 1 || (rem === 0 && !isDouble)) bust = true;
 
                 if(bust) {
-                    this.turn.bust = true; 
-                    AudioEngine.playBust();
-                    this.logAction(`P${this.currentPlayer+1} BUST (${label})`);
+                    this.turn.bust = true; AudioEngine.playBust();
                     this.scores[this.currentPlayer] = this.turn.startScore;
-                    UI.updateStatus("BUST!");
                     setTimeout(() => this.nextTurn(), 1500);
                 } else {
                     this.scores[this.currentPlayer] = rem;
                     this.turn.score += points;
                     this.turn.dartsThrown++;
                     this.turn.history.push(label);
-                    // ADDED: Track individual dart score
                     this.turn.darts.push(points);
-                    
-                    this.logAction(`P${this.currentPlayer+1}: ${label} (${points})`);
-                    
-                    if(rem === 0) {
-                        this.winLeg();
-                        return; // Stop processing
-                    }
+                    if(rem === 0) this.winLeg();
                 }
                 
-                // 180 Check
                 if(this.turn.history.length === 3 && this.turn.history.every(h => h.includes("Triple 20"))) {
                     document.getElementById('one80-overlay').classList.remove('hidden');
                     AudioEngine.play180();
@@ -569,76 +398,28 @@
                 }
 
                 UI.render();
-
-                // Mic Logic Interaction
-                if(VoiceEngine.mode === 'turn' && this.turn.dartsThrown >= 3 && !bust) {
-                    // Voice engine handles its own stop/restart logic
-                } else if (this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) {
-                    setTimeout(() => this.nextTurn(), 1000);
-                }
+                if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
             },
-
-            saveState: function() { 
-                this.historyStack.push(JSON.parse(JSON.stringify({ s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs, log: this.gameLog }))); 
-                if(this.historyStack.length > 50) this.historyStack.shift();
-            },
-
+            saveState: function() { this.historyStack.push(JSON.parse(JSON.stringify({ s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs }))); },
             undo: function() {
                 if(this.historyStack.length === 0) return;
                 const st = this.historyStack.pop();
-                this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l; this.gameLog = st.log;
-                UI.render(); UI.renderLog(); AudioEngine.speak("Undo");
+                this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l;
+                UI.render(); AudioEngine.speak("Undo");
             },
-
-            manualEditScore: function() {
-                App.closeSettings();
-                const current = this.scores[this.currentPlayer];
-                const input = prompt(`Edit Player ${this.currentPlayer + 1} Score manually.\nCurrent: ${current}`, current);
-                if(input !== null) {
-                    const val = parseInt(input);
-                    if(!isNaN(val) && val >= 0) {
-                        this.saveState();
-                        this.scores[this.currentPlayer] = val;
-                        // Reset turn to avoid math conflicts
-                        this.turn.dartsThrown = 0;
-                        this.turn.score = 0;
-                        this.turn.startScore = val;
-                        this.turn.history = [];
-                        this.turn.darts = [];
-                        this.logAction(`Manual Edit: P${this.currentPlayer+1} set to ${val}`);
-                        UI.render();
-                    }
-                }
-            },
-
             winLeg: function() {
-                this.turn.won = true; 
-                this.legs[this.currentPlayer]++;
-                AudioEngine.playWin(); 
-                Confetti.start();
-                VoiceEngine.stop(); // Stop mic on win
-                
-                document.getElementById('winner-name').textContent = `Player ${this.currentPlayer + 1} Wins!`;
-                document.getElementById('winner-modal').classList.remove('hidden');
-                document.getElementById('winner-modal').classList.add('flex');
+                this.turn.won = true; this.legs[this.currentPlayer]++;
+                AudioEngine.playWin(); Confetti.start();
+                this.stopMic();
+                setTimeout(() => { 
+                    if(confirm("Player " + (this.currentPlayer+1) + " Wins! New Game?")) Game.init(Game.settings.startScore); 
+                }, 1000);
             },
-
             nextTurn: function() {
                 this.currentPlayer = this.currentPlayer === 0 ? 1 : 0;
-                this.resetTurn(); 
-                UI.render();
-                
-                if(VoiceEngine.mode === 'turn' && !VoiceEngine.isListening) {
-                    VoiceEngine.start();
-                }
+                this.resetTurn(); UI.render();
+                if(this.micMode === 'turn' && !this.isListening) this.startMic();
             },
-
-            logAction: function(msg) {
-                this.gameLog.push(msg);
-                UI.renderLog();
-            },
-
-            // Keypad Logic
             inputDigit: function(d) {
                 this.inputBuffer += d; 
                 document.getElementById('mob-input-display').textContent = this.inputBuffer;
@@ -652,296 +433,145 @@
                 if(!isNaN(val)) {
                     let mul = 1; let lbl = "Single " + val;
                     if(val === 50) { mul=2; lbl="Bullseye"; }
-                    else if(val === 25) { mul=1; lbl="Outer Bull"; }
-                    else if(val > 60) { mul=3; lbl="Total " + val; } 
+                    else if(val > 60) { mul=3; lbl="Total " + val; }
                     
-                    this.processThrow(val, mul, lbl);
-                }
-                this.clearInput();
-            }
-        };
-
-        // --- VOICE ENGINE ---
-        const VoiceEngine = {
-            recognition: null,
-            isListening: false,
-            mode: 'off', // 'off', 'single', 'turn', 'always'
-
-            init: function() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    console.warn("Speech API not supported");
-                    return;
-                }
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                this.recognition = new SpeechRecognition();
-                this.recognition.continuous = false; // We manage restarts manually for better control
-                this.recognition.lang = 'en-US';
-                this.recognition.interimResults = false;
-                this.recognition.maxAlternatives = 1;
-
-                this.recognition.onstart = () => {
-                    this.isListening = true;
-                    UI.updateMicUI(true, this.mode);
-                };
-
-                this.recognition.onend = () => {
-                    this.isListening = false;
-                    UI.updateMicUI(false, this.mode);
-                    
-                    // Auto-restart logic based on mode
-                    if (this.mode === 'always' && !Game.turn.won) {
-                        this.start();
-                    } else if (this.mode === 'turn') {
-                        // Keep listening if turn is not over
-                        if (!Game.turn.won && Game.turn.dartsThrown < 3 && !Game.turn.bust) {
-                             this.start();
-                        } else {
-                            if(Game.turn.dartsThrown >= 3 || Game.turn.bust) {
-                                this.mode = 'off';
-                                UI.updateMicUI(false, 'off');
-                            } else {
-                                this.start();
-                            }
-                        }
-                    } else if (this.mode === 'single') {
-                        this.mode = 'off';
-                        UI.updateMicUI(false, 'off');
-                    }
-                };
-
-                this.recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    console.log("Heard:", transcript);
-                    this.parse(transcript);
-                };
-                
-                this.recognition.onerror = (event) => {
-                    if (event.error === 'not-allowed') {
-                         this.mode = 'off';
-                         UI.updateMicUI(false, 'off');
-                         alert("Microphone access denied.");
-                    }
-                };
-            },
-
-            setMode: function(m) {
-                if(!this.recognition) this.init();
-                if(this.isListening && this.mode === m) {
-                    this.stop();
-                    return;
-                }
-                this.mode = m;
-                if(this.isListening) this.recognition.stop();
-                setTimeout(() => this.start(), 100);
-            },
-
-            start: function() {
-                if(this.isListening || !this.recognition) return;
-                try { this.recognition.start(); } catch(e) { console.warn(e); }
-            },
-
-            stop: function() {
-                this.mode = 'off';
-                if(this.recognition) this.recognition.stop();
-            },
-
-            parse: function(text) {
-                const lower = text.toLowerCase().replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
-                const parts = lower.split(' ');
-                let i = 0;
-                
-                const parseNum = (word) => {
-                    if(!word) return null;
-                    if (word === 'one') return 1;
-                    if (word === 'two' || word === 'to' || word === 'too') return 2;
-                    if (word === 'three') return 3;
-                    if (word === 'four' || word === 'for') return 4;
-                    if (word === 'five') return 5;
-                    if (word === 'six') return 6;
-                    if (word === 'seven') return 7;
-                    if (word === 'eight') return 8;
-                    if (word === 'nine') return 9;
-                    if (word === 'ten') return 10;
-                    if (word === 'twenty') return 20;
-                    const num = parseInt(word);
-                    return isNaN(num) ? null : num;
-                };
-
-                while (i < parts.length) {
-                    // Safety break if game ended or turn full
-                    if ((this.mode === 'turn' || this.mode === 'always') && (Game.turn.dartsThrown >= 3 || Game.turn.won)) break;
-
-                    const word = parts[i];
-                    
-                    if (word.includes('bull')) {
-                        if (word === 'outer') {
-                            Game.processThrow(25, 1, "Outer Bull");
-                            i+=2; 
-                        } else {
-                            Game.processThrow(50, 2, "Bullseye");
-                            i++;
-                        }
-                        continue;
-                    }
-
-                    let multiplier = 1;
-                    let labelPrefix = "Single";
-                    let val = null;
-
-                    if (word === 'single') { multiplier = 1; i++; } 
-                    else if (word === 'double') { multiplier = 2; labelPrefix = "Double"; i++; } 
-                    else if (word === 'triple' || word === 'treble') { multiplier = 3; labelPrefix = "Triple"; i++; }
-
-                    if (i < parts.length) {
-                        if (parts[i] === 'twenty' && parts[i+1] === 'five') {
-                            val = 25; i+=2;
-                        } else {
-                            val = parseNum(parts[i]); i++;
-                        }
-                    }
-
-                    if (val !== null) {
-                        if (val === 25 && multiplier === 1) {
-                            Game.processThrow(25, 1, "Outer Bull");
-                        } 
-                        else if (val >= 0 && val <= 20) {
-                            Game.processThrow(val * multiplier, multiplier, `${labelPrefix} ${val}`);
+                    if(val > 60 || this.turn.dartsThrown === 0) {
+                        this.processThrow(val, mul, lbl);
+                        if(this.turn.dartsThrown < 3) { 
+                             // Simulate full turn
+                             this.turn.dartsThrown = 3; 
+                             setTimeout(() => this.nextTurn(), 1000); 
                         }
                     } else {
-                        // Skip unrecognized
-                        if (multiplier === 1 && val === null && !word.includes('bull')) i++;
+                        this.processThrow(val, mul, lbl);
                     }
+                }
+                this.clearInput();
+            },
+            setStartScore: function(s) { this.init(s); },
+            
+            // --- Mic Logic Merged ---
+            initMic: function() {
+                if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) return;
+                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SR();
+                this.recognition.continuous = false; this.recognition.lang = 'en-US'; this.recognition.interimResults = false;
+                this.recognition.onstart = () => { this.isListening = true; UI.updateMicUI(true, this.micMode); };
+                this.recognition.onend = () => { 
+                    this.isListening = false; UI.updateMicUI(false, this.micMode);
+                    if(this.micMode === 'always' && !this.turn.won) this.startMic();
+                    else if(this.micMode === 'turn' && !this.turn.won && this.turn.dartsThrown < 3) this.startMic();
+                    else if(this.micMode === 'single') this.micMode = 'off';
+                };
+                this.recognition.onresult = (e) => {
+                     const t = e.results[0][0].transcript; console.log("Heard:", t); this.parseVoice(t);
+                };
+            },
+            setMicMode: function(m) {
+                if(!this.recognition) return;
+                if(this.isListening && this.micMode === m) { this.stopMic(); return; }
+                this.micMode = m; if(this.isListening) this.recognition.stop();
+                setTimeout(() => this.startMic(), 100);
+            },
+            startMic: function() { if(!this.isListening && this.recognition) try{this.recognition.start()}catch(e){} },
+            stopMic: function() { this.micMode = 'off'; if(this.recognition) this.recognition.stop(); },
+            parseVoice: function(text) {
+                const lower = text.toLowerCase().replace(/[.,]/g,' ').replace(/\s+/g,' ').trim().split(' ');
+                let i=0;
+                const getNum = (w) => {
+                    if(!w)return null; if(w==='one')return 1; if(w==='two'||w==='to'||w==='too')return 2;
+                    if(w==='three')return 3; if(w==='four'||w==='for')return 4; if(w==='five')return 5;
+                    if(w==='six')return 6; if(w==='seven')return 7; if(w==='eight')return 8; if(w==='nine')return 9;
+                    if(w==='ten')return 10; if(w==='twenty')return 20; const n=parseInt(w); return isNaN(n)?null:n;
+                };
+                while(i < lower.length) {
+                    if(this.turn.dartsThrown>=3 || this.turn.won) break;
+                    const w = lower[i];
+                    if(w.includes('bull')) {
+                        if(w==='outer') { this.processThrow(25,1,"Outer Bull"); i+=2; }
+                        else { this.processThrow(50,2,"Bullseye"); i++; }
+                        continue;
+                    }
+                    let m=1, p="Single", v=null;
+                    if(w==='single') { m=1; i++; }
+                    else if(w==='double') { m=2; p="Double"; i++; }
+                    else if(w==='triple'||w==='treble') { m=3; p="Triple"; i++; }
+                    
+                    if(i<lower.length) {
+                        if(lower[i]==='twenty' && lower[i+1]==='five') { v=25; i+=2; }
+                        else { v=getNum(lower[i]); i++; }
+                    }
+                    if(v!==null) {
+                        if(v===25 && m===1) this.processThrow(25,1,"Outer Bull");
+                        else if(v>=0 && v<=20) this.processThrow(v*m, m, `${p} ${v}`);
+                    } else if(m===1 && v===null && !w.includes('bull')) i++;
                 }
             }
         };
 
-        // --- UI MANAGER ---
         const UI = {
             render: function() {
                 const p = Game.currentPlayer;
                 const p1 = Game.scores[0], p2 = Game.scores[1];
                 
-                // Mobile Updates
                 const card = document.getElementById('mob-active-card');
                 if (p === 0) { card.style.background = '#ef4444'; } else { card.style.background = '#3b82f6'; }
                 document.getElementById('mob-p-num').textContent = p + 1;
                 document.getElementById('mob-p-name').textContent = `Player ${p+1}`;
                 document.getElementById('mob-score').textContent = Game.scores[p];
                 document.getElementById('mob-legs').textContent = `Legs: ${Game.legs[p]}`;
-                document.getElementById('mob-darts').textContent = `${Game.turn.dartsThrown}/3`;
-                
-                // Display separate darts on Mobile with better sizing
-                const mobDartsHtml = Game.turn.darts.length > 0 ? 
-                    Game.turn.darts.map(d => `<div class="bg-white/20 rounded px-2 py-0.5 min-w-[2rem] text-center inline-flex items-center justify-center">${d}</div>`).join('') : 
-                    '<span class="opacity-50">0</span>';
-                
-                document.getElementById('mob-turn-score').innerHTML = mobDartsHtml;
+                document.getElementById('mob-darts').textContent = Game.turn.dartsThrown;
                 document.getElementById('mob-last').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : '-';
-                document.getElementById('mob-status-text').textContent = `Player ${p+1}'s Turn`;
-                
                 const check = this.getCheckout(Game.scores[p]);
                 document.getElementById('mob-suggestion').textContent = check ? `Checkout: ${check}` : "Score High";
+                
+                // Mob Darts
+                 const mobDartsHtml = Game.turn.darts.length > 0 ? 
+                    Game.turn.darts.map(d => `<div class="bg-white/20 rounded px-2 py-0.5 min-w-[2rem] text-center inline-flex items-center justify-center">${d}</div>`).join('') : 
+                    '<span class="opacity-50">0</span>';
+                document.getElementById('mob-turn-score').innerHTML = mobDartsHtml;
 
-                // Desktop Updates
                 document.getElementById('desk-p1-score').textContent = p1;
                 document.getElementById('desk-p2-score').textContent = p2;
                 document.getElementById('desk-p1-legs').textContent = Game.legs[0];
                 document.getElementById('desk-p2-legs').textContent = Game.legs[1];
+                document.getElementById('desk-status').textContent = `Player ${p+1}'s Turn`;
                 
-                // Display separate darts on Desktop with REASONABLE boxes
+                // Desk Darts
                 const deskDartsHtml = Game.turn.darts.length > 0 ? 
                     Game.turn.darts.map(d => `<div class="bg-white/10 rounded-lg px-3 py-1 min-w-[3rem] text-center border border-white/5 shadow-inner text-2xl inline-flex items-center justify-center">${d}</div>`).join('') : 
-                    '<span class="opacity-50">0</span>';
-
+                    '<span class="opacity-50 text-2xl">0</span>';
                 document.getElementById('desk-turn-total').innerHTML = deskDartsHtml;
-                
-                document.getElementById('desk-last-call').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : 'Waiting...';
-                
-                this.updateStatus();
 
+                // Border Ring Logic - Red/Blue
                 const dP1 = document.getElementById('p1-card'), dP2 = document.getElementById('p2-card');
                 if(p===0) { 
-                    dP1.classList.add('ring-2', 'ring-red-500', 'bg-red-900/20'); 
-                    dP2.classList.remove('ring-2', 'ring-red-500', 'bg-red-900/20');
-                    dP2.classList.add('opacity-50'); dP1.classList.remove('opacity-50');
+                    dP1.classList.add('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100'); 
+                    dP1.classList.remove('opacity-50');
+                    dP2.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100');
+                    dP2.classList.add('opacity-50');
                 } else { 
-                    dP2.classList.add('ring-2', 'ring-blue-500', 'bg-blue-900/20'); 
-                    dP1.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-900/20');
-                    dP1.classList.add('opacity-50'); dP2.classList.remove('opacity-50');
+                    dP2.classList.add('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100');
+                    dP2.classList.remove('opacity-50');
+                    dP1.classList.remove('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100');
+                    dP1.classList.add('opacity-50');
                 }
                 
-                // Suggestions & Darts
-                const sugEl = p===0 ? 'desk-p1-sug' : 'desk-p2-sug';
-                document.getElementById('desk-p1-sug').textContent = '';
-                document.getElementById('desk-p2-sug').textContent = '';
-                if(check) document.getElementById(sugEl).textContent = check;
-
-                // Dart Indicators
-                for(let i=1; i<=3; i++) {
-                    const el = document.getElementById(`desk-dart-${i}`);
-                    el.className = 'w-4 h-4 rounded-full border border-slate-600 transition-colors';
-                    if (i <= Game.turn.dartsThrown) el.classList.add('bg-green-500');
-                    else el.classList.add('bg-slate-700');
-                }
-
-                // Board Highlights
                 document.querySelectorAll('.segment-highlight').forEach(el => el.classList.remove('segment-highlight'));
                 if(check) this.highlightCheckout(check);
             },
-
-            renderLog: function() {
-                const mkLog = (arr) => arr.map(l => `<div>${l}</div>`).join('');
-                // Reverse log for display so newest is at top or bottom? Let's keep newest at bottom and auto scroll
-                // Actually source had newest at top. Let's do newest at top.
-                const rev = [...Game.gameLog].reverse();
-                document.getElementById('desktop-game-log').innerHTML = mkLog(rev);
-                document.getElementById('mobile-game-log').innerHTML = mkLog(rev);
-            },
-
-            updateStatus: function(msg) {
-                const txt = msg || `Player ${Game.currentPlayer+1}'s Turn`;
-                document.getElementById('desk-status').textContent = txt;
-            },
-
             updateMicUI: function(active, mode) {
                 const status = document.getElementById('desk-mic-status');
-                const mobInd = document.getElementById('mob-mic-indicator');
-                const btns = ['desk-btn-single', 'desk-btn-turn', 'desk-btn-always', 'mob-btn-single', 'mob-btn-turn', 'mob-btn-always'];
-                
-                // Clear all active classes
-                btns.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.classList.remove('mic-active-btn');
-                });
-
                 if(active) {
-                    status.textContent = `${mode.toUpperCase()} ON`;
-                    status.classList.add('text-red-400');
-                    mobInd.classList.remove('hidden');
-                    
-                    const activeBtnIdDesk = `desk-btn-${mode}`;
-                    const activeBtnIdMob = `mob-btn-${mode}`;
-                    const dBtn = document.getElementById(activeBtnIdDesk);
-                    const mBtn = document.getElementById(activeBtnIdMob);
-                    if(dBtn) dBtn.classList.add('mic-active-btn');
-                    if(mBtn) mBtn.classList.add('mic-active-btn');
+                    status.textContent = `${mode.toUpperCase()} ON`; status.classList.add('text-red-400');
                 } else {
-                    status.textContent = "OFF";
-                    status.classList.remove('text-red-400');
-                    mobInd.classList.add('hidden');
+                    status.textContent = "OFF"; status.classList.remove('text-red-400');
                 }
             },
-
             getCheckout: function(s) {
-                const c = { 
-                    170:"T20 T20 Bull", 167:"T20 T19 Bull", 164:"T20 T18 Bull", 161:"T20 T17 Bull", 160:"T20 T20 D20", 
-                    158:"T20 T20 D19", 156:"T20 T20 D18", 150:"T20 T18 D18", 140:"T20 T16 D16", 130:"T20 T20 D5", 
-                    120:"T20 20 D20", 110:"T20 10 D20", 100:"T20 D20", 90:"T18 D18", 80:"T20 D10", 70:"T18 D8", 
-                    60:"20 D20", 50:"Bull", 40:"D20", 36:"D18", 32:"D16", 20:"D10", 10:"D5", 4:"D2", 2:"D1" 
-                };
+                const c = { 170:"T20 T20 Bull", 160:"T20 T20 D20", 100:"T20 D20", 40:"D20", 32:"D16" };
                 return c[s] || "";
             },
-
             highlightCheckout: function(str) {
                 let target = str.split(' ')[0];
                 let id = "";
@@ -950,37 +580,24 @@
                 else if(target === 'Bull') id = 'segment-50';
                 else if(target === '25') id = 'segment-25';
                 else if(!isNaN(target)) id = `segment-s-${target}`;
-                
-                if(id) {
-                    const selector = `[id="${id}"]`;
-                    document.querySelectorAll(selector).forEach(el => el.classList.add('segment-highlight'));
-                }
+                if(id) { const sel = `[id="${id}"]`; document.querySelectorAll(sel).forEach(el => el.classList.add('segment-highlight')); }
             }
         };
 
-        // --- APP CONTROLLER ---
         const App = {
             openSettings: function() { document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex'); },
             closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
-            toggleMobileLog: function() {
-                const el = document.getElementById('mobile-log-modal');
-                if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); }
-                else { el.classList.add('hidden'); el.classList.remove('flex'); }
-            },
             setMobileTab: function(tab) {
                 document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
                 document.getElementById(`mob-tab-${tab}`).classList.add('active');
-                
-                ['keypad', 'board', 'voice'].forEach(t => {
-                    const btn = document.getElementById(`tab-btn-${t}`);
-                    if(t === tab) {
-                        btn.classList.add('bg-white/10', 'text-white');
-                        btn.classList.remove('text-slate-400');
-                    } else {
-                        btn.classList.remove('bg-white/10', 'text-white');
-                        btn.classList.add('text-slate-400');
-                    }
-                });
+                const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board');
+                if(tab==='keypad') {
+                    btnK.classList.add('bg-white/10', 'text-white'); btnK.classList.remove('text-slate-400');
+                    btnB.classList.remove('bg-white/10', 'text-white'); btnB.classList.add('text-slate-400');
+                } else {
+                    btnB.classList.add('bg-white/10', 'text-white'); btnB.classList.remove('text-slate-400');
+                    btnK.classList.remove('bg-white/10', 'text-white'); btnK.classList.add('text-slate-400');
+                }
             },
             setView: function(v) {
                 document.getElementById('view-dashboard').classList.add('hidden'); 
@@ -999,33 +616,26 @@
                     }
                 }
             },
-            startGame: function(mode) { 
-                this.setView('game'); 
-                Game.init(mode); 
-            }
+            startGame: function(mode) { this.setView('game'); Game.init(mode==='x01'?501:301); }
         };
 
-        // --- INITIALIZATION ---
         window.addEventListener('load', () => {
             Dartboard.create('desk-board-container', 'dartboard-desk');
             Dartboard.create('mob-board-container', 'dartboard-mob');
             App.setView('dashboard');
         });
 
-        // --- UTILS: TOUCH ZOOM & DARTBOARD GEN ---
+        // FIXED TOUCH ZOOM
         const TouchZoom = {
             timer: null, magnifier: document.getElementById('magnifier'), active: false,
             start: function(e, boardId) { this.active = true; this.timer = setTimeout(() => this.show(e, boardId), 200); },
             move: function(e, boardId) { if(this.active && this.magnifier.style.display === 'block') this.update(e, boardId); },
             end: function(e) {
                 clearTimeout(this.timer); this.active = false; this.magnifier.style.display = 'none';
-                if (document.querySelector('.hover-highlight')) {
-                    const touch = e.changedTouches[0];
-                    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (this.magnifier.style.display === 'block' || document.querySelector('.hover-highlight')) {
+                    const touch = e.changedTouches[0]; const el = document.elementFromPoint(touch.clientX, touch.clientY);
                     document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                    if(el && el.classList.contains('dartboard-segment')) {
-                        el.dispatchEvent(new MouseEvent('click', { 'view': window, 'bubbles': true, 'cancelable': true }));
-                    }
+                    if(el && el.classList.contains('dartboard-segment')) el.dispatchEvent(new MouseEvent('click', { 'view': window, 'bubbles': true, 'cancelable': true }));
                 }
             },
             show: function(e, boardId) {
@@ -1047,11 +657,12 @@
                 if (svg) { svg.style.transformOrigin = `${perX * 100}% ${perY * 100}%`; svg.style.transform = 'scale(3)'; }
                 const el = document.elementFromPoint(touch.clientX, touch.clientY);
                 document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                if(svg) svg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
+                const magSvg = this.magnifier.querySelector('svg');
+                if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
                 if(el && el.classList.contains('dartboard-segment')) {
                     el.classList.add('hover-highlight');
                     const id = el.getAttribute('id');
-                    if (id && svg) { const cloneEl = svg.querySelector(`[id="${id}"]`); if (cloneEl) cloneEl.classList.add('hover-highlight'); }
+                    if (id && magSvg) { const cloneEl = magSvg.querySelector(`[id="${id}"]`); if (cloneEl) cloneEl.classList.add('hover-highlight'); }
                 }
             }
         };
