@@ -215,7 +215,7 @@
                     <div class="flex flex-col">
                         <span class="opacity-60 uppercase">Turn</span>
                         <!-- Mobile Turn Darts Display -->
-                        <div class="flex gap-1" id="mob-turn-score">
+                        <div class="flex gap-1 items-center" id="mob-turn-score">
                             <span class="opacity-50">0</span>
                         </div>
                     </div>
@@ -289,9 +289,9 @@
         </div>
 
         <!-- DESKTOP GAME LAYOUT -->
-        <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
+        <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2 overflow-hidden">
             <!-- Left Column: Players & Controls -->
-            <div class="flex-grow flex flex-col gap-4 w-5/12 overflow-y-auto custom-scroll pr-2">
+            <div class="flex-grow flex flex-col gap-4 w-5/12 overflow-y-auto custom-scroll pr-2 min-h-0">
                 <!-- P1 -->
                 <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
                     <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
@@ -357,13 +357,13 @@
             </div>
 
             <!-- Right Column: Board & Stats -->
-            <div class="w-7/12 flex flex-col h-full relative gap-4">
+            <div class="w-7/12 flex flex-col h-full relative gap-4 min-h-0">
                 <div class="shrink-0 glass-panel rounded-2xl p-4 flex justify-between items-center bg-indigo-950/20">
                     <div class="flex items-center gap-6">
                         <div>
                             <span class="text-[10px] uppercase text-indigo-300 font-bold block">Turn Total</span>
                             <!-- Desktop Turn Darts Display -->
-                            <div id="desk-turn-total" class="flex gap-2 text-3xl font-mono font-bold text-white">
+                            <div id="desk-turn-total" class="flex gap-2 text-2xl font-mono font-bold text-white items-center">
                                 <span class="opacity-50">0</span>
                             </div>
                         </div>
@@ -379,7 +379,7 @@
                     </div>
                 </div>
                 
-                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20" id="desk-board-container" style="touch-action: none;"></div>
+                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-2 bg-black/20 overflow-hidden" id="desk-board-container" style="touch-action: none;"></div>
             </div>
         </div>
     </main>
@@ -830,12 +830,12 @@
                 document.getElementById('mob-legs').textContent = `Legs: ${Game.legs[p]}`;
                 document.getElementById('mob-darts').textContent = `${Game.turn.dartsThrown}/3`;
                 
-                // Display separate darts on Mobile
-                const turnDarts = Game.turn.darts.length > 0 ? 
-                                    Game.turn.darts.map(d => `<span class="bg-white/10 px-2 rounded min-w-[1.5rem] text-center">${d}</span>`).join('') : 
-                                    '<span class="opacity-50">0</span>';
+                // Display separate darts on Mobile with better sizing
+                const mobDartsHtml = Game.turn.darts.length > 0 ? 
+                    Game.turn.darts.map(d => `<div class="bg-white/20 rounded px-2 py-0.5 min-w-[2rem] text-center inline-flex items-center justify-center">${d}</div>`).join('') : 
+                    '<span class="opacity-50">0</span>';
                 
-                document.getElementById('mob-turn-score').innerHTML = turnDarts;
+                document.getElementById('mob-turn-score').innerHTML = mobDartsHtml;
                 document.getElementById('mob-last').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : '-';
                 document.getElementById('mob-status-text').textContent = `Player ${p+1}'s Turn`;
                 
@@ -848,8 +848,12 @@
                 document.getElementById('desk-p1-legs').textContent = Game.legs[0];
                 document.getElementById('desk-p2-legs').textContent = Game.legs[1];
                 
-                // Display separate darts on Desktop
-                document.getElementById('desk-turn-total').innerHTML = turnDarts;
+                // Display separate darts on Desktop with REASONABLE boxes
+                const deskDartsHtml = Game.turn.darts.length > 0 ? 
+                    Game.turn.darts.map(d => `<div class="bg-white/10 rounded-lg px-3 py-1 min-w-[3rem] text-center border border-white/5 shadow-inner text-2xl inline-flex items-center justify-center">${d}</div>`).join('') : 
+                    '<span class="opacity-50">0</span>';
+
+                document.getElementById('desk-turn-total').innerHTML = deskDartsHtml;
                 
                 document.getElementById('desk-last-call').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : 'Waiting...';
                 
