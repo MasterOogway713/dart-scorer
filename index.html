@@ -14,6 +14,10 @@
             --glass-bg: rgba(15, 23, 42, 0.65);
             --glass-border: rgba(255, 255, 255, 0.1);
             --active-card-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(185, 28, 28, 0.9));
+            
+            /* Player Colors */
+            --p1-col: #ef4444; --p2-col: #3b82f6; --p3-col: #22c55e;
+            --p4-col: #eab308; --p5-col: #a855f7; --p6-col: #f97316;
         }
 
         html, body { 
@@ -50,9 +54,8 @@
             border-radius: 1.5rem; transition: all 0.3s ease;
         }
         .mobile-card.active {
-            background: var(--active-card-bg);
             border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 25px rgba(0,0,0, 0.4);
         }
 
         .dartboard-segment { transition: opacity 0.1s; cursor: pointer; stroke: #94a3b8; stroke-width: 1px; }
@@ -65,14 +68,21 @@
         .segment-highlight { fill: #f59e0b !important; filter: drop-shadow(0 0 8px #f59e0b); stroke: #fff; stroke-width: 2px; animation: pulse-gold 1s infinite; }
         @keyframes pulse-gold { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        .highlight-p1 { fill: #ef4444 !important; filter: drop-shadow(0 0 8px #ef4444); stroke: #fff; stroke-width: 2px; animation: pulse-p1 1s infinite; }
+        /* Dynamic Player Highlights */
+        .highlight-p1 { fill: var(--p1-col) !important; filter: drop-shadow(0 0 8px var(--p1-col)); stroke: #fff; stroke-width: 2px; animation: pulse-p1 1s infinite; }
         @keyframes pulse-p1 { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-        .highlight-p2 { fill: #3b82f6 !important; filter: drop-shadow(0 0 8px #3b82f6); stroke: #fff; stroke-width: 2px; animation: pulse-p2 1s infinite; }
+        .highlight-p2 { fill: var(--p2-col) !important; filter: drop-shadow(0 0 8px var(--p2-col)); stroke: #fff; stroke-width: 2px; animation: pulse-p2 1s infinite; }
         @keyframes pulse-p2 { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .highlight-p3 { fill: var(--p3-col) !important; filter: drop-shadow(0 0 8px var(--p3-col)); stroke: #fff; stroke-width: 2px; animation: pulse-p3 1s infinite; }
+        @keyframes pulse-p3 { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .highlight-p4 { fill: var(--p4-col) !important; filter: drop-shadow(0 0 8px var(--p4-col)); stroke: #fff; stroke-width: 2px; animation: pulse-p4 1s infinite; }
+        @keyframes pulse-p4 { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .highlight-p5 { fill: var(--p5-col) !important; filter: drop-shadow(0 0 8px var(--p5-col)); stroke: #fff; stroke-width: 2px; animation: pulse-p5 1s infinite; }
+        @keyframes pulse-p5 { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .highlight-p6 { fill: var(--p6-col) !important; filter: drop-shadow(0 0 8px var(--p6-col)); stroke: #fff; stroke-width: 2px; animation: pulse-p6 1s infinite; }
+        @keyframes pulse-p6 { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         /* Animation Classes */
-        
         @keyframes pulseGreen { 
             0% { fill: #22c55e; stroke: #fff; stroke-width: 4px; filter: drop-shadow(0 0 15px #22c55e); transform: scale(1.02); } 
             50% { transform: scale(1); }
@@ -102,13 +112,22 @@
         #confetti-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100; width: 100%; height: 100%; }
         
         .hit-marker {
-            position: absolute; width: 24px; height: 24px;
-            background: radial-gradient(circle, #facc15 30%, transparent 70%);
+            position: absolute; width: 20px; height: 20px;
             border-radius: 50%; transform: translate(-50%, -50%);
-            animation: ping 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
-            pointer-events: none; z-index: 50; box-shadow: 0 0 10px #facc15;
+            pointer-events: none; z-index: 50; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            border: 2px solid white;
         }
-        @keyframes ping { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
+        .hit-marker.p1 { background: radial-gradient(circle, var(--p1-col) 30%, #000 90%); }
+        .hit-marker.p2 { background: radial-gradient(circle, var(--p2-col) 30%, #000 90%); }
+        .hit-marker.p3 { background: radial-gradient(circle, var(--p3-col) 30%, #000 90%); }
+        .hit-marker.p4 { background: radial-gradient(circle, var(--p4-col) 30%, #000 90%); }
+        .hit-marker.p5 { background: radial-gradient(circle, var(--p5-col) 30%, #000 90%); }
+        .hit-marker.p6 { background: radial-gradient(circle, var(--p6-col) 30%, #000 90%); }
+        
+        .hit-marker.anim { animation: ping 0.5s cubic-bezier(0, 0, 0.2, 1); }
+
+        @keyframes ping { 0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.5; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
 
         #magnifier {
             position: fixed; pointer-events: none; z-index: 9999;
@@ -152,6 +171,7 @@
         </div>
         <div class="flex items-center gap-3">
             <button onclick="Game.undo()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-amber-400 flex items-center gap-2"><span>Undo</span></button>
+            <button onclick="App.toggleStats()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-cyan-400">Stats</button>
             <button onclick="App.openSettings()" class="glass-panel px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 border-slate-600 text-blue-400">Settings</button>
         </div>
     </header>
@@ -161,7 +181,7 @@
         <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
         <div class="flex gap-2">
             <button onclick="Game.undo()" class="glass-panel p-2 rounded-lg text-amber-400">↩️</button>
-            <button onclick="App.toggleMobileLog()" class="glass-panel p-2 rounded-lg text-slate-300">📋</button>
+            <button onclick="App.toggleStats()" class="glass-panel p-2 rounded-lg text-cyan-400">📊</button>
             <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
         </div>
     </header>
@@ -173,7 +193,15 @@
             <div class="min-h-full flex flex-col items-center justify-center p-6">
                 <div class="glass-panel p-8 rounded-3xl w-full max-w-4xl flex flex-col items-center border-slate-700/50">
                     <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-tight text-center">Select Game</h1>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-10">
+                    
+                    <div class="flex items-center gap-4 mt-6 glass-panel px-6 py-3 rounded-xl mb-6">
+                        <span class="text-sm font-bold text-slate-400 uppercase">Players</span>
+                        <button onclick="App.updatePlayerCount(-1)" class="w-8 h-8 rounded bg-white/10 hover:bg-white/20 text-white font-bold">-</button>
+                        <span id="dash-player-count" class="text-xl font-bold w-4 text-center">2</span>
+                        <button onclick="App.updatePlayerCount(1)" class="w-8 h-8 rounded bg-white/10 hover:bg-white/20 text-white font-bold">+</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                         <button onclick="App.startGame('x01')" class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition border-slate-700/50 group flex flex-col items-center gap-3">
                             <div class="text-5xl group-hover:scale-110 transition">🎯</div>
                             <h3 class="text-xl font-bold text-white">X01</h3>
@@ -189,6 +217,9 @@
                             <h3 class="text-xl font-bold text-white">Clock</h3>
                             <p class="text-slate-400 text-xs">Around the World</p>
                         </button>
+                    </div>
+                    <div class="mt-8">
+                        <button onclick="Game.loadGame()" id="resume-btn" class="hidden px-6 py-3 bg-green-600/20 text-green-400 font-bold rounded-xl border border-green-600/50 hover:bg-green-600/30">Resume Saved Game</button>
                     </div>
                 </div>
             </div>
@@ -269,7 +300,7 @@
                     <div class="text-center">
                         <div class="text-4xl mb-4">🎙️</div>
                         <h3 class="text-xl font-bold mb-2">Voice Control</h3>
-                        <p class="text-sm text-slate-400 mb-6">"Triple 20", "Bullseye", "25"</p>
+                        <p class="text-sm text-slate-400 mb-6">"Triple 20", "Undo", "Next Turn"</p>
                     </div>
                     <div class="flex flex-col gap-4">
                         <button onclick="Game.setMicMode('single')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-600 font-bold">Single Throw</button>
@@ -285,46 +316,9 @@
         <div id="view-game-desktop" class="hidden w-full h-full flex-row gap-6 relative pb-2">
             <!-- Left Panel -->
             <div class="flex-grow flex flex-col gap-6 w-5/12 overflow-y-auto custom-scroll p-2 min-h-0">
-                <!-- P1 -->
-                <div id="p1-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
-                    <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">1</div>
-                    <div class="flex justify-between items-start relative z-10">
-                        <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
-                            <span id="desk-p1-name">Player 1</span>
-                        </h2>
-                        <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p1-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
-                    </div>
-                    <!-- Cricket Grid Desk -->
-                    <div id="desk-p1-cricket" class="hidden grid-cols-7 gap-1 mt-2 mb-2 relative z-10"></div>
-                    
-                    <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p1-score">501</div>
-                        <div class="text-right">
-                             <div id="desk-p1-sug" class="text-amber-400 font-mono font-bold text-xl animate-pulse h-6"></div>
-                             <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- P2 -->
-                <div id="p2-card" class="glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[180px] transition-all duration-300 border-l-4 border-l-transparent relative overflow-hidden group">
-                    <div class="absolute top-[-20px] right-[-10px] opacity-5 text-9xl font-black select-none z-0">2</div>
-                    <div class="flex justify-between items-start relative z-10">
-                        <h2 class="font-bold text-slate-200 text-xl uppercase tracking-widest flex items-center gap-3">
-                            <span id="desk-p2-name">Player 2</span>
-                        </h2>
-                        <div class="text-sm font-mono font-bold text-slate-400">LEGS <span id="desk-p2-legs" class="text-white bg-slate-800 px-2 py-1 rounded">0</span></div>
-                    </div>
-                    <!-- Cricket Grid Desk -->
-                    <div id="desk-p2-cricket" class="hidden grid-cols-7 gap-1 mt-2 mb-2 relative z-10"></div>
-
-                    <div class="flex justify-between items-end mt-4 relative z-10">
-                        <div class="text-7xl font-black font-mono tracking-tighter text-white" id="desk-p2-score">501</div>
-                        <div class="text-right">
-                             <div id="desk-p2-sug" class="text-amber-400 font-mono font-bold text-xl animate-pulse h-6"></div>
-                             <div class="text-xs uppercase text-slate-400 font-bold tracking-widest">Checkout</div>
-                        </div>
-                    </div>
+                <!-- Player List Container -->
+                <div id="desktop-player-list" class="flex flex-col gap-4">
+                    <!-- Dynamic content generated by UI.render -->
                 </div>
 
                 <!-- Voice Controls -->
@@ -371,16 +365,54 @@
 
     <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="absolute inset-0 z-[80] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
-        <div class="glass-panel p-8 rounded-2xl w-full max-w-md border-slate-700">
-            <h2 class="text-2xl font-bold text-white mb-6">Settings</h2>
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-md border-slate-700 max-h-[90vh] overflow-y-auto custom-scroll">
+            <h2 class="text-2xl font-bold text-white mb-6">Settings & Rules</h2>
             <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="Game.manualEditScore()" class="col-span-2 p-4 rounded bg-amber-600/20 text-amber-400 font-bold hover:bg-amber-600/30 border border-amber-600/50 flex items-center justify-center gap-2">
-                        <span>✏️</span> Edit Current Score
-                    </button>
-                    <button onclick="App.startGame(Game.mode); App.closeSettings()" class="col-span-2 p-4 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-600">Restart Game</button>
+                <div class="space-y-2">
+                    <label class="text-xs uppercase text-slate-400 font-bold">Player Names</label>
+                    <div id="settings-player-inputs" class="space-y-2">
+                        <!-- Dynamic Inputs -->
+                    </div>
                 </div>
-                <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-indigo-600 text-white font-bold mt-4">Close</button>
+                
+                <div class="space-y-2">
+                    <label class="text-xs uppercase text-slate-400 font-bold">Match Format</label>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm">First to</span>
+                        <input type="number" id="set-legs" value="3" min="1" max="21" class="w-16 bg-slate-800/50 border border-slate-600 rounded p-2 text-white text-center" onchange="Game.matchConfig.legsToWin = parseInt(this.value)">
+                        <span class="text-sm">Legs</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs uppercase text-slate-400 font-bold">X01 Rules</label>
+                    <div class="flex gap-2">
+                        <button onclick="Game.matchConfig.doubleOut=true; UI.updateSettingsUI()" id="btn-do" class="flex-1 py-2 rounded bg-indigo-600 text-xs font-bold">Double Out</button>
+                        <button onclick="Game.matchConfig.doubleOut=false; UI.updateSettingsUI()" id="btn-so" class="flex-1 py-2 rounded bg-slate-700 text-xs font-bold">Straight Out</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button onclick="Game.manualEditScore()" class="col-span-2 p-4 rounded bg-amber-600/20 text-amber-400 font-bold hover:bg-amber-600/30 border border-amber-600/50 flex items-center justify-center gap-2">
+                        <span>✏️</span> Edit Score
+                    </button>
+                    <button onclick="App.startGame(Game.mode); App.closeSettings()" class="col-span-2 p-4 rounded bg-red-900/50 text-white font-bold hover:bg-red-800 border border-red-700">Restart Game</button>
+                </div>
+                <button onclick="App.closeSettings()" class="w-full p-4 rounded bg-slate-700 text-white font-bold mt-2">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS MODAL -->
+    <div id="stats-modal" class="absolute inset-0 z-[75] bg-slate-900/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-4xl border-slate-700 max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Match Statistics</h2>
+                <button onclick="App.toggleStats()" class="text-2xl">✕</button>
+            </div>
+            
+            <div id="stats-container" class="overflow-x-auto">
+                <!-- Dynamic Stats Table -->
             </div>
         </div>
     </div>
@@ -406,56 +438,93 @@
         const AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},speak:function(e){if(window.speechSynthesis){window.speechSynthesis.cancel();const t=new SpeechSynthesisUtterance(e);t.rate=1.1,window.speechSynthesis.speak(t)}}};
         const Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1; if(this.ctx) this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height); }};
 
+        const PlayerColors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#a855f7', '#f97316'];
+
         const Game = {
-            mode: 'x01', scores: [501, 501], legs: [0, 0], currentPlayer: 0,
-            turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false },
-            historyStack: [], inputBuffer: '', settings: { startScore: 501 },
+            mode: 'x01', scores: [], legs: [], currentPlayer: 0,
+            turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false, markers: [] },
+            historyStack: [], inputBuffer: '', 
+            settings: { startScore: 501 },
+            matchConfig: { legsToWin: 3, doubleOut: true, playerCount: 2, playerNames: [] },
             micMode: 'off', recognition: null, isListening: false, gameLog: [],
-            cricket: [[], []], atc: [1, 1],
+            cricket: [], atc: [],
+            playerStats: [],
 
             init: function(mode, resetLegs = true) {
                 this.mode = mode || 'x01';
-                if(resetLegs) { this.legs = [0, 0]; this.currentPlayer = 0; }
                 
-                this.gameLog = [];
-                this.cricket = [ // Player 1 & 2 Map: 20,19,18,17,16,15,25(B)
-                    {20:0,19:0,18:0,17:0,16:0,15:0,25:0}, {20:0,19:0,18:0,17:0,16:0,15:0,25:0}
-                ];
-                this.atc = [1, 1]; // Current target for P1, P2
+                // Set default names if empty
+                if (this.matchConfig.playerNames.length !== this.matchConfig.playerCount) {
+                    this.matchConfig.playerNames = [];
+                    for(let i=0; i<this.matchConfig.playerCount; i++) this.matchConfig.playerNames.push(`Player ${i+1}`);
+                }
+
+                if(resetLegs) { 
+                    this.currentPlayer = 0;
+                    this.legs = new Array(this.matchConfig.playerCount).fill(0);
+                    this.playerStats = Array.from({length: this.matchConfig.playerCount}, () => ({
+                        totalScore: 0, totalDarts: 0, first9Score: 0, first9Darts: 0, checkoutAttempts: 0, checkoutHits: 0, s100:0, s140:0, s180:0 
+                    }));
+                    this.gameLog = [];
+                }
+                
+                // Initialize Arrays for N players
+                this.cricket = Array.from({length: this.matchConfig.playerCount}, () => ({20:0,19:0,18:0,17:0,16:0,15:0,25:0}));
+                this.atc = new Array(this.matchConfig.playerCount).fill(1);
                 
                 let start = 501;
                 if(mode === '301') { this.mode='x01'; start=301; }
                 else if(mode === 'x01') start=501;
                 else if(mode === 'cricket') start=0; 
-                else if(mode === 'atc') start=1; // Display target
+                else if(mode === 'atc') start=1;
 
                 this.settings.startScore = start;
-                this.scores = [start, start];
+                this.scores = new Array(this.matchConfig.playerCount).fill(start);
                 
                 this.resetTurn();
                 Confetti.init(); Confetti.stop(); 
                 AudioEngine.init(); this.initMic();
                 document.getElementById('winner-modal').classList.add('hidden');
                 document.getElementById('winner-modal').classList.remove('flex');
+                
                 if(resetLegs) {
-                    this.logAction(`Game Started: ${this.mode.toUpperCase()}`);
+                    this.logAction(`Match Started: ${this.mode.toUpperCase()}`);
                 } else {
-                    this.logAction(`Leg Started: ${this.mode.toUpperCase()}`);
+                    this.logAction(`Leg Started`);
                 }
+                
+                UI.render();
+                this.persist();
+            },
+            updatePlayerName: function(idx, name) {
+                this.matchConfig.playerNames[idx] = name || `Player ${idx+1}`;
                 UI.render();
             },
             nextLeg: function() {
+                // Check match win
+                let winner = -1;
+                this.legs.forEach((l, i) => { if(l >= this.matchConfig.legsToWin) winner = i; });
+                if(winner > -1) {
+                    // Match Over - for now just restart leg
+                }
                 this.init(this.mode, false);
             },
             resetTurn: function() {
                 let start = this.scores[this.currentPlayer];
-                // For ATC, start score is just the target, doesn't revert on bust usually
-                this.turn = { dartsThrown: 0, score: 0, history: [], darts: [], startScore: start, bust: false, won: false };
+                this.turn = { 
+                    dartsThrown: 0, score: 0, history: [], darts: [], 
+                    startScore: start, bust: false, won: false, markers: [] 
+                };
+                // Remove markers from board
+                document.querySelectorAll('.hit-marker').forEach(e => e.remove());
             },
-            processThrow: function(points, multiplier, label) {
+            processThrow: function(points, multiplier, label, coords) {
                 if(this.turn.won || this.turn.bust || this.turn.dartsThrown >= 3) return;
                 this.saveState();
                 
+                // Render sticky marker
+                if (coords) UI.drawMarker(coords.x, coords.y, this.currentPlayer);
+
                 // Sound
                 if(points===0) AudioEngine.playTone(150,'sawtooth',0.1);
                 else if(multiplier===3) AudioEngine.playTriple();
@@ -473,14 +542,38 @@
                 }
 
                 UI.render();
+                this.persist();
+                
                 // Auto next turn
                 if(this.turn.dartsThrown >= 3 && !this.turn.bust && !this.turn.won) setTimeout(() => this.nextTurn(), 1000);
             },
+            updateStats: function(points, isCheckoutAttempt, isCheckoutHit) {
+                const ps = this.playerStats[this.currentPlayer];
+                ps.totalScore += points;
+                ps.totalDarts++;
+                if (this.turn.score >= 100 && this.turn.score < 140 && this.turn.dartsThrown === 3) ps.s100++;
+                if (this.turn.score >= 140 && this.turn.score < 180 && this.turn.dartsThrown === 3) ps.s140++;
+                if (this.turn.score === 180 && this.turn.dartsThrown === 3) ps.s180++;
+                if(isCheckoutAttempt) ps.checkoutAttempts++;
+                if(isCheckoutHit) ps.checkoutHits++;
+            },
             handleX01: function(points, mul, label) {
-                // Check for checkout step hit (Success Animation)
+                const rem = this.scores[this.currentPlayer] - points;
+                let bust = false;
+                const isDouble = mul === 2 || label.includes("Bullseye");
+                let checkoutAtt = false;
+                if (this.matchConfig.doubleOut && this.scores[this.currentPlayer] <= 50) checkoutAtt = true; 
+                
+                if (this.matchConfig.doubleOut) {
+                    if (rem < 0 || rem === 1 || (rem === 0 && !isDouble)) bust = true;
+                } else {
+                    if (rem < 0) bust = true;
+                }
+
+                // Check for checkout step hit
                 const currentScore = this.scores[this.currentPlayer];
                 const suggested = UI.getCheckout(currentScore);
-                if (suggested) {
+                if (suggested && !bust) {
                     const target = suggested.split(' ')[0];
                     let code = "";
                     if(points === 50) code = "Bull";
@@ -488,23 +581,16 @@
                     else if(mul === 3) code = "T" + (points/3);
                     else if(mul === 2) code = "D" + (points/2);
                     else code = "" + points;
-
-                    if (target === code) {
-                        UI.flashCheckout(points, mul);
-                    }
+                    if (target === code) UI.flashCheckout(points, mul);
                 }
-
-                const rem = this.scores[this.currentPlayer] - points;
-                let bust = false;
-                const isDouble = mul === 2 || label.includes("Bullseye");
-                if (rem < 0 || rem === 1 || (rem === 0 && !isDouble)) bust = true;
 
                 if(bust) {
                     this.turn.bust = true; AudioEngine.playBust();
-                    this.logAction(`P${this.currentPlayer+1} BUST (${label})`);
+                    this.logAction(`${this.pName()} BUST (${label})`);
                     document.body.classList.add('anim-shake');
                     setTimeout(() => document.body.classList.remove('anim-shake'), 400);
                     this.scores[this.currentPlayer] = this.turn.startScore;
+                    this.updateStats(0, checkoutAtt, false);
                     setTimeout(() => this.nextTurn(), 1500);
                 } else {
                     this.scores[this.currentPlayer] = rem;
@@ -512,69 +598,71 @@
                     this.turn.dartsThrown++;
                     this.turn.history.push(label);
                     this.turn.darts.push(points);
-                    this.logAction(`P${this.currentPlayer+1}: ${label} (${points})`);
-                    
-                    if(rem === 0) {
-                        this.winLeg();
-                    }
+                    this.logAction(`${this.pName()}: ${label}`);
+                    this.updateStats(points, checkoutAtt, rem === 0);
+                    if(rem === 0) this.winLeg();
                 }
             },
             handleCricket: function(points, mul, label) {
-                // Segment ID: 20..15, 25 (Bull)
                 let seg = 0;
                 if(label.includes('Bull')) seg = 25;
                 else if(points > 0) seg = points / mul;
 
                 this.turn.dartsThrown++;
                 this.turn.history.push(label);
-                this.turn.darts.push(label.split(' ')[0][0] + seg); // Show like T20, S19
+                this.turn.darts.push(label.split(' ')[0][0] + seg); 
 
                 if([20,19,18,17,16,15,25].includes(seg)) {
                     const p = this.currentPlayer;
-                    const opp = p===0?1:0;
                     const hits = this.cricket[p][seg];
                     let scoreToAdd = 0;
-
-                    // Add hits
                     let newHits = hits + mul;
+                    
+                    // Cricket Multi-player logic:
+                    // You score if you have it closed (3 hits) AND ANY other player has NOT closed it.
+                    let canScore = false;
+                    
                     if(hits < 3) {
-                        // Opening logic
                         if(newHits > 3) {
-                            // Overflow
-                            if(this.cricket[opp][seg] < 3) {
-                                scoreToAdd = (newHits - 3) * seg;
-                            }
-                            this.cricket[p][seg] = 3; // Closed
+                            // Check if anyone else has it open
+                            const othersOpen = this.cricket.some((c, i) => i !== p && c[seg] < 3);
+                            if(othersOpen) scoreToAdd = (newHits - 3) * seg;
+                            this.cricket[p][seg] = 3; 
                         } else {
                             this.cricket[p][seg] = newHits;
                         }
                     } else {
-                        // Already closed, scoring
-                        if(this.cricket[opp][seg] < 3) {
-                            scoreToAdd = mul * seg;
-                        }
+                        const othersOpen = this.cricket.some((c, i) => i !== p && c[seg] < 3);
+                        if(othersOpen) scoreToAdd = mul * seg;
                     }
                     
                     if(scoreToAdd > 0) {
                         this.scores[p] += scoreToAdd;
                         this.turn.score += scoreToAdd;
-                        this.logAction(`P${p+1} Scored ${scoreToAdd} on ${seg==25?'Bull':seg}`);
+                        this.logAction(`${this.pName()} Scored ${scoreToAdd} on ${seg==25?'Bull':seg}`);
                     } else {
-                        this.logAction(`P${p+1} Hit ${label}`);
+                        this.logAction(`${this.pName()} Hit ${label}`);
                     }
-                    // Win Check
+                    
+                    this.playerStats[p].totalScore += scoreToAdd; 
+                    this.playerStats[p].totalDarts++;
+
                     const allClosed = [20,19,18,17,16,15,25].every(k => this.cricket[p][k] >= 3);
-                    if(allClosed && this.scores[p] >= this.scores[opp]) this.winLeg();
+                    // Win condition: All closed AND highest score (or tied highest)
+                    const myScore = this.scores[p];
+                    const highestOpponent = Math.max(...this.scores.filter((s, i) => i !== p));
+                    
+                    if(allClosed && myScore >= highestOpponent) this.winLeg();
 
                 } else {
-                    this.logAction(`P${p+1} Miss/Null (${label})`);
+                    this.logAction(`${this.pName()} Miss/Null`);
+                    this.playerStats[this.currentPlayer].totalDarts++;
                 }
             },
             handleATC: function(points, mul, label) {
                 const target = this.atc[this.currentPlayer];
-                // Derive segment
                 let seg = 0;
-                if(label.includes('Bull')) seg = 25; // Treat Bullseye/Outer same for ATC target
+                if(label.includes('Bull')) seg = 25;
                 else if(points > 0) seg = points / mul;
 
                 this.turn.dartsThrown++;
@@ -582,14 +670,13 @@
                 this.turn.darts.push(points > 0 ? seg : 0);
 
                 let hit = false;
-                // Target is 1..20. Then 25 (Bull)
                 if(target <= 20 && seg === target) hit = true;
-                else if(target === 25 && seg === 25) hit = true; // Bull needed
+                else if(target === 25 && seg === 25) hit = true;
 
                 if(hit) {
-                    AudioEngine.playDouble(); // Success sound
+                    AudioEngine.playDouble();
                     UI.flashSegment(seg);
-                    this.logAction(`P${this.currentPlayer+1} Hit Target ${target}!`);
+                    this.logAction(`${this.pName()} Hit Target ${target}!`);
                     if(target === 25) {
                         this.scores[this.currentPlayer] = "WIN";
                         this.winLeg();
@@ -598,13 +685,15 @@
                         this.scores[this.currentPlayer] = this.atc[this.currentPlayer] === 25 ? "BULL" : this.atc[this.currentPlayer];
                     }
                 } else {
-                    this.logAction(`P${this.currentPlayer+1} Missed Target ${target} (${label})`);
+                    this.logAction(`${this.pName()} Missed Target ${target}`);
                 }
+                this.playerStats[this.currentPlayer].totalDarts++;
             },
+            pName: function() { return this.matchConfig.playerNames[this.currentPlayer]; },
             saveState: function() { 
                 this.historyStack.push(JSON.parse(JSON.stringify({ 
                     s: this.scores, c: this.currentPlayer, t: this.turn, l: this.legs, 
-                    log: this.gameLog, crick: this.cricket, atc: this.atc 
+                    log: this.gameLog, crick: this.cricket, atc: this.atc, stats: this.playerStats 
                 }))); 
             },
             undo: function() {
@@ -613,43 +702,54 @@
                 this.scores = st.s; this.currentPlayer = st.c; this.turn = st.t; this.legs = st.l; this.gameLog = st.log;
                 if(st.crick) this.cricket = st.crick;
                 if(st.atc) this.atc = st.atc;
+                if(st.stats) this.playerStats = st.stats;
+                
+                document.querySelectorAll('.hit-marker').forEach(e => e.remove());
+                if(this.turn.markers) {
+                    this.turn.markers.forEach(m => UI.drawMarker(m.x, m.y, this.currentPlayer));
+                }
+
                 UI.render(); UI.renderLog(); AudioEngine.speak("Undo");
+                this.persist();
             },
             manualEditScore: function() {
                 App.closeSettings();
                 const current = this.scores[this.currentPlayer];
-                const input = prompt(`Edit P${this.currentPlayer + 1} Score/Target.\nCurrent: ${current}`, current);
+                const input = prompt(`Edit ${this.pName()} Score/Target.\nCurrent: ${current}`, current);
                 if(input !== null) {
                     const val = parseInt(input);
-                    // For ATC/Cricket allow raw edits
                     if(val || val === 0) {
                         this.saveState();
                         this.scores[this.currentPlayer] = val;
                         if(this.mode === 'atc') this.atc[this.currentPlayer] = val;
                         this.turn.dartsThrown = 0; this.turn.score = 0; this.turn.history = []; this.turn.darts = [];
-                        this.logAction(`Manual Edit: P${this.currentPlayer+1} set to ${val}`);
+                        this.resetTurn(); 
+                        this.logAction(`Manual Edit: ${this.pName()} set to ${val}`);
                         UI.render();
+                        this.persist();
                     }
                 }
             },
             logAction: function(msg) { this.gameLog.push(msg); UI.renderLog(); },
             winLeg: function() {
                 this.turn.won = true; this.legs[this.currentPlayer]++;
-                UI.render(); // Update legs in background immediately
+                UI.render(); 
                 AudioEngine.playWin(); Confetti.start();
                 this.stopMic();
-                
-                // Delay modal so we can see the board animation
                 setTimeout(() => {
-                    document.getElementById('winner-name').textContent = `Player ${this.currentPlayer + 1} Wins!`;
+                    document.getElementById('winner-name').textContent = `${this.pName()} Wins!`;
                     document.getElementById('winner-modal').classList.remove('hidden');
                     document.getElementById('winner-modal').classList.add('flex');
                 }, 1500);
+                this.persist();
             },
             nextTurn: function() {
-                this.currentPlayer = this.currentPlayer === 0 ? 1 : 0;
-                this.resetTurn(); UI.render();
+                // Cycle player: (current + 1) % count
+                this.currentPlayer = (this.currentPlayer + 1) % this.matchConfig.playerCount;
+                this.resetTurn(); 
+                UI.render();
                 if(this.micMode === 'turn' && !this.isListening) this.startMic();
+                this.persist();
             },
             inputDigit: function(d) {
                 this.inputBuffer += d; 
@@ -668,11 +768,10 @@
                     else if(val > 60) { mul=3; lbl="Total " + val; }
                     
                     if((val > 60 || this.turn.dartsThrown === 0) && this.mode === 'x01') {
-                        // Bulk input for X01
-                        this.processThrow(val, mul, lbl);
+                        this.processThrow(val, mul, lbl, null);
                         if(this.turn.dartsThrown < 3) { this.turn.dartsThrown = 3; setTimeout(() => this.nextTurn(), 1000); }
                     } else {
-                        this.processThrow(val, mul, lbl);
+                        this.processThrow(val, mul, lbl, null);
                     }
                 }
                 this.clearInput();
@@ -702,9 +801,15 @@
             },
             startMic: function() { if(!this.isListening && this.recognition) try{this.recognition.start()}catch(e){} },
             stopMic: function() { this.micMode = 'off'; if(this.recognition) this.recognition.stop(); },
+            
             parseVoice: function(text) {
-                // Modified regex to include hyphen [-] and added "won"
-                const lower = text.toLowerCase().replace(/[.,-]/g,' ').replace(/\s+/g,' ').trim().split(' ');
+                const lower = text.toLowerCase().replace(/[.,-]/g,' ').replace(/\s+/g,' ').trim();
+                if (lower.includes('undo') || lower.includes('go back')) { this.undo(); return; }
+                if (lower.includes('next turn') || lower.includes('switch')) { this.nextTurn(); return; }
+                if (lower.includes('score')) { AudioEngine.speak(`${this.scores[this.currentPlayer]} remaining`); return; }
+                if (lower.includes('correction')) { this.undo(); return; }
+
+                const words = lower.split(' ');
                 let i=0;
                 const getNum = (w) => {
                     if(!w)return null; if(w==='one'||w==='won')return 1; if(w==='two'||w==='to'||w==='too')return 2;
@@ -713,12 +818,12 @@
                     if(w==='ten')return 10; if(w==='eleven')return 11; if(w==='twelve')return 12;
                     if(w==='twenty')return 20; const n=parseInt(w); return isNaN(n)?null:n;
                 };
-                while(i < lower.length) {
+                while(i < words.length) {
                     if(this.turn.dartsThrown>=3 || this.turn.won) break;
-                    const w = lower[i];
+                    const w = words[i];
                     if(w.includes('bull')) {
-                        if(w==='outer') { this.processThrow(25,1,"Outer Bull"); i+=2; }
-                        else { this.processThrow(50,2,"Bullseye"); i++; }
+                        if(w==='outer') { this.processThrow(25,1,"Outer Bull", null); i+=2; }
+                        else { this.processThrow(50,2,"Bullseye", null); i++; }
                         continue;
                     }
                     let m=1, p="Single", v=null;
@@ -726,66 +831,79 @@
                     else if(w==='double') { m=2; p="Double"; i++; }
                     else if(w==='triple'||w==='treble') { m=3; p="Triple"; i++; }
                     
-                    if(i<lower.length) {
-                        if(lower[i]==='twenty' && lower[i+1]==='five') { v=25; i+=2; }
-                        else { v=getNum(lower[i]); i++; }
+                    if(i<words.length) {
+                        if(words[i]==='twenty' && words[i+1]==='five') { v=25; i+=2; }
+                        else { v=getNum(words[i]); i++; }
                     }
                     if(v!==null) {
-                        if(v===25 && m===1) this.processThrow(25,1,"Outer Bull");
-                        else if(v>=0 && v<=20) this.processThrow(v*m, m, `${p} ${v}`);
+                        if(v===25 && m===1) this.processThrow(25,1,"Outer Bull", null);
+                        else if(v>=0 && v<=20) this.processThrow(v*m, m, `${p} ${v}`, null);
                     } else if(m===1 && v===null && !w.includes('bull')) i++;
                 }
+            },
+            persist: function() {
+                try {
+                    const data = {
+                        scores: this.scores, legs: this.legs, currentPlayer: this.currentPlayer,
+                        turn: this.turn, gameLog: this.gameLog, cricket: this.cricket, atc: this.atc,
+                        mode: this.mode, playerStats: this.playerStats, matchConfig: this.matchConfig
+                    };
+                    localStorage.setItem('dartsOS_v1', JSON.stringify(data));
+                } catch(e) { console.error("Save failed", e); }
+            },
+            loadGame: function() {
+                try {
+                    const data = JSON.parse(localStorage.getItem('dartsOS_v1'));
+                    if(data) {
+                        this.scores = data.scores; this.legs = data.legs; this.currentPlayer = data.currentPlayer;
+                        this.turn = data.turn; this.gameLog = data.gameLog; this.cricket = data.cricket;
+                        this.atc = data.atc; this.mode = data.mode; 
+                        if(data.playerStats) this.playerStats = data.playerStats;
+                        if(data.matchConfig) this.matchConfig = data.matchConfig;
+                        
+                        // Set inputs
+                        document.getElementById('set-legs').value = this.matchConfig.legsToWin;
+                        document.getElementById('dash-player-count').textContent = this.matchConfig.playerCount;
+                        
+                        document.querySelectorAll('.hit-marker').forEach(e => e.remove());
+                        if(this.turn.markers) {
+                            this.turn.markers.forEach(m => UI.drawMarker(m.x, m.y, this.currentPlayer));
+                        }
+                        
+                        UI.render(); UI.renderLog();
+                        App.setView('game');
+                    }
+                } catch(e) { console.error("Load failed", e); }
             }
         };
 
         const UI = {
             render: function() {
                 const p = Game.currentPlayer;
-                const p1S = Game.scores[0], p2S = Game.scores[1];
-                
-                // Logic for Score Display vs Target Display
-                let p1D = p1S, p2D = p2S;
-                if(Game.mode === 'atc') {
-                    p1D = (p1S===25||p1S==="BULL") ? "BULL" : p1S;
-                    p2D = (p2S===25||p2S==="BULL") ? "BULL" : p2S;
-                }
+                const score = Game.scores[p];
+                let displayScore = score;
+                if(Game.mode === 'atc') displayScore = (score===25||score==="BULL") ? "BULL" : score;
 
-                // Render Cricket Grids
-                const renderCrick = (pid, elemId) => {
-                    if(Game.mode !== 'cricket') { document.getElementById(elemId).style.display = 'none'; return; }
-                    const el = document.getElementById(elemId);
-                    el.style.display = 'grid'; // Enable grid
-                    el.innerHTML = '';
-                    [20,19,18,17,16,15,25].forEach(k => {
-                        const hits = Game.cricket[pid][k];
-                        const sym = hits>=3 ? '⬤' : (hits===2 ? '╳' : (hits===1 ? '⟋' : '·'));
-                        const col = hits>=3 ? 'text-green-400' : 'text-slate-500';
-                        const animClass = hits >= 3 ? 'anim-stamp' : '';
-                        el.innerHTML += `<div class="flex flex-col items-center"><span class="text-[10px] text-slate-400">${k===25?'B':k}</span><span class="font-bold ${col} ${animClass}">${sym}</span></div>`;
-                    });
-                };
-                
                 // Mobile Updates
                 const card = document.getElementById('mob-active-card');
-                card.style.background = p===0 ? '#ef4444' : '#3b82f6';
+                card.style.background = PlayerColors[p];
+                card.style.borderColor = 'rgba(255,255,255,0.4)';
                 document.getElementById('mob-p-num').textContent = p + 1;
-                document.getElementById('mob-p-name').textContent = `Player ${p+1}`;
+                document.getElementById('mob-p-name').textContent = Game.matchConfig.playerNames[p];
                 
-                // Animate Score Rolling
-                this.animateValue('mob-score', p===0 ? p1D : p2D);
-                document.getElementById('mob-score').style.fontSize = (typeof(p1D)==='string' && p1D.length>3) ? "3.5rem" : "5.5rem";
-                
+                this.animateValue('mob-score', displayScore);
+                document.getElementById('mob-score').style.fontSize = (typeof(displayScore)==='string' && displayScore.length>3) ? "3.5rem" : "5.5rem";
                 document.getElementById('mob-legs').textContent = `Legs: ${Game.legs[p]}`;
                 document.getElementById('mob-darts').textContent = Game.turn.dartsThrown;
                 document.getElementById('mob-last').textContent = Game.turn.history.length > 0 ? Game.turn.history[Game.turn.history.length-1] : '-';
                 
                 let suggestion = "-";
-                if(Game.mode === 'x01') suggestion = this.getCheckout(Game.scores[p]) || "Score High";
-                else if(Game.mode === 'atc') suggestion = `Target: ${Game.scores[p]}`;
+                if(Game.mode === 'x01') suggestion = this.getCheckout(score) || "Score High";
+                else if(Game.mode === 'atc') suggestion = `Target: ${score}`;
                 else if(Game.mode === 'cricket') suggestion = "Close 20-15 & Bull";
                 document.getElementById('mob-suggestion').textContent = suggestion;
                 
-                // Mobile Cricket Grid
+                // Mobile Cricket Grid - Only shows active player
                 const mobGrid = document.getElementById('mob-cricket-grid');
                 if(Game.mode === 'cricket') {
                     mobGrid.style.display = 'flex';
@@ -808,48 +926,80 @@
                     Game.turn.darts.map(d => `<div class="bg-white/20 rounded px-2 py-0.5 min-w-[2rem] text-center inline-flex items-center justify-center anim-pop">${d}</div>`).join('') : '<span class="opacity-50">0</span>';
                 document.getElementById('mob-turn-score').innerHTML = mobDartsHtml;
 
-                // Desktop Updates
-                this.animateValue('desk-p1-score', p1D);
-                this.animateValue('desk-p2-score', p2D);
-                document.getElementById('desk-p1-legs').textContent = Game.legs[0];
-                document.getElementById('desk-p2-legs').textContent = Game.legs[1];
-                document.getElementById('desk-status').textContent = `Player ${p+1}'s Turn`;
+                // Desktop Updates - Dynamic Player List
+                const deskList = document.getElementById('desktop-player-list');
+                deskList.innerHTML = '';
                 
-                renderCrick(0, 'desk-p1-cricket');
-                renderCrick(1, 'desk-p2-cricket');
+                Game.matchConfig.playerNames.forEach((name, idx) => {
+                    const isActive = idx === p;
+                    const pScore = Game.scores[idx];
+                    let dScore = pScore;
+                    if(Game.mode === 'atc') dScore = (pScore===25||pScore==="BULL") ? "BULL" : pScore;
+                    
+                    const card = document.createElement('div');
+                    card.className = `glass-panel rounded-2xl p-6 flex flex-col justify-between min-h-[160px] transition-all duration-300 relative overflow-hidden group ${isActive ? 'ring-2 opacity-100' : 'opacity-50'}`;
+                    if(isActive) {
+                        card.style.background = `${PlayerColors[idx]}33`; // 20% opacity
+                        card.style.borderColor = PlayerColors[idx];
+                    }
+                    
+                    let cricketHtml = '';
+                    if(Game.mode === 'cricket') {
+                        cricketHtml = `<div class="grid grid-cols-7 gap-1 mt-2 mb-2 relative z-10 text-center text-xs">`;
+                        [20,19,18,17,16,15,25].forEach(k => {
+                            const h = Game.cricket[idx][k];
+                            const sym = h>=3 ? '⬤' : (h===2 ? '╳' : (h===1 ? '⟋' : '·'));
+                            const col = h>=3 ? 'text-green-400' : 'text-slate-500';
+                            cricketHtml += `<div class="flex flex-col"><span class="opacity-50">${k===25?'B':k}</span><span class="font-bold ${col}">${sym}</span></div>`;
+                        });
+                        cricketHtml += `</div>`;
+                    }
 
+                    // Checkout Suggestion (only for active player)
+                    let checkHtml = '';
+                    if(isActive && Game.mode === 'x01') {
+                        const sug = this.getCheckout(pScore);
+                        if(sug) checkHtml = `<div class="text-right"><div class="text-amber-400 font-mono font-bold text-lg animate-pulse">${sug}</div><div class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Checkout</div></div>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="absolute top-[-10px] right-[-10px] opacity-10 text-8xl font-black select-none z-0">${idx+1}</div>
+                        <div class="flex justify-between items-start relative z-10">
+                            <h2 class="font-bold text-slate-200 text-lg uppercase tracking-widest">${name}</h2>
+                            <div class="text-xs font-mono font-bold text-slate-400">LEGS <span class="text-white bg-slate-800 px-2 py-1 rounded">${Game.legs[idx]}</span></div>
+                        </div>
+                        ${cricketHtml}
+                        <div class="flex justify-between items-end mt-2 relative z-10">
+                            <div class="text-6xl font-black font-mono tracking-tighter text-white">${dScore}</div>
+                            ${checkHtml}
+                        </div>
+                    `;
+                    deskList.appendChild(card);
+                });
+
+                document.getElementById('desk-status').textContent = `${Game.matchConfig.playerNames[p]}'s Turn`;
+                
                 const deskDartsHtml = Game.turn.darts.length > 0 ? 
                     Game.turn.darts.map(d => `<div class="bg-white/10 rounded-lg px-3 py-1 min-w-[3rem] text-center border border-white/5 shadow-inner text-2xl inline-flex items-center justify-center anim-pop">${d}</div>`).join('') : '<span class="opacity-50 text-2xl">0</span>';
                 document.getElementById('desk-turn-total').innerHTML = deskDartsHtml;
 
-                // Clear desktop suggestions first
-                document.getElementById('desk-p1-sug').textContent = '';
-                document.getElementById('desk-p2-sug').textContent = '';
-                
-                // Set checkout sequence for current player if in X01 mode
-                if(Game.mode === 'x01') {
-                    const check = this.getCheckout(Game.scores[p]);
-                    if(check) {
-                        document.getElementById(p === 0 ? 'desk-p1-sug' : 'desk-p2-sug').textContent = check;
-                    }
-                }
-
-                const dP1 = document.getElementById('p1-card'), dP2 = document.getElementById('p2-card');
-                if(p===0) { 
-                    dP1.classList.add('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100'); dP1.classList.remove('opacity-50');
-                    dP2.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100'); dP2.classList.add('opacity-50');
-                } else { 
-                    dP2.classList.add('ring-2', 'ring-blue-500', 'bg-blue-900/20', 'opacity-100'); dP2.classList.remove('opacity-50');
-                    dP1.classList.remove('ring-2', 'ring-red-500', 'bg-red-900/20', 'opacity-100'); dP1.classList.add('opacity-50');
-                }
-                
-                // Clear all highlight classes
-                document.querySelectorAll('.segment-highlight, .highlight-p1, .highlight-p2').forEach(el => {
-                    el.classList.remove('segment-highlight', 'highlight-p1', 'highlight-p2');
+                // Highlights
+                document.querySelectorAll('.segment-highlight, .highlight-p1, .highlight-p2, .highlight-p3, .highlight-p4, .highlight-p5, .highlight-p6').forEach(el => {
+                    el.classList.remove('segment-highlight', 'highlight-p1', 'highlight-p2', 'highlight-p3', 'highlight-p4', 'highlight-p5', 'highlight-p6');
                 });
 
-                if(Game.mode === 'x01' && this.getCheckout(Game.scores[p])) this.highlightCheckout(this.getCheckout(Game.scores[p]));
+                if(Game.mode === 'x01' && this.getCheckout(score)) this.highlightCheckout(this.getCheckout(score));
                 if(Game.mode === 'atc') this.highlightNumber(Game.atc[p]);
+                
+                // Update Settings Inputs if modal open
+                if(!document.getElementById('settings-modal').classList.contains('hidden')) this.renderSettingsInputs();
+            },
+            drawMarker: function(x, y, player) {
+                const m = document.createElement('div');
+                m.className = `hit-marker anim p${player+1}`;
+                m.style.left = x + 'px';
+                m.style.top = y + 'px';
+                document.body.appendChild(m);
             },
             renderLog: function() {
                 const rev = [...Game.gameLog].reverse();
@@ -857,10 +1007,57 @@
                 document.getElementById('desktop-game-log').innerHTML = mkLog(rev);
                 document.getElementById('mobile-game-log').innerHTML = mkLog(rev);
             },
+            updateSettingsUI: function() {
+                const doBtn = document.getElementById('btn-do');
+                const soBtn = document.getElementById('btn-so');
+                if(Game.matchConfig.doubleOut) {
+                    doBtn.classList.remove('bg-slate-700'); doBtn.classList.add('bg-indigo-600');
+                    soBtn.classList.remove('bg-indigo-600'); soBtn.classList.add('bg-slate-700');
+                } else {
+                    doBtn.classList.remove('bg-indigo-600'); doBtn.classList.add('bg-slate-700');
+                    soBtn.classList.remove('bg-slate-700'); soBtn.classList.add('bg-indigo-600');
+                }
+                this.renderSettingsInputs();
+            },
+            renderSettingsInputs: function() {
+                const container = document.getElementById('settings-player-inputs');
+                container.innerHTML = '';
+                Game.matchConfig.playerNames.forEach((name, idx) => {
+                    const div = document.createElement('div');
+                    div.className = "flex gap-2";
+                    div.innerHTML = `<div class="w-8 h-10 flex items-center justify-center font-bold bg-white/5 rounded text-slate-400">${idx+1}</div>
+                                     <input type="text" value="${name}" class="flex-grow bg-slate-800/50 border border-slate-600 rounded p-2 text-white" onchange="Game.updatePlayerName(${idx}, this.value)">`;
+                    container.appendChild(div);
+                });
+            },
             updateMicUI: function(active, mode) {
                 const status = document.getElementById('desk-mic-status');
                 if(active) { status.textContent = `${mode.toUpperCase()} ON`; status.classList.add('text-red-400'); } 
                 else { status.textContent = "OFF"; status.classList.remove('text-red-400'); }
+            },
+            renderStats: function() {
+                const container = document.getElementById('stats-container');
+                let html = `<table class="w-full text-left border-collapse"><thead><tr><th class="p-3 text-slate-400 text-xs uppercase border-b border-white/10">Player</th>
+                            <th class="p-3 text-slate-400 text-xs uppercase border-b border-white/10 text-center">Avg</th>
+                            <th class="p-3 text-slate-400 text-xs uppercase border-b border-white/10 text-center">Checkout</th>
+                            <th class="p-3 text-slate-400 text-xs uppercase border-b border-white/10 text-center">100+</th>
+                            <th class="p-3 text-slate-400 text-xs uppercase border-b border-white/10 text-center">140+</th>
+                            <th class="p-3 text-slate-400 text-xs uppercase border-b border-white/10 text-center">180</th></tr></thead><tbody>`;
+                
+                Game.playerStats.forEach((s, idx) => {
+                    const avg = s.totalDarts > 0 ? ((s.totalScore / s.totalDarts) * 3).toFixed(2) : "0.00";
+                    const co = s.checkoutAttempts > 0 ? ((s.checkoutHits / s.checkoutAttempts) * 100).toFixed(0) + "%" : "-";
+                    html += `<tr class="border-b border-white/5 hover:bg-white/5">
+                        <td class="p-3 font-bold text-white">${Game.matchConfig.playerNames[idx]}</td>
+                        <td class="p-3 text-center font-mono text-cyan-400">${avg}</td>
+                        <td class="p-3 text-center font-mono text-emerald-400">${co}</td>
+                        <td class="p-3 text-center font-mono text-slate-300">${s.s100}</td>
+                        <td class="p-3 text-center font-mono text-slate-300">${s.s140}</td>
+                        <td class="p-3 text-center font-mono text-amber-400 font-bold">${s.s180}</td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+                container.innerHTML = html;
             },
             getCheckout: function(s) {
                 if (s > 170 || s < 2) return "";
@@ -902,7 +1099,7 @@
                 return c[s] || "";
             },
             highlightCheckout: function(str) {
-                const cls = 'segment-highlight'; // Changed to Gold
+                const cls = 'segment-highlight'; 
                 let target = str.split(' ')[0]; let id = "";
                 if(target.startsWith('T')) id = `segment-t-${target.substring(1)}`;
                 else if(target.startsWith('D')) id = `segment-d-${target.substring(1)}`;
@@ -910,7 +1107,7 @@
                 if(id) { const sel = `[id="${id}"]`; document.querySelectorAll(sel).forEach(el => el.classList.add(cls)); }
             },
             highlightNumber: function(num) {
-                const cls = Game.currentPlayer === 0 ? 'highlight-p1' : 'highlight-p2';
+                const cls = `highlight-p${Game.currentPlayer+1}`;
                 if(num === 25) {
                     ['segment-25', 'segment-50'].forEach(id => {
                         const el = document.querySelectorAll(`[id="${id}"]`);
@@ -927,21 +1124,16 @@
             animateValue: function(id, end) {
                 const obj = document.getElementById(id);
                 if(!obj) return;
-                // If it's not a number (like "BULL"), just set it
                 if(isNaN(parseInt(end))) { obj.textContent = end; return; }
-                
                 const start = parseInt(obj.textContent);
                 if(start === end || isNaN(start)) { obj.textContent = end; return; }
-                
                 const range = end - start;
                 const minTimer = 50;
                 let stepTime = Math.abs(Math.floor(500 / range));
                 stepTime = Math.max(stepTime, minTimer);
-                
                 const startTime = new Date().getTime();
                 const endTime = startTime + 500;
                 let timer;
-
                 const run = () => {
                     const now = new Date().getTime();
                     const remaining = Math.max((endTime - now) / 500, 0);
@@ -949,7 +1141,6 @@
                     obj.textContent = value;
                     if (value == end) { clearInterval(timer); }
                 };
-                
                 timer = setInterval(run, stepTime);
                 run();
             },
@@ -960,16 +1151,14 @@
                 else if(mul === 2) ids.push(`segment-d-${points/2}`);
                 else if(mul === 3) ids.push(`segment-t-${points/3}`);
                 else if(mul === 1) {
-                    // Flash both single segments for impact
                     ids.push(`segment-s-${points}`);
                     ids.push(`segment-si-${points}`);
                 }
-                
                 ids.forEach(id => {
                     const el = document.getElementById(id);
                     if(el) {
                         el.classList.remove('anim-checkout');
-                        void el.offsetWidth; // trigger reflow
+                        void el.offsetWidth;
                         el.classList.add('anim-checkout');
                     }
                 });
@@ -979,31 +1168,47 @@
                      ['s', 'si', 'd', 't'].forEach(type => {
                         const id = `segment-${type}-${num}`;
                         const el = document.querySelectorAll(`[id="${id}"]`);
-                        el.forEach(e => {
-                            e.classList.remove('anim-flash');
-                            void e.offsetWidth; // trigger reflow
-                            e.classList.add('anim-flash');
-                        });
+                        el.forEach(e => { e.classList.remove('anim-flash'); void e.offsetWidth; e.classList.add('anim-flash'); });
                      });
                 } else if(num === 25) {
                     ['segment-25', 'segment-50'].forEach(id => {
                          const el = document.querySelectorAll(`[id="${id}"]`);
-                         el.forEach(e => {
-                            e.classList.remove('anim-flash');
-                            void e.offsetWidth; // trigger reflow
-                            e.classList.add('anim-flash');
-                        });
+                         el.forEach(e => { e.classList.remove('anim-flash'); void e.offsetWidth; e.classList.add('anim-flash'); });
                     });
                 }
             }
         };
 
         const App = {
-            openSettings: function() { document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex'); },
+            updatePlayerCount: function(delta) {
+                let c = Game.matchConfig.playerCount + delta;
+                if(c < 1) c = 1;
+                if(c > 6) c = 6;
+                Game.matchConfig.playerCount = c;
+                document.getElementById('dash-player-count').textContent = c;
+                // Re-init defaults for names
+                while(Game.matchConfig.playerNames.length < c) {
+                    Game.matchConfig.playerNames.push(`Player ${Game.matchConfig.playerNames.length+1}`);
+                }
+            },
+            openSettings: function() { 
+                document.getElementById('settings-modal').classList.remove('hidden'); 
+                document.getElementById('settings-modal').classList.add('flex');
+                UI.updateSettingsUI();
+            },
             closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
             toggleMobileLog: function() {
                 const el = document.getElementById('mobile-log-modal');
                 if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); } else { el.classList.add('hidden'); el.classList.remove('flex'); }
+            },
+            toggleStats: function() {
+                const el = document.getElementById('stats-modal');
+                if(el.classList.contains('hidden')) { 
+                    UI.renderStats();
+                    el.classList.remove('hidden'); el.classList.add('flex'); 
+                } else { 
+                    el.classList.add('hidden'); el.classList.remove('flex'); 
+                }
             },
             setMobileTab: function(tab) {
                 document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
@@ -1016,7 +1221,10 @@
             setView: function(v) {
                 document.getElementById('view-dashboard').classList.add('hidden'); document.getElementById('view-game-mobile').classList.add('hidden');
                 document.getElementById('view-game-desktop').classList.remove('flex'); document.getElementById('view-game-desktop').classList.add('hidden');
-                if(v === 'dashboard') document.getElementById('view-dashboard').classList.remove('hidden');
+                if(v === 'dashboard') {
+                    document.getElementById('view-dashboard').classList.remove('hidden');
+                    if(localStorage.getItem('dartsOS_v1')) document.getElementById('resume-btn').classList.remove('hidden');
+                }
                 else {
                     if(window.innerWidth < 1024) { document.getElementById('view-game-mobile').classList.remove('hidden'); document.getElementById('view-game-mobile').classList.add('flex'); }
                     else { document.getElementById('view-game-desktop').classList.remove('hidden'); document.getElementById('view-game-desktop').classList.add('flex'); }
@@ -1069,15 +1277,11 @@
                 const container = document.getElementById(containerId);
                 container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="w-full h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
                 const svg = document.getElementById(svgId);
-                
-                // Add click listener for background (Miss)
                 svg.addEventListener('click', (e) => {
-                    // If the target is the SVG itself (background) or not a segment
                     if (e.target === svg || !e.target.classList.contains('dartboard-segment')) {
-                        Game.processThrow(0, 1, 'Miss');
+                        Game.processThrow(0, 1, 'Miss', null);
                     }
                 });
-
                 container.addEventListener('touchstart', (e) => TouchZoom.start(e, svgId), {passive: false});
                 container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
                 container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
@@ -1111,11 +1315,10 @@
                 c.onclick = (e) => this.click(e, v, 1, l); svg.appendChild(c);
             },
             click: function(e, pts, mul, lbl) {
-                e.stopPropagation(); // Stop miss click from firing
-                const m = document.createElement('div'); m.className = 'hit-marker';
-                m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
-                document.body.appendChild(m); setTimeout(() => m.remove(), 600);
-                Game.processThrow(pts, mul, lbl);
+                e.stopPropagation(); 
+                const coords = { x: e.clientX, y: e.clientY };
+                Game.turn.markers.push(coords); 
+                Game.processThrow(pts, mul, lbl, coords);
             }
         };
     </script>
