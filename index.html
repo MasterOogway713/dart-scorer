@@ -160,6 +160,7 @@
         <button onclick="App.setView('dashboard')" class="glass-panel p-2 rounded-lg text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
         <div class="font-condensed text-lg font-bold uppercase tracking-widest text-white/90">Voice DartsOS</div>
         <div class="flex gap-2">
+            <button onclick="Game.undo()" class="glass-panel p-2 rounded-lg text-amber-400">↩️</button>
             <button onclick="App.toggleMobileLog()" class="glass-panel p-2 rounded-lg text-slate-300">📋</button>
             <button onclick="App.openSettings()" class="glass-panel p-2 rounded-lg text-slate-300">⚙️</button>
         </div>
@@ -253,9 +254,9 @@
                         <button class="keypad-btn" onclick="Game.inputDigit(7)">7</button>
                         <button class="keypad-btn" onclick="Game.inputDigit(8)">8</button>
                         <button class="keypad-btn" onclick="Game.inputDigit(9)">9</button>
-                        <button class="keypad-btn text-sm font-bold text-amber-400" onclick="Game.undo()">UNDO</button>
+                        <button class="keypad-btn text-sm font-bold text-red-400 border-red-900/50 bg-red-900/10" onclick="Game.processThrow(0, 1, 'Miss')">MISS</button>
                         <button class="keypad-btn" onclick="Game.inputDigit(0)">0</button>
-                        <button class="keypad-btn text-sm font-bold text-red-400" onclick="Game.clearInput()">DEL</button>
+                        <button class="keypad-btn text-sm font-bold text-slate-400" onclick="Game.clearInput()">DEL</button>
                     </div>
                 </div>
                 <div id="mob-tab-board" class="mobile-tab-content flex-col h-full relative">
@@ -358,7 +359,12 @@
                         <div id="desk-status" class="text-2xl font-bold text-white">Ready</div>
                     </div>
                 </div>
-                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20 overflow-hidden" id="desk-board-container" style="touch-action: none;"></div>
+                <div class="glass-panel rounded-3xl flex-grow flex items-center justify-center p-8 bg-black/20 overflow-hidden relative" id="desk-board-container" style="touch-action: none;">
+                    <!-- Miss button for desktop overlay -->
+                    <button onclick="Game.processThrow(0, 1, 'Miss')" class="absolute bottom-6 right-6 px-6 py-3 rounded-xl bg-red-900/20 hover:bg-red-900/40 text-red-400 font-bold border border-red-900/50 transition z-30">
+                        MISS
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -1063,6 +1069,15 @@
                 const container = document.getElementById(containerId);
                 container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="w-full h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
                 const svg = document.getElementById(svgId);
+                
+                // Add click listener for background (Miss)
+                svg.addEventListener('click', (e) => {
+                    // If the target is the SVG itself (background) or not a segment
+                    if (e.target === svg || !e.target.classList.contains('dartboard-segment')) {
+                        Game.processThrow(0, 1, 'Miss');
+                    }
+                });
+
                 container.addEventListener('touchstart', (e) => TouchZoom.start(e, svgId), {passive: false});
                 container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
                 container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
@@ -1096,6 +1111,7 @@
                 c.onclick = (e) => this.click(e, v, 1, l); svg.appendChild(c);
             },
             click: function(e, pts, mul, lbl) {
+                e.stopPropagation(); // Stop miss click from firing
                 const m = document.createElement('div'); m.className = 'hit-marker';
                 m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
                 document.body.appendChild(m); setTimeout(() => m.remove(), 600);
