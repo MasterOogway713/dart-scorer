@@ -322,6 +322,20 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="flex flex-col gap-3">
+                        <button id="btn-hold-speak" class="py-5 rounded-xl bg-indigo-600 border border-indigo-400 font-bold text-lg shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 text-white">
+                            <span>🎙️</span> HOLD TO SPEAK
+                        </button>
+                        <div class="flex items-center gap-4 my-2">
+                            <div class="h-px bg-white/10 flex-grow"></div>
+                            <span class="text-xs text-slate-500 font-bold uppercase">OR TOGGLE MODE</span>
+                            <div class="h-px bg-white/10 flex-grow"></div>
+                        </div>
+                        <button onclick="Game.setMicMode('single')" class="py-3 rounded-xl bg-slate-800/60 border border-slate-600 font-bold text-sm">Single Throw (Auto-off)</button>
+                        <button onclick="Game.setMicMode('turn')" class="py-3 rounded-xl bg-slate-800/60 border border-slate-600 font-bold text-sm">Full Turn (3 Darts)</button>
+                        <button onclick="Game.setMicMode('always')" class="py-3 rounded-xl bg-slate-800/60 border border-slate-600 font-bold text-sm">Always On</button>
+                    </div>
+                    <button onclick="Game.stopMic()" class="mt-2 py-3 rounded-xl bg-red-900/30 text-red-400 border border-red-900/50 font-bold text-sm">Stop Microphone</button>
                 </div>
             </div>
         </div>
@@ -863,6 +877,16 @@
             startMic: function() { if(!this.isListening && this.recognition) try{this.recognition.start()}catch(e){} },
             stopMic: function() { this.micMode = 'off'; if(this.recognition) this.recognition.stop(); },
             
+            // Hold to Speak Logic
+            startHold: function() {
+                if(this.isListening) return;
+                this.micMode = 'hold';
+                this.startMic();
+            },
+            stopHold: function() {
+                this.stopMic();
+            },
+
             parseVoice: function(text) {
                 const lower = text.toLowerCase().replace(/[.,-]/g,' ').replace(/\s+/g,' ').trim();
                 if (lower.includes('undo') || lower.includes('go back')) { this.undo(); return; }
@@ -1332,6 +1356,31 @@
         window.addEventListener('load', () => {
             Dartboard.create('desk-board-container', 'dartboard-desk'); Dartboard.create('mob-board-container', 'dartboard-mob');
             App.setView('dashboard');
+
+            // Setup Hold to Speak Button
+            const holdBtn = document.getElementById('btn-hold-speak');
+            if(holdBtn) {
+                const start = (e) => { 
+                    e.preventDefault(); 
+                    Game.startHold(); 
+                    holdBtn.classList.remove('bg-indigo-600', 'border-indigo-400');
+                    holdBtn.classList.add('bg-red-600', 'border-red-400');
+                    holdBtn.innerHTML = "<span>🎙️</span> LISTENING...";
+                };
+                const end = (e) => { 
+                    e.preventDefault(); 
+                    Game.stopHold(); 
+                    holdBtn.classList.add('bg-indigo-600', 'border-indigo-400');
+                    holdBtn.classList.remove('bg-red-600', 'border-red-400');
+                    holdBtn.innerHTML = "<span>🎙️</span> HOLD TO SPEAK";
+                };
+                
+                holdBtn.addEventListener('touchstart', start, {passive: false});
+                holdBtn.addEventListener('touchend', end, {passive: false});
+                holdBtn.addEventListener('mousedown', start);
+                holdBtn.addEventListener('mouseup', end);
+                holdBtn.addEventListener('mouseleave', end);
+            }
         });
 
         const TouchZoom = {
