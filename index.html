@@ -1431,7 +1431,17 @@
                 container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
                 container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
                 const sectors = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
-                const r = { do: 170, di: 162, to: 107, ti: 99, bo: 16, bi: 6 };
+                
+                // Detect touch/mobile for "Fat" cells
+                const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 1024;
+                
+                // Dimensions: Standard vs Fat (Touch)
+                // Standard: Ring width ~8 units
+                // Fat: Ring width ~16 units (Double thickness for easier clicking)
+                const r = isTouch 
+                    ? { do: 170, di: 154, to: 107, ti: 91, bo: 22, bi: 10 } 
+                    : { do: 170, di: 162, to: 107, ti: 99, bo: 16, bi: 6 };
+
                 sectors.forEach((num, i) => {
                     const a = 360/20, s = -90-(a/2)+(i*a), e = s+a, ev = i%2===0;
                     this.arc(svg, r.to, r.di, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-s-${num}`);
