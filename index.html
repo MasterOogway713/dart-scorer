@@ -1396,10 +1396,23 @@
                 }
             },
             show: function(e, boardId) {
-                this.magnifier.style.display = 'block'; const originalSvg = document.getElementById(boardId);
-                this.magnifier.innerHTML = ''; const clone = originalSvg.cloneNode(true);
-                clone.removeAttribute('id'); clone.style.width = '100%'; clone.style.height = '100%';
-                this.magnifier.appendChild(clone); this.update(e, boardId);
+                this.magnifier.style.display = 'block'; 
+                const originalSvg = document.getElementById(boardId);
+                const rect = originalSvg.getBoundingClientRect();
+                
+                this.magnifier.innerHTML = ''; 
+                const clone = originalSvg.cloneNode(true);
+                clone.removeAttribute('id'); 
+                
+                // IMPORTANT: Set clone to MATCH the real board size, not the magnifier size
+                clone.style.width = rect.width + 'px';
+                clone.style.height = rect.height + 'px';
+                clone.style.position = 'absolute';
+                clone.style.maxWidth = 'none'; // Override tailwind
+                clone.style.maxHeight = 'none';
+                
+                this.magnifier.appendChild(clone); 
+                this.update(e, boardId);
             },
             update: function(e, boardId) {
                 const touch = e.touches[0] || e.changedTouches[0]; 
@@ -1407,8 +1420,9 @@
                 
                 const magSize = 140; 
                 const halfMag = magSize / 2;
+                const zoomLevel = 2.5; // True magnification factor
 
-                // 1. Clamp Magnifier Position (Keep it on screen)
+                // 1. Clamp Magnifier Window (Keep it on screen)
                 let safeLeft = touch.clientX;
                 let safeTop = touch.clientY - 60; 
 
@@ -1418,24 +1432,26 @@
                 this.magnifier.style.left = safeLeft + 'px'; 
                 this.magnifier.style.top = safeTop + 'px'; 
                 
-                // 2. Shift Internal Image (Center the target)
+                // 2. Position Internal Image
                 const svg = this.magnifier.querySelector('svg');
                 if (svg) { 
-                    // Calculate finger position as percentage of board
-                    const perX = (touch.clientX - rect.left) / rect.width; 
-                    const perY = (touch.clientY - rect.top) / rect.height;
+                    // Calculate finger position relative to the board
+                    const relX = touch.clientX - rect.left;
+                    const relY = touch.clientY - rect.top;
 
-                    // We want the point (perX, perY) of the clone to be at the CENTER of the magnifier (70, 70)
-                    // The clone is 140x140.
-                    // Target X on clone = perX * 140
-                    // Target Y on clone = perY * 140
-                    // Offset needed = 70 - TargetX
-                    const offsetX = halfMag - (perX * magSize);
-                    const offsetY = halfMag - (perY * magSize);
+                    // Logic: We want the point (relX, relY) on the board to appear at (70, 70) in the magnifier.
+                    // Since we are scaling the board by zoomLevel, that point is at (relX * zoom, relY * zoom).
+                    // So we need to shift the board left/up by that amount, minus the halfMag center offset.
+                    
+                    const originX = 0; // Transform origin is top-left by default for absolute
+                    const originY = 0;
+                    
+                    // We simply translate the element to align the target point
+                    const finalLeft = halfMag - (relX * zoomLevel);
+                    const finalTop = halfMag - (relY * zoomLevel);
 
-                    // Apply transform: Translate so target is in center, then Scale
-                    svg.style.transformOrigin = 'center center';
-                    svg.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(3)`; 
+                    svg.style.transformOrigin = '0 0';
+                    svg.style.transform = `translate(${finalLeft}px, ${finalTop}px) scale(${zoomLevel})`; 
                 }
                 
                 const el = document.elementFromPoint(touch.clientX, touch.clientY);
