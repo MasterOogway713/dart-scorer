@@ -1402,11 +1402,46 @@
                 this.magnifier.appendChild(clone); this.update(e, boardId);
             },
             update: function(e, boardId) {
-                const touch = e.touches[0] || e.changedTouches[0]; const rect = document.getElementById(boardId).getBoundingClientRect();
-                this.magnifier.style.left = touch.clientX + 'px'; this.magnifier.style.top = (touch.clientY - 60) + 'px'; 
+                const touch = e.touches[0] || e.changedTouches[0]; 
+                const rect = document.getElementById(boardId).getBoundingClientRect();
+                
+                // Magnifier Dimensions (140px width/height defined in CSS)
+                const magSize = 140; 
+                const halfMag = magSize / 2;
+
+                // Smart Clamping: Keep magnifier fully on screen
+                // We calculate where the center 'left' and 'top' should be
+                let safeLeft = touch.clientX;
+                let safeTop = touch.clientY - 60; // Default offset
+
+                // Clamp Horizontal (Prevent going off left or right edges)
+                // Since css has transform: translate(-50%), the visual edges are left-70 and left+70
+                if (safeLeft < halfMag) safeLeft = halfMag;
+                if (safeLeft > window.innerWidth - halfMag) safeLeft = window.innerWidth - halfMag;
+
+                // Clamp Vertical (Prevent going off top)
+                // CSS has transform: translate(..., -130%). Height is 140. 
+                // Visual top is top - (140 * 1.3) = top - 182.
+                // We want visual top >= 0. So top >= 182.
+                // However, usually touching top of board is fine, but let's clamp just in case.
+                // Let's just clamp the box itself not to go too wild. 
+                // Actually, standard behavior is usually fine vertically unless right at the top.
+                // Let's stick to Horizontal clamping which is the main issue for D6/D11.
+
+                this.magnifier.style.left = safeLeft + 'px'; 
+                this.magnifier.style.top = safeTop + 'px'; 
+                
                 const svg = this.magnifier.querySelector('svg');
-                const perX = (touch.clientX - rect.left) / rect.width; const perY = (touch.clientY - rect.top) / rect.height;
-                if (svg) { svg.style.transformOrigin = `${perX * 100}% ${perY * 100}%`; svg.style.transform = 'scale(3)'; }
+                // Calculate percentage relative to the BOARD, not the screen
+                const perX = (touch.clientX - rect.left) / rect.width; 
+                const perY = (touch.clientY - rect.top) / rect.height;
+                
+                if (svg) { 
+                    // This keeps the zoom focused exactly on the finger, even if the glass has shifted due to clamping
+                    svg.style.transformOrigin = `${perX * 100}% ${perY * 100}%`; 
+                    svg.style.transform = 'scale(3)'; 
+                }
+                
                 const el = document.elementFromPoint(touch.clientX, touch.clientY);
                 document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
                 const magSvg = this.magnifier.querySelector('svg'); if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
