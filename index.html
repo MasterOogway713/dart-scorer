@@ -60,8 +60,8 @@
 
         .dartboard-segment { transition: opacity 0.1s; cursor: pointer; stroke: #94a3b8; stroke-width: 1px; }
         .dartboard-segment:hover, .dartboard-segment.hover-highlight { 
-            opacity: 1; stroke: #fff; stroke-width: 3px; 
-            filter: brightness(1.5) drop-shadow(0 0 4px rgba(255,255,255,0.5)); z-index: 100;
+            opacity: 1; stroke: #22d3ee; stroke-width: 4px; 
+            filter: brightness(1.5) drop-shadow(0 0 8px rgba(34, 211, 238, 0.8)); z-index: 100;
         }
         .dartboard-text { font-family: 'JetBrains Mono'; font-weight: 800; fill: #fff; pointer-events: none; text-anchor: middle; dominant-baseline: middle; font-size: 32px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
@@ -131,8 +131,8 @@
 
         #magnifier {
             position: fixed; pointer-events: none; z-index: 9999;
-            width: 140px; height: 140px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.9);
-            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background: #0f172a;
+            width: 180px; height: 180px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.9);
+            overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.9); background: #0f172a;
             display: none; transform: translate(-50%, -130%);
         }
         #magnifier svg { width: 100%; height: 100%; display: block; }
@@ -1418,13 +1418,13 @@
                 const touch = e.touches[0] || e.changedTouches[0]; 
                 const rect = document.getElementById(boardId).getBoundingClientRect();
                 
-                const magSize = 140; 
+                const magSize = 180; 
                 const halfMag = magSize / 2;
                 const zoomLevel = 2.5; // True magnification factor
 
                 // 1. Clamp Magnifier Window (Keep it on screen)
                 let safeLeft = touch.clientX;
-                let safeTop = touch.clientY - 60; 
+                let safeTop = touch.clientY - 70; // Adjusted offset for larger circle
 
                 if (safeLeft < halfMag) safeLeft = halfMag;
                 if (safeLeft > window.innerWidth - halfMag) safeLeft = window.innerWidth - halfMag;
@@ -1439,7 +1439,7 @@
                     const relX = touch.clientX - rect.left;
                     const relY = touch.clientY - rect.top;
 
-                    // Logic: We want the point (relX, relY) on the board to appear at (70, 70) in the magnifier.
+                    // Logic: We want the point (relX, relY) on the board to appear at (90, 90) in the magnifier.
                     // Since we are scaling the board by zoomLevel, that point is at (relX * zoom, relY * zoom).
                     // So we need to shift the board left/up by that amount, minus the halfMag center offset.
                     
