@@ -520,7 +520,7 @@
     </div>
 
     <script>
-        const AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},
+        window.AudioEngine={ctx:null,init:function(){window.AudioContext=window.AudioContext||window.webkitAudioContext;if(!this.ctx)this.ctx=new AudioContext},playTone:function(e,t,n){if(!this.ctx)this.init();if("suspended"===this.ctx.state)this.ctx.resume();const o=this.ctx.createOscillator(),a=this.ctx.createGain();o.type=t,o.frequency.setValueAtTime(e,this.ctx.currentTime),a.gain.setValueAtTime(0,this.ctx.currentTime),a.gain.linearRampToValueAtTime(.15,this.ctx.currentTime+.02),a.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+n),o.connect(a),a.connect(this.ctx.destination),o.start(),o.stop(this.ctx.currentTime+n)},playHit:function(){this.playTone(400,"sine",.15)},playDouble:function(){this.playTone(600,"triangle",.2)},playTriple:function(){this.playTone(800,"square",.15)},playBust:function(){this.playTone(150,"sawtooth",.4)},playWin:function(){if(!this.ctx)this.init();[523.25,659.25,783.99,1046.5].forEach(((e,t)=>setTimeout((()=>this.playTone(e,"triangle",.3)),150*t)))},play180:function(){this.playWin(),this.speak("One Hundred and Eighty!")},
         speak:function(text){
             if(window.speechSynthesis){
                 window.speechSynthesis.cancel();
@@ -529,11 +529,11 @@
                 window.speechSynthesis.speak(u);
             }
         }};
-        const Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1; if(this.ctx) this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height); }};
+        window.Confetti={canvas:document.getElementById("confetti-canvas"),ctx:document.getElementById("confetti-canvas").getContext("2d"),particles:[],active:!1,init:function(){this.resize(),window.addEventListener("resize",(()=>this.resize()))},resize:function(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},start:function(){this.active=!0,this.particles=[];for(let e=0;e<150;e++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height-this.canvas.height,color:["#a864fd","#29cdff","#78ff44","#ff718d","#fdff6a"][Math.floor(5*Math.random())],size:4*Math.random()+4,speedY:3*Math.random()+2,speedX:2*Math.random()-1,rotation:360*Math.random(),rotationSpeed:10*Math.random()-5});this.loop()},loop:function(){if(!this.active)return void this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach((e=>{e.y+=e.speedY,e.x+=e.speedX,e.rotation+=e.rotationSpeed,e.y>this.canvas.height&&(e.y=-20),this.ctx.save(),this.ctx.translate(e.x,e.y),this.ctx.rotate(e.rotation*Math.PI/180),this.ctx.fillStyle=e.color,this.ctx.fillRect(-e.size/2,-e.size/2,e.size,e.size),this.ctx.restore()})),requestAnimationFrame((()=>this.loop()))},stop:function(){this.active=!1; if(this.ctx) this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height); }};
 
-        const PlayerColors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#a855f7', '#f97316'];
+        window.PlayerColors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#a855f7', '#f97316'];
 
-        const Game = {
+        window.Game = {
             mode: 'x01', scores: [], legs: [], currentPlayer: 0,
             turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false, markers: [] },
             historyStack: [], inputBuffer: '', 
@@ -1073,7 +1073,7 @@
             }
         };
 
-        const UI = {
+        window.UI = {
             render: function() {
                 const p = Game.currentPlayer;
                 const score = Game.scores[p];
@@ -1439,6 +1439,239 @@
                          el.forEach(e => { e.classList.remove('anim-flash'); void e.offsetWidth; e.classList.add('anim-flash'); });
                     });
                 }
+            }
+        };
+
+        window.App = {
+            updatePlayerCount: function(delta) {
+                let c = Game.matchConfig.playerCount + delta;
+                if(c < 1) c = 1;
+                if(c > 6) c = 6;
+                Game.matchConfig.playerCount = c;
+                document.getElementById('dash-player-count').textContent = c;
+                // Re-init defaults for names
+                while(Game.matchConfig.playerNames.length < c) {
+                    Game.matchConfig.playerNames.push(`Player ${Game.matchConfig.playerNames.length+1}`);
+                }
+            },
+            openSettings: function() { 
+                document.getElementById('settings-modal').classList.remove('hidden'); 
+                document.getElementById('settings-modal').classList.add('flex');
+                UI.updateSettingsUI();
+            },
+            closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
+            toggleMobileLog: function() {
+                const el = document.getElementById('mobile-log-modal');
+                if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); } else { el.classList.add('hidden'); el.classList.remove('flex'); }
+            },
+            toggleStats: function() {
+                const el = document.getElementById('stats-modal');
+                if(el.classList.contains('hidden')) { 
+                    UI.renderStats();
+                    el.classList.remove('hidden'); el.classList.add('flex'); 
+                } else { 
+                    el.classList.add('hidden'); el.classList.remove('flex'); 
+                }
+            },
+            toggleInfo: function() {
+                const el = document.getElementById('info-modal');
+                if(el.classList.contains('hidden')) { 
+                    el.classList.remove('hidden'); el.classList.add('flex'); 
+                } else { 
+                    el.classList.add('hidden'); el.classList.remove('flex'); 
+                }
+            },
+            setMobileTab: function(tab) {
+                document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
+                document.getElementById(`mob-tab-${tab}`).classList.add('active');
+                const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board'), btnV = document.getElementById('tab-btn-voice');
+                [btnK, btnB, btnV].forEach(b => { if(b) { b.classList.remove('bg-white/10', 'text-white'); b.classList.add('text-slate-400'); } });
+                const activeBtn = document.getElementById(`tab-btn-${tab}`);
+                if(activeBtn) { activeBtn.classList.add('bg-white/10', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
+            },
+            setView: function(v) {
+                document.getElementById('view-dashboard').classList.add('hidden'); document.getElementById('view-game-mobile').classList.add('hidden');
+                document.getElementById('view-game-desktop').classList.remove('flex'); document.getElementById('view-game-desktop').classList.add('hidden');
+                if(v === 'dashboard') {
+                    document.getElementById('view-dashboard').classList.remove('hidden');
+                    if(localStorage.getItem('dartsOS_v1')) document.getElementById('resume-btn').classList.remove('hidden');
+                }
+                else {
+                    if(window.innerWidth < 1024) { document.getElementById('view-game-mobile').classList.remove('hidden'); document.getElementById('view-game-mobile').classList.add('flex'); }
+                    else { document.getElementById('view-game-desktop').classList.remove('hidden'); document.getElementById('view-game-desktop').classList.add('flex'); }
+                }
+            },
+            startGame: function(mode) { this.setView('game'); Game.init(mode, true); }
+        };
+
+        window.addEventListener('load', () => {
+            Dartboard.create('desk-board-container', 'dartboard-desk'); Dartboard.create('mob-board-container', 'dartboard-mob');
+            App.setView('dashboard');
+
+            // Setup Hold to Speak Button
+            const holdBtn = document.getElementById('btn-hold-speak');
+            if(holdBtn) {
+                const start = (e) => { 
+                    e.preventDefault(); 
+                    Game.startHold(); 
+                    holdBtn.classList.remove('bg-indigo-600', 'border-indigo-400');
+                    holdBtn.classList.add('bg-red-600', 'border-red-400');
+                    holdBtn.innerHTML = "<span>🎙️</span> LISTENING...";
+                };
+                const end = (e) => { 
+                    e.preventDefault(); 
+                    Game.stopHold(); 
+                    holdBtn.classList.add('bg-indigo-600', 'border-indigo-400');
+                    holdBtn.classList.remove('bg-red-600', 'border-red-400');
+                    holdBtn.innerHTML = "<span>🎙️</span> HOLD TO SPEAK";
+                };
+                
+                holdBtn.addEventListener('touchstart', start, {passive: false});
+                holdBtn.addEventListener('touchend', end, {passive: false});
+                holdBtn.addEventListener('mousedown', start);
+                holdBtn.addEventListener('mouseup', end);
+                holdBtn.addEventListener('mouseleave', end);
+            }
+        });
+
+        window.TouchZoom = {
+            timer: null, magnifier: document.getElementById('magnifier'), active: false,
+            start: function(e, boardId) { this.active = true; this.timer = setTimeout(() => this.show(e, boardId), 200); },
+            move: function(e, boardId) { if(this.active && this.magnifier.style.display === 'block') this.update(e, boardId); },
+            end: function(e) { 
+                clearTimeout(this.timer); this.active = false; this.magnifier.style.display = 'none';
+                if (this.magnifier.style.display === 'block' || document.querySelector('.hover-highlight')) {
+                    const touch = e.changedTouches[0]; const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                    document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
+                    if(el && el.classList.contains('dartboard-segment')) el.dispatchEvent(new MouseEvent('click', { 'view': window, 'bubbles': true, 'cancelable': true }));
+                }
+            },
+            show: function(e, boardId) {
+                this.magnifier.style.display = 'block'; 
+                const originalSvg = document.getElementById(boardId);
+                const rect = originalSvg.getBoundingClientRect();
+                
+                this.magnifier.innerHTML = ''; 
+                const clone = originalSvg.cloneNode(true);
+                clone.removeAttribute('id'); 
+                
+                // IMPORTANT: Set clone to MATCH the real board size, not the magnifier size
+                clone.style.width = rect.width + 'px';
+                clone.style.height = rect.height + 'px';
+                clone.style.position = 'absolute';
+                clone.style.maxWidth = 'none'; // Override tailwind
+                clone.style.maxHeight = 'none';
+                
+                this.magnifier.appendChild(clone); 
+                this.update(e, boardId);
+            },
+            update: function(e, boardId) {
+                const touch = e.touches[0] || e.changedTouches[0]; 
+                const rect = document.getElementById(boardId).getBoundingClientRect();
+                
+                const magSize = 180; 
+                const halfMag = magSize / 2;
+                const zoomLevel = 2.5; // True magnification factor
+
+                // 1. Clamp Magnifier Window (Keep it on screen)
+                let safeLeft = touch.clientX;
+                let safeTop = touch.clientY - 70; // Adjusted offset for larger circle
+
+                if (safeLeft < halfMag) safeLeft = halfMag;
+                if (safeLeft > window.innerWidth - halfMag) safeLeft = window.innerWidth - halfMag;
+
+                this.magnifier.style.left = safeLeft + 'px'; 
+                this.magnifier.style.top = safeTop + 'px'; 
+                
+                // 2. Position Internal Image
+                const svg = this.magnifier.querySelector('svg');
+                if (svg) { 
+                    // Calculate finger position relative to the board
+                    const relX = touch.clientX - rect.left;
+                    const relY = touch.clientY - rect.top;
+
+                    // Logic: We want the point (relX, relY) on the board to appear at (90, 90) in the magnifier.
+                    // Since we are scaling the board by zoomLevel, that point is at (relX * zoom, relY * zoom).
+                    // So we need to shift the board left/up by that amount, minus the halfMag center offset.
+                    
+                    const originX = 0; // Transform origin is top-left by default for absolute
+                    const originY = 0;
+                    
+                    // We simply translate the element to align the target point
+                    const finalLeft = halfMag - (relX * zoomLevel);
+                    const finalTop = halfMag - (relY * zoomLevel);
+
+                    svg.style.transformOrigin = '0 0';
+                    svg.style.transform = `translate(${finalLeft}px, ${finalTop}px) scale(${zoomLevel})`; 
+                }
+                
+                const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
+                const magSvg = this.magnifier.querySelector('svg'); if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
+                if(el && el.classList.contains('dartboard-segment')) {
+                    el.classList.add('hover-highlight'); const id = el.getAttribute('id');
+                    if (id && magSvg) { const cloneEl = magSvg.querySelector(`[id="${id}"]`); if (cloneEl) cloneEl.classList.add('hover-highlight'); }
+                }
+            }
+        };
+
+        window.Dartboard = {
+            create: function(containerId, svgId) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="max-w-full max-h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
+                const svg = document.getElementById(svgId);
+                svg.addEventListener('click', (e) => {
+                    if (e.target === svg || !e.target.classList.contains('dartboard-segment')) {
+                        Game.processThrow(0, 1, 'Miss', null);
+                    }
+                });
+                container.addEventListener('touchstart', (e) => TouchZoom.start(e, svgId), {passive: false});
+                container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
+                container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
+                const sectors = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+                
+                // Detect touch/mobile for "Fat" cells
+                const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 1024;
+                
+                // Dimensions: Standard vs Fat (Touch)
+                // Standard: Ring width ~8 units
+                // Fat: Ring width ~16 units (Double thickness for easier clicking)
+                const r = isTouch 
+                    ? { do: 170, di: 154, to: 107, ti: 91, bo: 22, bi: 10 } 
+                    : { do: 170, di: 162, to: 107, ti: 99, bo: 16, bi: 6 };
+
+                sectors.forEach((num, i) => {
+                    const a = 360/20, s = -90-(a/2)+(i*a), e = s+a, ev = i%2===0;
+                    this.arc(svg, r.to, r.di, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-s-${num}`);
+                    this.arc(svg, r.bo, r.ti, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-si-${num}`);
+                    this.arc(svg, r.di, r.do, s, e, ev?'#ef4444':'#22c55e', num, 2, `Double ${num}`, `segment-d-${num}`);
+                    this.arc(svg, r.ti, r.to, s, e, ev?'#ef4444':'#22c55e', num, 3, `Triple ${num}`, `segment-t-${num}`);
+                    const ta = (s+e)/2*Math.PI/180;
+                    const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    txt.setAttribute("x", Math.cos(ta)*195); txt.setAttribute("y", Math.sin(ta)*195);
+                    txt.setAttribute("class", "dartboard-text"); txt.textContent = num; svg.appendChild(txt);
+                });
+                this.circ(svg, r.bo, "#22c55e", 25, "Outer Bull", "segment-25");
+                this.circ(svg, r.bi, "#ef4444", 50, "Bullseye", "segment-50");
+            },
+            arc: function(svg, r1, r2, a1, a2, col, v, m, l, id) {
+                const rad = d => d * Math.PI / 180;
+                const x1=Math.cos(rad(a1))*r2, y1=Math.sin(rad(a1))*r2, x2=Math.cos(rad(a2))*r2, y2=Math.sin(rad(a2))*r2, x3=Math.cos(rad(a2))*r1, y3=Math.sin(rad(a2))*r1, x4=Math.cos(rad(a1))*r1, y4=Math.sin(rad(a1))*r1;
+                const d = `M ${x1} ${y1} A ${r2} ${r2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 0 0 ${x4} ${y4} Z`;
+                const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                p.setAttribute("d", d); p.setAttribute("fill", col); p.setAttribute("class", "dartboard-segment"); if(id) p.setAttribute("id", id);
+                p.onclick = (e) => this.click(e, v*m, m, l); svg.appendChild(p);
+            },
+            circ: function(svg, r, col, v, l, id) {
+                const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                c.setAttribute("r", r); c.setAttribute("fill", col); c.setAttribute("class", "dartboard-segment"); if(id) c.setAttribute("id", id);
+                c.onclick = (e) => this.click(e, v, 1, l); svg.appendChild(c);
+            },
+            click: function(e, pts, mul, lbl) {
+                e.stopPropagation(); 
+                const coords = { x: e.clientX, y: e.clientY };
+                Game.turn.markers.push(coords); 
+                Game.processThrow(pts, mul, lbl, coords);
             }
         };
     </script>
