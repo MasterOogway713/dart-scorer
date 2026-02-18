@@ -412,6 +412,17 @@
                     </div>
                 </div>
 
+                <div class="space-y-2">
+                    <label class="text-xs uppercase text-slate-400 font-bold">Half It Rules</label>
+                    <div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/10">
+                        <span class="text-sm text-white">Qualifying Round</span>
+                        <button id="btn-halfit-qual" onclick="Game.matchConfig.halfItQualifying = !Game.matchConfig.halfItQualifying; UI.updateSettingsUI()" class="w-12 h-6 rounded-full bg-slate-700 relative transition-colors">
+                            <div class="absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform"></div>
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-slate-400">If on, players throw 3 darts to set their starting score instead of 40.</p>
+                </div>
+
                 <div class="grid grid-cols-2 gap-4 mt-6">
                     <button onclick="Game.manualEditScore()" class="col-span-2 p-4 rounded bg-amber-600/20 text-amber-400 font-bold hover:bg-amber-600/30 border border-amber-600/50 flex items-center justify-center gap-2">
                         <span>✏️</span> Edit Score
@@ -527,7 +538,7 @@
             turn: { dartsThrown: 0, score: 0, history: [], darts: [], startScore: 501, bust: false, won: false, markers: [] },
             historyStack: [], inputBuffer: '', 
             settings: { startScore: 501 },
-            matchConfig: { legsToWin: 3, doubleOut: true, playerCount: 2, playerNames: [] },
+            matchConfig: { legsToWin: 3, doubleOut: true, playerCount: 2, playerNames: [], halfItQualifying: false },
             micMode: 'off', recognition: null, isListening: false, gameLog: [],
             cricket: [], atc: [], halfit: { targets: [15, 16, 'Double', 17, 18, 'Triple', 19, 20, 'Bull'], round: 0 },
             playerStats: [],
@@ -554,14 +565,16 @@
                 
                 this.cricket = Array.from({length: this.matchConfig.playerCount}, () => ({20:0,19:0,18:0,17:0,16:0,15:0,25:0}));
                 this.atc = new Array(this.matchConfig.playerCount).fill(1);
-                this.halfit.round = 0;
                 
                 let start = 501;
                 if(mode === '301') { this.mode='x01'; start=301; }
                 else if(mode === 'x01') start=501;
                 else if(mode === 'cricket') start=0; 
                 else if(mode === 'atc') start=1;
-                else if(mode === 'halfit') start=40;
+                else if(mode === 'halfit') {
+                    if (this.matchConfig.halfItQualifying) { start = 0; this.halfit.round = -1; }
+                    else { start = 40; this.halfit.round = 0; }
+                }
 
                 this.settings.startScore = start;
                 this.scores = new Array(this.matchConfig.playerCount).fill(start);
@@ -764,6 +777,23 @@
                 this.playerStats[this.currentPlayer].totalDarts++;
             },
             handleHalfIt: function(points, mul, label) {
+                // Handle Qualifying Round (Round -1)
+                if(this.halfit.round === -1) {
+                    this.turn.dartsThrown++;
+                    this.turn.score += points;
+                    this.turn.history.push(label);
+                    this.turn.darts.push(points);
+                    this.playerStats[this.currentPlayer].totalDarts++;
+                    if(points > 0) {
+                        let seg = 0;
+                        if(label.includes('Bull')) seg = 25;
+                        else if(points > 0) seg = points / mul;
+                        UI.flashSegment(seg);
+                    }
+                    this.logAction(`${this.pName()} Qual: +${points}`);
+                    return;
+                }
+
                 const target = this.halfit.targets[this.halfit.round];
                 this.turn.dartsThrown++;
                 
@@ -855,19 +885,26 @@
             nextTurn: function() {
                 // HALF IT END OF TURN LOGIC
                 if (this.mode === 'halfit') {
-                    if (this.turn.score > 0) {
+                    if (this.halfit.round === -1) {
+                        // Qualifying: just add score
                         this.scores[this.currentPlayer] += this.turn.score;
                         AudioEngine.speak("Score " + this.turn.score);
                     } else {
-                        // HALVE SCORE
-                        const oldScore = this.scores[this.currentPlayer];
-                        const newScore = Math.floor(oldScore / 2);
-                        this.scores[this.currentPlayer] = newScore;
-                        this.logAction(`${this.pName()} HALVED! (${oldScore} -> ${newScore})`);
-                        AudioEngine.playBust();
-                        AudioEngine.speak("Score Halved");
-                        document.body.classList.add('anim-shake');
-                        setTimeout(() => document.body.classList.remove('anim-shake'), 400);
+                        // Standard Half It
+                        if (this.turn.score > 0) {
+                            this.scores[this.currentPlayer] += this.turn.score;
+                            AudioEngine.speak("Score " + this.turn.score);
+                        } else {
+                            // HALVE SCORE
+                            const oldScore = this.scores[this.currentPlayer];
+                            const newScore = Math.floor(oldScore / 2);
+                            this.scores[this.currentPlayer] = newScore;
+                            this.logAction(`${this.pName()} HALVED! (${oldScore} -> ${newScore})`);
+                            AudioEngine.playBust();
+                            AudioEngine.speak("Score Halved");
+                            document.body.classList.add('anim-shake');
+                            setTimeout(() => document.body.classList.remove('anim-shake'), 400);
+                        }
                     }
                 }
 
@@ -1060,7 +1097,9 @@
                 if(Game.mode === 'x01') suggestion = this.getCheckout(score) || "Score High";
                 else if(Game.mode === 'atc') suggestion = `Target: ${score}`;
                 else if(Game.mode === 'cricket') suggestion = "Close 20-15 & Bull";
-                else if(Game.mode === 'halfit') suggestion = `Target: ${Game.halfit.targets[Game.halfit.round]}`;
+                else if(Game.mode === 'halfit') {
+                    suggestion = (Game.halfit.round === -1) ? "Qualifying Round" : `Target: ${Game.halfit.targets[Game.halfit.round]}`;
+                }
                 
                 document.getElementById('mob-suggestion').textContent = suggestion;
                 
@@ -1125,7 +1164,8 @@
                         if(sug) checkHtml = `<div class="text-right"><div class="text-amber-400 font-mono font-bold text-lg animate-pulse">${sug}</div><div class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Checkout</div></div>`;
                     }
                     if(isActive && Game.mode === 'halfit') {
-                        checkHtml = `<div class="text-right"><div class="text-amber-400 font-mono font-bold text-lg">${Game.halfit.targets[Game.halfit.round]}</div><div class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Target</div></div>`;
+                        const tgt = Game.halfit.round === -1 ? "Qualifying" : Game.halfit.targets[Game.halfit.round];
+                        checkHtml = `<div class="text-right"><div class="text-amber-400 font-mono font-bold text-lg">${tgt}</div><div class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Target</div></div>`;
                     }
 
                     card.innerHTML = `
@@ -1187,6 +1227,8 @@
             updateSettingsUI: function() {
                 const doBtn = document.getElementById('btn-do');
                 const soBtn = document.getElementById('btn-so');
+                const qualBtn = document.getElementById('btn-halfit-qual');
+                
                 if(Game.matchConfig.doubleOut) {
                     doBtn.classList.remove('bg-slate-700'); doBtn.classList.add('bg-indigo-600');
                     soBtn.classList.remove('bg-indigo-600'); soBtn.classList.add('bg-slate-700');
@@ -1194,6 +1236,15 @@
                     doBtn.classList.remove('bg-indigo-600'); doBtn.classList.add('bg-slate-700');
                     soBtn.classList.remove('bg-slate-700'); soBtn.classList.add('bg-indigo-600');
                 }
+                
+                if(Game.matchConfig.halfItQualifying) {
+                    qualBtn.classList.remove('bg-slate-700'); qualBtn.classList.add('bg-indigo-600');
+                    qualBtn.querySelector('div').classList.add('translate-x-6');
+                } else {
+                    qualBtn.classList.remove('bg-indigo-600'); qualBtn.classList.add('bg-slate-700');
+                    qualBtn.querySelector('div').classList.remove('translate-x-6');
+                }
+
                 this.renderSettingsInputs();
             },
             renderSettingsInputs: function() {
@@ -1316,20 +1367,21 @@
                 }
             },
             highlightHalfIt: function(target) {
+                if (Game.halfit.round === -1) return; // No highlight for qualifying (all segments valid)
+                
                 const cls = `highlight-p${Game.currentPlayer+1}`;
+                const safeAdd = (id) => { const el = document.getElementById(id); if(el) el.classList.add(cls); };
+
                 if (target === 'Double') {
-                    for(let i=1; i<=20; i++) document.getElementById(`segment-d-${i}`).classList.add(cls);
-                    document.getElementById('segment-50').classList.add(cls); // Bullseye usually counts as double
+                    for(let i=1; i<=20; i++) safeAdd(`segment-d-${i}`);
+                    safeAdd('segment-50'); 
                 } else if (target === 'Triple') {
-                    for(let i=1; i<=20; i++) document.getElementById(`segment-t-${i}`).classList.add(cls);
+                    for(let i=1; i<=20; i++) safeAdd(`segment-t-${i}`);
                 } else if (target === 'Bull') {
-                     document.getElementById('segment-25').classList.add(cls);
-                     document.getElementById('segment-50').classList.add(cls);
+                     safeAdd('segment-25');
+                     safeAdd('segment-50');
                 } else if (!isNaN(target)) {
-                    ['s', 'si', 'd', 't'].forEach(type => {
-                        const el = document.getElementById(`segment-${type}-${target}`);
-                        if(el) el.classList.add(cls);
-                    });
+                    ['s', 'si', 'd', 't'].forEach(type => safeAdd(`segment-${type}-${target}`));
                 }
             },
             animateValue: function(id, end) {
@@ -1387,239 +1439,6 @@
                          el.forEach(e => { e.classList.remove('anim-flash'); void e.offsetWidth; e.classList.add('anim-flash'); });
                     });
                 }
-            }
-        };
-
-        const App = {
-            updatePlayerCount: function(delta) {
-                let c = Game.matchConfig.playerCount + delta;
-                if(c < 1) c = 1;
-                if(c > 6) c = 6;
-                Game.matchConfig.playerCount = c;
-                document.getElementById('dash-player-count').textContent = c;
-                // Re-init defaults for names
-                while(Game.matchConfig.playerNames.length < c) {
-                    Game.matchConfig.playerNames.push(`Player ${Game.matchConfig.playerNames.length+1}`);
-                }
-            },
-            openSettings: function() { 
-                document.getElementById('settings-modal').classList.remove('hidden'); 
-                document.getElementById('settings-modal').classList.add('flex');
-                UI.updateSettingsUI();
-            },
-            closeSettings: function() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); },
-            toggleMobileLog: function() {
-                const el = document.getElementById('mobile-log-modal');
-                if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); } else { el.classList.add('hidden'); el.classList.remove('flex'); }
-            },
-            toggleStats: function() {
-                const el = document.getElementById('stats-modal');
-                if(el.classList.contains('hidden')) { 
-                    UI.renderStats();
-                    el.classList.remove('hidden'); el.classList.add('flex'); 
-                } else { 
-                    el.classList.add('hidden'); el.classList.remove('flex'); 
-                }
-            },
-            toggleInfo: function() {
-                const el = document.getElementById('info-modal');
-                if(el.classList.contains('hidden')) { 
-                    el.classList.remove('hidden'); el.classList.add('flex'); 
-                } else { 
-                    el.classList.add('hidden'); el.classList.remove('flex'); 
-                }
-            },
-            setMobileTab: function(tab) {
-                document.querySelectorAll('.mobile-tab-content').forEach(el => el.classList.remove('active'));
-                document.getElementById(`mob-tab-${tab}`).classList.add('active');
-                const btnK = document.getElementById('tab-btn-keypad'), btnB = document.getElementById('tab-btn-board'), btnV = document.getElementById('tab-btn-voice');
-                [btnK, btnB, btnV].forEach(b => { if(b) { b.classList.remove('bg-white/10', 'text-white'); b.classList.add('text-slate-400'); } });
-                const activeBtn = document.getElementById(`tab-btn-${tab}`);
-                if(activeBtn) { activeBtn.classList.add('bg-white/10', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
-            },
-            setView: function(v) {
-                document.getElementById('view-dashboard').classList.add('hidden'); document.getElementById('view-game-mobile').classList.add('hidden');
-                document.getElementById('view-game-desktop').classList.remove('flex'); document.getElementById('view-game-desktop').classList.add('hidden');
-                if(v === 'dashboard') {
-                    document.getElementById('view-dashboard').classList.remove('hidden');
-                    if(localStorage.getItem('dartsOS_v1')) document.getElementById('resume-btn').classList.remove('hidden');
-                }
-                else {
-                    if(window.innerWidth < 1024) { document.getElementById('view-game-mobile').classList.remove('hidden'); document.getElementById('view-game-mobile').classList.add('flex'); }
-                    else { document.getElementById('view-game-desktop').classList.remove('hidden'); document.getElementById('view-game-desktop').classList.add('flex'); }
-                }
-            },
-            startGame: function(mode) { this.setView('game'); Game.init(mode, true); }
-        };
-
-        window.addEventListener('load', () => {
-            Dartboard.create('desk-board-container', 'dartboard-desk'); Dartboard.create('mob-board-container', 'dartboard-mob');
-            App.setView('dashboard');
-
-            // Setup Hold to Speak Button
-            const holdBtn = document.getElementById('btn-hold-speak');
-            if(holdBtn) {
-                const start = (e) => { 
-                    e.preventDefault(); 
-                    Game.startHold(); 
-                    holdBtn.classList.remove('bg-indigo-600', 'border-indigo-400');
-                    holdBtn.classList.add('bg-red-600', 'border-red-400');
-                    holdBtn.innerHTML = "<span>🎙️</span> LISTENING...";
-                };
-                const end = (e) => { 
-                    e.preventDefault(); 
-                    Game.stopHold(); 
-                    holdBtn.classList.add('bg-indigo-600', 'border-indigo-400');
-                    holdBtn.classList.remove('bg-red-600', 'border-red-400');
-                    holdBtn.innerHTML = "<span>🎙️</span> HOLD TO SPEAK";
-                };
-                
-                holdBtn.addEventListener('touchstart', start, {passive: false});
-                holdBtn.addEventListener('touchend', end, {passive: false});
-                holdBtn.addEventListener('mousedown', start);
-                holdBtn.addEventListener('mouseup', end);
-                holdBtn.addEventListener('mouseleave', end);
-            }
-        });
-
-        const TouchZoom = {
-            timer: null, magnifier: document.getElementById('magnifier'), active: false,
-            start: function(e, boardId) { this.active = true; this.timer = setTimeout(() => this.show(e, boardId), 200); },
-            move: function(e, boardId) { if(this.active && this.magnifier.style.display === 'block') this.update(e, boardId); },
-            end: function(e) { 
-                clearTimeout(this.timer); this.active = false; this.magnifier.style.display = 'none';
-                if (this.magnifier.style.display === 'block' || document.querySelector('.hover-highlight')) {
-                    const touch = e.changedTouches[0]; const el = document.elementFromPoint(touch.clientX, touch.clientY);
-                    document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                    if(el && el.classList.contains('dartboard-segment')) el.dispatchEvent(new MouseEvent('click', { 'view': window, 'bubbles': true, 'cancelable': true }));
-                }
-            },
-            show: function(e, boardId) {
-                this.magnifier.style.display = 'block'; 
-                const originalSvg = document.getElementById(boardId);
-                const rect = originalSvg.getBoundingClientRect();
-                
-                this.magnifier.innerHTML = ''; 
-                const clone = originalSvg.cloneNode(true);
-                clone.removeAttribute('id'); 
-                
-                // IMPORTANT: Set clone to MATCH the real board size, not the magnifier size
-                clone.style.width = rect.width + 'px';
-                clone.style.height = rect.height + 'px';
-                clone.style.position = 'absolute';
-                clone.style.maxWidth = 'none'; // Override tailwind
-                clone.style.maxHeight = 'none';
-                
-                this.magnifier.appendChild(clone); 
-                this.update(e, boardId);
-            },
-            update: function(e, boardId) {
-                const touch = e.touches[0] || e.changedTouches[0]; 
-                const rect = document.getElementById(boardId).getBoundingClientRect();
-                
-                const magSize = 180; 
-                const halfMag = magSize / 2;
-                const zoomLevel = 2.5; // True magnification factor
-
-                // 1. Clamp Magnifier Window (Keep it on screen)
-                let safeLeft = touch.clientX;
-                let safeTop = touch.clientY - 70; // Adjusted offset for larger circle
-
-                if (safeLeft < halfMag) safeLeft = halfMag;
-                if (safeLeft > window.innerWidth - halfMag) safeLeft = window.innerWidth - halfMag;
-
-                this.magnifier.style.left = safeLeft + 'px'; 
-                this.magnifier.style.top = safeTop + 'px'; 
-                
-                // 2. Position Internal Image
-                const svg = this.magnifier.querySelector('svg');
-                if (svg) { 
-                    // Calculate finger position relative to the board
-                    const relX = touch.clientX - rect.left;
-                    const relY = touch.clientY - rect.top;
-
-                    // Logic: We want the point (relX, relY) on the board to appear at (90, 90) in the magnifier.
-                    // Since we are scaling the board by zoomLevel, that point is at (relX * zoom, relY * zoom).
-                    // So we need to shift the board left/up by that amount, minus the halfMag center offset.
-                    
-                    const originX = 0; // Transform origin is top-left by default for absolute
-                    const originY = 0;
-                    
-                    // We simply translate the element to align the target point
-                    const finalLeft = halfMag - (relX * zoomLevel);
-                    const finalTop = halfMag - (relY * zoomLevel);
-
-                    svg.style.transformOrigin = '0 0';
-                    svg.style.transform = `translate(${finalLeft}px, ${finalTop}px) scale(${zoomLevel})`; 
-                }
-                
-                const el = document.elementFromPoint(touch.clientX, touch.clientY);
-                document.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                const magSvg = this.magnifier.querySelector('svg'); if(magSvg) magSvg.querySelectorAll('.hover-highlight').forEach(x => x.classList.remove('hover-highlight'));
-                if(el && el.classList.contains('dartboard-segment')) {
-                    el.classList.add('hover-highlight'); const id = el.getAttribute('id');
-                    if (id && magSvg) { const cloneEl = magSvg.querySelector(`[id="${id}"]`); if (cloneEl) cloneEl.classList.add('hover-highlight'); }
-                }
-            }
-        };
-
-        const Dartboard = {
-            create: function(containerId, svgId) {
-                const container = document.getElementById(containerId);
-                container.innerHTML = `<svg id="${svgId}" viewBox="-220 -220 440 440" class="max-w-full max-h-full filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"></svg>`;
-                const svg = document.getElementById(svgId);
-                svg.addEventListener('click', (e) => {
-                    if (e.target === svg || !e.target.classList.contains('dartboard-segment')) {
-                        Game.processThrow(0, 1, 'Miss', null);
-                    }
-                });
-                container.addEventListener('touchstart', (e) => TouchZoom.start(e, svgId), {passive: false});
-                container.addEventListener('touchmove', (e) => { e.preventDefault(); TouchZoom.move(e, svgId); }, {passive: false});
-                container.addEventListener('touchend', (e) => TouchZoom.end(e), {passive: false});
-                const sectors = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
-                
-                // Detect touch/mobile for "Fat" cells
-                const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 1024;
-                
-                // Dimensions: Standard vs Fat (Touch)
-                // Standard: Ring width ~8 units
-                // Fat: Ring width ~16 units (Double thickness for easier clicking)
-                const r = isTouch 
-                    ? { do: 170, di: 154, to: 107, ti: 91, bo: 22, bi: 10 } 
-                    : { do: 170, di: 162, to: 107, ti: 99, bo: 16, bi: 6 };
-
-                sectors.forEach((num, i) => {
-                    const a = 360/20, s = -90-(a/2)+(i*a), e = s+a, ev = i%2===0;
-                    this.arc(svg, r.to, r.di, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-s-${num}`);
-                    this.arc(svg, r.bo, r.ti, s, e, ev?'#0f172a':'#cbd5e1', num, 1, `Single ${num}`, `segment-si-${num}`);
-                    this.arc(svg, r.di, r.do, s, e, ev?'#ef4444':'#22c55e', num, 2, `Double ${num}`, `segment-d-${num}`);
-                    this.arc(svg, r.ti, r.to, s, e, ev?'#ef4444':'#22c55e', num, 3, `Triple ${num}`, `segment-t-${num}`);
-                    const ta = (s+e)/2*Math.PI/180;
-                    const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    txt.setAttribute("x", Math.cos(ta)*195); txt.setAttribute("y", Math.sin(ta)*195);
-                    txt.setAttribute("class", "dartboard-text"); txt.textContent = num; svg.appendChild(txt);
-                });
-                this.circ(svg, r.bo, "#22c55e", 25, "Outer Bull", "segment-25");
-                this.circ(svg, r.bi, "#ef4444", 50, "Bullseye", "segment-50");
-            },
-            arc: function(svg, r1, r2, a1, a2, col, v, m, l, id) {
-                const rad = d => d * Math.PI / 180;
-                const x1=Math.cos(rad(a1))*r2, y1=Math.sin(rad(a1))*r2, x2=Math.cos(rad(a2))*r2, y2=Math.sin(rad(a2))*r2, x3=Math.cos(rad(a2))*r1, y3=Math.sin(rad(a2))*r1, x4=Math.cos(rad(a1))*r1, y4=Math.sin(rad(a1))*r1;
-                const d = `M ${x1} ${y1} A ${r2} ${r2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 0 0 ${x4} ${y4} Z`;
-                const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                p.setAttribute("d", d); p.setAttribute("fill", col); p.setAttribute("class", "dartboard-segment"); if(id) p.setAttribute("id", id);
-                p.onclick = (e) => this.click(e, v*m, m, l); svg.appendChild(p);
-            },
-            circ: function(svg, r, col, v, l, id) {
-                const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                c.setAttribute("r", r); c.setAttribute("fill", col); c.setAttribute("class", "dartboard-segment"); if(id) c.setAttribute("id", id);
-                c.onclick = (e) => this.click(e, v, 1, l); svg.appendChild(c);
-            },
-            click: function(e, pts, mul, lbl) {
-                e.stopPropagation(); 
-                const coords = { x: e.clientX, y: e.clientY };
-                Game.turn.markers.push(coords); 
-                Game.processThrow(pts, mul, lbl, coords);
             }
         };
     </script>
